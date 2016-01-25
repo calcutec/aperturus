@@ -21,16 +21,16 @@ mail = Mail(app)
 CsrfProtect(app)
 
 
-# app.config['OAUTH_CREDENTIALS'] = {
-#     'facebook': {
-#         'id': os.environ['FACEBOOK_AUTH'],
-#         'secret': os.environ['FACEBOOK_AUTH_SECRET']
-#     },
-#     'google': {
-#         'id': os.environ['GOOGLE_AUTH'],
-#         'secret': os.environ['GOOGLE_AUTH_SECRET']
-#     }
-# }
+app.config['OAUTH_CREDENTIALS'] = {
+    'facebook': {
+        'id': os.environ['FACEBOOK_AUTH'],
+        'secret': os.environ['FACEBOOK_AUTH_SECRET']
+    },
+    'google': {
+        'id': os.environ['GOOGLE_AUTH'],
+        'secret': os.environ['GOOGLE_AUTH_SECRET']
+    }
+}
 
 
 class CustomJSONEncoder(JSONEncoder):
