@@ -21,14 +21,13 @@ from flask import make_response, request, current_app
 from functools import update_wrapper
 
 
-# @app.route('/', methods=['GET'])
-# def index():
-#     return redirect(url_for('home'))
-
-
 @app.route('/', methods=['GET'])
 def index():
-    return redirect("/piemail")
+    return redirect(url_for('home'))
+
+# @app.route('/', methods=['GET'])
+# def index():
+#     return redirect("/piemail")
 
 # phonegap_data = ViewData(page_mark="phonegap")
 # app.add_url_rule('/phonegap/', view_func=GenericListView.as_view('phonegap', phonegap_data), methods=["GET", ])
