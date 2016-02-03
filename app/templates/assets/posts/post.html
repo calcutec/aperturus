@@ -1,3 +1,9 @@
-<article class="postArticle">
-    {% include 'assets/posts/post_content.html' %}
-</article>
+{% if page_mark == "home" %}
+    <article class="postArticle">
+        {% include 'assets/posts/editorial_content.html' %}
+    </article>
+{% else %}
+    <article class="postArticle">
+        {% include 'assets/posts/post_content.html' %}
+    </article>
+{% endif %}

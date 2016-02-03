@@ -7,7 +7,7 @@ window.App = {
 
 // Post model
 App.Models.Post = Backbone.Model.extend({
-  urlRoot: '/poetry/portfolio',
+  urlRoot: '/photos/portfolio',
   defaults: {
     header: '',
     body: ''
@@ -38,7 +38,7 @@ App.Views.Global = Backbone.View.extend({
         App.Collections.Post.myPostsCollection = App.Collections.Post.postCollection.byAuthor(14)
         App.Views.Posts.myPoemListView = new App.Views.Posts({collection: App.Collections.Post.myPostsCollection});
         App.Views.Posts.myPoemListView.render()
-    },
+    }
 });
 
 // Post view
@@ -137,7 +137,7 @@ App.Views.Post = Backbone.View.extend({
 
 // Post collection
 App.Collections.Post = Backbone.Collection.extend({
-    url: '/poetry/portfolio',
+    url: '/photos/portfolio',
     parse: function(response){return response.myPoems;},
     byAuthor: function (author_id) {
        var filtered = this.filter(function (post) {
@@ -179,18 +179,18 @@ App.Views.Posts = Backbone.View.extend({ // plural to distinguish as the view fo
 // Backbone router
 App.Router = Backbone.Router.extend({
     routes: { // sets the routes
-        '':         'start', // http://netbard.com/poetry/portfolio/
-        'create': 'create', // http://netbard.com/poetry/portfolio/#create
-        'edit/:id': 'edit' // http://netbard.com/poetry/portfolio/#edit/7
+        '':         'start', // http://netbard.com/photos/portfolio/
+        'create': 'create', // http://netbard.com/photos/portfolio/#create
+        'edit/:id': 'edit' // http://netbard.com/photos/portfolio/#edit/7
     },
     start: function(){
-        console.log('now in view for reading poetry');
+        console.log('now in view for reading photos');
     },
     edit: function(id){
         console.log('edit route with id: ' + id);
     },
     create: function(id){
-        console.log('View for creating poetry rendered');
+        console.log('View for creating photos rendered');
     }
 });
 
@@ -211,62 +211,69 @@ $.fn.serializeObject = function()
     return o;
 };
 
-App.Views.ModalDisplay = Backbone.View.extend({
-    el: '#myPortfolio',
-    events: {
-        'click #open': 'openModal'
-    },
-    template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Poem</button></h1>',
-    openModal: function() {
-        var view = new App.Views.ModalView();
-        new Backbone.BootstrapModal({
-            content: view,
-            title: 'Create a poem',
-            animate: true,
-            okText: 'Submit New Post',
-            okCloses: true,
-            enterTriggersOk: true
-        }).open(function(){
-            var poem_text = $('#editable').html();
-            $('#show-form').html(poem_text);
-            var $form = $('#poem-form');
-            var data = $form.serializeObject();
-            var newPostModel = new App.Models.Post(data);
-            newPostModel.save(null, {
-                success: function (model, response) {
-                    new App.Views.Post({model:model}).render();
-                    return response;
-                },
-                error: function () {
-                    alert('your poem did not save properly..')
-                },
-                wait: true
+
+
+if ($('#formTemplate').val() !== undefined){
+    App.Views.ModalDisplay = Backbone.View.extend({
+        el: '#myPortfolio',
+        events: {
+            'click #open': 'openModal'
+        },
+        template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Poem</button></h1>',
+        openModal: function() {
+            var view = new App.Views.ModalView();
+            new Backbone.BootstrapModal({
+                content: view,
+                title: 'Create a poem',
+                animate: true,
+                okText: 'Submit New Post',
+                okCloses: true,
+                enterTriggersOk: true
+            }).open(function(){
+                var poem_text = $('#editable').html();
+                $('#show-form').html(poem_text);
+                var $form = $('#poem-form');
+                var data = $form.serializeObject();
+                var newPostModel = new App.Models.Post(data);
+                newPostModel.save(null, {
+                    success: function (model, response) {
+                        new App.Views.Post({model:model}).render();
+                        return response;
+                    },
+                    error: function () {
+                        alert('your poem did not save properly..')
+                    },
+                    wait: true
+                });
             });
-        });
-    },
-    render: function() {
-        this.$el.html(this.template);
-        console.log('main rendered');
-        return this;
+        },
+        render: function() {
+            this.$el.html(this.template);
+            console.log('main rendered');
+            return this;
+        }
+
+    });
+
+    App.Views.ModalView = Backbone.View.extend({
+        template: _.template($('#formTemplate').html()),
+        events: {
+            'submit form': 'submit'
+        },
+        render: function() {
+            this.$el.html(this.template);
+            console.log('modal rendered');
+            return this;
+        }
+    });
+}
+
+
+$(document).ready(function() {
+    if ($('#formTemplate').val() !== undefined){
+        App.Views.ModalDisplay.modalDisplayView = new App.Views.ModalDisplay();
+        App.Views.ModalDisplay.modalDisplayView.render();
     }
-
-});
-
-App.Views.ModalView = Backbone.View.extend({
-    template: _.template($('#formTemplate').html()),
-    events: {
-        'submit form': 'submit'
-    },
-    render: function() {
-        this.$el.html(this.template);
-        console.log('modal rendered');
-        return this;
-    }
-});
-
-    $(document).ready(function() {
-    App.Views.ModalDisplay.modalDisplayView = new App.Views.ModalDisplay();
-    App.Views.ModalDisplay.modalDisplayView.render();
 
     var csrftoken = $('meta[name=csrf-token]').attr('content');
     $(function(){

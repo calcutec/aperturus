@@ -2,17 +2,6 @@
 
 {% block header %}
     <h1>{{ assets.header_text }}</h1>
-    {% if page_mark == "portfolio" %}
-        <noscript>
-            {% if rendered_form %}
-                <h1>Write your poem below!</h1>
-            {% else %}
-                {% include 'assets/posts/post_button.html' %}
-            {% endif %}
-        </noscript>
-        <script id="formTemplate" type="text/template">{% include 'assets/forms/poem_form.html' %}</script>
-        <div id="myPortfolio"></div>
-    {% endif %}
     {% if page_mark == "profile" %}
         {% if rendered_form %}
             <h1>Update your profile below!</h1>
@@ -26,11 +15,9 @@
 {% block content %}
     {% include 'flash.html' %}
     {{ assets.body_form|safe if assets.body_form != None }}
-
-    {% if page_mark == "home" %}{% include 'home.html' %}{% endif %}
     {% if page_mark == "members" %}{% include 'members.html' %}{% endif %}
 
-    {% if page_mark == "portfolio" or page_mark == "workshop" or page_mark == "profile" or page_mark == "poetry" %}
+    {% if page_mark == "profile" or page_mark == "portfolio" or page_mark == "gallery" or page_mark == "home" %}
         <div id="poem-list">
             {% for post in posts.items %}{% include 'assets/posts/post.html' %}{% endfor %}
         </div>
@@ -40,10 +27,25 @@
     {% if page_mark == "detail" %}
         {% include 'assets/posts/post.html' %}
     {% endif %}
+    {% if page_mark == "portfolio" %}
+        <noscript>
+            {% if rendered_form %}
+                <h1>Write your poem below!</h1>
+            {% else %}
+                {% include 'assets/posts/post_button.html' %}
+            {% endif %}
+        </noscript>
+        <script id="formTemplate" type="text/template">{% include 'assets/forms/poem_form.html' %}</script>
+        <div id="myPortfolio"></div>
+    {% endif %}
+
+    {% if page_mark == "home" and editor == True %}
+        <script id="formTemplate" type="text/template">{% include 'assets/forms/poem_form.html' %}</script>
+        <div id="myPortfolio"></div>
+    {% endif %}
+
 {% endblock %}
 
 {% block scripts %}
-    {% if page_mark == "portfolio" %}
-        <script src="{{ static_url }}js/app.js"></script>
-    {% endif %}
+    <script src="{{ local_static_url }}js/app.js"></script>
 {% endblock %}

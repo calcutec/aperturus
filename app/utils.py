@@ -7,15 +7,18 @@ from rauth import OAuth2Service
 import json
 import urllib2
 import cStringIO
-from flask import request, redirect, url_for, render_template, g, flash
+from flask import request, redirect, url_for, render_template, g, flash, current_app, make_response
 from flask.views import View
 from flask.ext.login import login_required
 from models import User, Post
 from functools import wraps
+from datetime import timedelta
+from functools import update_wrapper
 
 
 class ViewData(object):
-    def __init__(self, page_mark, slug=None, nickname=None, page=1, form=None, render_form=None, posts_for_page=200):
+    def __init__(self, page_mark, slug=None, nickname=None, page=1, form=None, render_form=None, posts_for_page=200,
+                 editor=None):
         self.posts_for_page = posts_for_page
         self.slug = slug
         self.nickname = nickname
@@ -26,6 +29,7 @@ class ViewData(object):
         self.page_logo = "img/icons/" + page_mark + ".svg"
         self.form = form
         self.render_form = render_form
+        self.editor = editor
         self.profile_user = None
         self.posts = None
         self.post = None
@@ -44,7 +48,12 @@ class ViewData(object):
                 self.assets['header_form'] = self.get_form()
 
         elif self.page_mark == 'home':
-            self.assets['header_text'] = "Home Page"
+            self.assets['header_text'] = "Personal Photography Sharing"
+            self.posts = Post.query.filter_by(writing_type="op-ed")\
+                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
+            if self.editor:
+                if not self.form:
+                    self.assets['header_form'] = self.get_form()
 
         elif self.page_mark == 'members':
             self.posts = User.query.all()
@@ -82,15 +91,6 @@ class ViewData(object):
             if not self.form:
                 self.assets['body_form'] = self.get_form()
 
-        elif self.page_mark == 'phonegap':
-            self.posts = User.query.all()
-            self.assets['header_text'] = "PhoneGap Page"
-            self.template_name = "index.html"
-
-        elif self.page_mark == 'piemail':
-            self.assets['header_text'] = "PhoneGap Page"
-            self.template_name = "piemail.html"
-
     def get_form(self):
         rendered_form = None
         if self.page_mark == 'signup':
@@ -105,9 +105,9 @@ class ViewData(object):
             self.form.about_me.data = g.user.about_me
             if self.render_form:  # Only render profile form on request, using button to show on noJS profile page
                 rendered_form = render_template("assets/forms/profile_form.html", form=self.form)
-        elif self.page_mark == 'portfolio':
+        elif self.page_mark == 'portfolio' or self.page_mark == 'home':
             self.form = PostForm()
-            if self.render_form: # Only render post form on request, using button to show on noJS portfolio page
+            if self.render_form:  # Only render post form on request, using button to show on noJS portfolio page
                 rendered_form = render_template("assets/forms/poem_form.html", form=self.form)
         elif self.page_mark == 'detail':
             self.form = CommentForm()
@@ -117,7 +117,7 @@ class ViewData(object):
     def get_context(self):
         self.context = {'post': self.post, 'posts': self.posts, 'title': self.title, 'profile_user': self.profile_user,
                         'page_logo': self.page_logo, 'page_mark': self.page_mark, 'form': self.form,
-                        'assets': self.assets}
+                        'assets': self.assets, 'editor': self.editor}
 
 
 def check_expired(func):
@@ -330,3 +330,45 @@ class GoogleSignIn(OAuthSignIn):
         nickname = User.make_valid_nickname(nickname)
         nickname = User.make_unique_nickname(nickname)
         return nickname, me['email']
+
+
+def crossdomain(origin=None, methods=None, headers=None,
+                max_age=21600, attach_to_all=True,
+                automatic_options=True):
+    if methods is not None:
+        methods = ', '.join(sorted(x.upper() for x in methods))
+    if headers is not None and not isinstance(headers, basestring):
+        headers = ', '.join(x.upper() for x in headers)
+    if not isinstance(origin, basestring):
+        origin = ', '.join(origin)
+    if isinstance(max_age, timedelta):
+        max_age = max_age.total_seconds()
+
+    def get_methods():
+        if methods is not None:
+            return methods
+
+        options_resp = current_app.make_default_options_response()
+        return options_resp.headers['allow']
+
+    def decorator(f):
+        def wrapped_function(*args, **kwargs):
+            if automatic_options and request.method == 'OPTIONS':
+                resp = current_app.make_default_options_response()
+            else:
+                resp = make_response(f(*args, **kwargs))
+            if not attach_to_all and request.method != 'OPTIONS':
+                return resp
+
+            h = resp.headers
+
+            h['Access-Control-Allow-Origin'] = origin
+            h['Access-Control-Allow-Methods'] = get_methods()
+            h['Access-Control-Max-Age'] = str(max_age)
+            if headers is not None:
+                h['Access-Control-Allow-Headers'] = headers
+            return resp
+
+        f.provide_automatic_options = False
+        return update_wrapper(wrapped_function, f)
+    return decorator

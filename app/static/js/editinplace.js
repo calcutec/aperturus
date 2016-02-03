@@ -201,7 +201,7 @@ $( document ).ready(function() {
                     alert("An error occurred while deleting the last item..")
                 }else {
                     // When backbone is complete, remove poem from the current DOM
-                    location.href = "/poetry/portfolio"
+                    location.href = "/photos/portfolio"
                 }
             }
         });
