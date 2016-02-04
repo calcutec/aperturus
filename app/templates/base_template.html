@@ -17,17 +17,17 @@
     {{ assets.body_form|safe if assets.body_form != None }}
     {% if page_mark == "members" %}{% include 'members.html' %}{% endif %}
 
-    {% if page_mark == "profile" or page_mark == "portfolio" or page_mark == "gallery" or page_mark == "home" %}
+    {% if page_mark == "profile" or page_mark == "portfolio" or page_mark == "workshop" or page_mark == "home" %}
         <div id="poem-list">
             {% for post in posts.items %}{% include 'assets/posts/post.html' %}{% endfor %}
         </div>
-        <noscript>{% include 'assets/posts/postie.html' %}</noscript>
+        {% include 'assets/posts/postie.html' %}
     {% endif %}
 
     {% if page_mark == "detail" %}
         {% include 'assets/posts/post.html' %}
     {% endif %}
-    {% if page_mark == "portfolio" %}
+    {% if page_mark == "portfolio" or  (page_mark == "home" and editor == True) %}
         <noscript>
             {% if rendered_form %}
                 <h1>Write your poem below!</h1>
@@ -39,13 +39,8 @@
         <div id="myPortfolio"></div>
     {% endif %}
 
-    {% if page_mark == "home" and editor == True %}
-        <script id="formTemplate" type="text/template">{% include 'assets/forms/poem_form.html' %}</script>
-        <div id="myPortfolio"></div>
-    {% endif %}
-
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ local_static_url }}js/app.js"></script>
+{#    <script src="{{ local_static_url }}js/app.js"></script>#}
 {% endblock %}

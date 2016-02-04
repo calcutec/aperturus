@@ -55,14 +55,14 @@
 
 		<nav>
             <ul>
-                <li class="n-home"><a href="{{ url_for('posts', page_mark = 'home') }}">Home</a></li>
+                <li class="n-home"><a href="{{ url_for('posts', page_mark = 'home', page = 1) }}">Home</a></li>
                 <li class="n-members"><a href="{{ url_for('members') }}">Members</a></li>
                 <li class="n-profile"><a href="{{ url_for('members', nickname=g.user.nickname) }}">Profile</a></li>
             </ul>
             <ul>
-                <li class="n-poetry"><a href="{{ url_for('posts', page_mark = 'poetry') }}">Featured</a></li>
-                <li class="n-workshop"><a id="n-workshop" href="{{ url_for('posts', page_mark = 'workshop') }}">Gallery</a></li>
-                <li class="n-portfolio"><a id="n-portfolio" href="{{ url_for('posts', page_mark = 'portfolio') }}">Portfolio</a></li>
+                <li class="n-poetry"><a href="{{ url_for('posts', page_mark = 'poetry', page = 1) }}">Featured</a></li>
+                <li class="n-workshop"><a id="n-workshop" href="{{ url_for('posts', page_mark = 'workshop', page = 1) }}">Gallery</a></li>
+                <li class="n-portfolio"><a id="n-portfolio" href="{{ url_for('posts', page_mark = 'portfolio', page = 1) }}">Portfolio</a></li>
             </ul>
 		</nav>
 

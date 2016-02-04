@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, session, url_for, request, g, abort, jsonify
 from werkzeug.utils import secure_filename
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask.ext.login import login_user, logout_user, current_user, current_app, login_required
 from flask.ext.sqlalchemy import get_debug_queries
 from datetime import datetime
 from app import app, db, lm
@@ -9,7 +9,7 @@ from slugify import slugify
 from .forms import SignupForm, LoginForm, EditForm, PostForm, SearchForm, CommentForm
 from .models import User, Post, Comment
 from .emails import follower_notification
-from .utils import OAuthSignIn, pre_upload, ViewData, allowed_file, GenericListView, crossdomain
+from .utils import OAuthSignIn, pre_upload, ViewData, allowed_file
 from PIL import Image
 import json
 from flask.views import MethodView
@@ -20,7 +20,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect(url_for('posts', page_mark='home'))
+    return redirect(url_for('posts', page_mark='home', page=1))
 
 
 @app.route('/logout', methods=['GET'])
@@ -54,25 +54,27 @@ class PostAPI(MethodView):
                 detail_data = ViewData(page_mark=page_mark, form=form)
                 return render_template(detail_data.template_name, **detail_data.context)
 
-    def get(self, page_mark=None, slug=None, post_id=None):
-        if slug is None and post_id is None:    # Read all posts
-            if request.is_xhr:
-                posts = Post.query.all()
-                return jsonify(myPoems=[i.json_view() for i in posts])
-            else:
-                if g.user is not None and g.user.is_authenticated() and g.user.email == 'burton.wj@gmail.com':
-                    view_data = ViewData(page_mark=page_mark, editor=True)
+    def get(self, page_mark=None, slug=None, post_id=None, page=None):
+
+        if page_mark == "home" or current_user.is_authenticated():
+            if slug is None and post_id is None:    # Read all posts
+                if request.is_xhr:
+                    posts = Post.query.all()
+                    return jsonify(myPoems=[i.json_view() for i in posts])
                 else:
-                    view_data = ViewData(page_mark=page_mark)
+                    if g.user is not None and g.user.is_authenticated() and g.user.email == 'burton.wj@gmail.com':
+                        view_data = ViewData(page_mark=page_mark, page=page, editor=True)
+                    else:
+                        view_data = ViewData(page_mark=page_mark, page=page)
 
-                return render_template(view_data.template_name, **view_data.context)
-
-        elif slug is not None:       # Read a single post
-            detail_data = ViewData(page_mark="detail", slug=slug)
-            return render_template(detail_data.template_name, **detail_data.context)
-
-        elif post_id is not None:
-            pass  # Todo create logic for xhr request for a single poem
+                    return render_template(view_data.template_name, **view_data.context)
+            elif slug is not None:       # Read a single post
+                detail_data = ViewData(page_mark="detail", slug=slug)
+                return render_template(detail_data.template_name, **detail_data.context)
+            elif post_id is not None:
+                pass  # Todo create logic for xhr request for a single poem
+        else:
+            return current_app.login_manager.unauthorized()
 
     # Update Post
     @login_required
@@ -102,9 +104,9 @@ class PostAPI(MethodView):
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
 # Create a single post, Read all posts (Restful)
-app.add_url_rule('/photos/<page_mark>', view_func=post_api_view, methods=["POST", "GET"])
+app.add_url_rule('/photos/<page_mark>/<int:page>', view_func=post_api_view, methods=["POST", "GET"])
 # Get, Update or Delete a single post (Restful)
-app.add_url_rule('/photos/portfolio/<int:post_id>', view_func=post_api_view, methods=["GET", "PUT", "DELETE"])
+app.add_url_rule('/photos/<page_mark>/<int:post_id>', view_func=post_api_view, methods=["PUT", "DELETE"])
 # Read a single post (Non Restful)
 app.add_url_rule('/photos/detail/<slug>', view_func=post_api_view, methods=["GET"])
 

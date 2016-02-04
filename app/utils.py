@@ -1,15 +1,13 @@
 import boto
 from PIL import Image
 from app import app
-from config import ALLOWED_EXTENSIONS
+from config import ALLOWED_EXTENSIONS, POSTS_PER_PAGE
 from forms import SignupForm, EditForm, PostForm, CommentForm, LoginForm
 from rauth import OAuth2Service
 import json
 import urllib2
 import cStringIO
 from flask import request, redirect, url_for, render_template, g, flash, current_app, make_response
-from flask.views import View
-from flask.ext.login import login_required
 from models import User, Post
 from functools import wraps
 from datetime import timedelta
@@ -17,8 +15,8 @@ from functools import update_wrapper
 
 
 class ViewData(object):
-    def __init__(self, page_mark, slug=None, nickname=None, page=1, form=None, render_form=None, posts_for_page=200,
-                 editor=None):
+    def __init__(self, page_mark, slug=None, nickname=None, page=1, form=None, render_form=None,
+                 posts_for_page=POSTS_PER_PAGE, editor=None):
         self.posts_for_page = posts_for_page
         self.slug = slug
         self.nickname = nickname
@@ -48,6 +46,7 @@ class ViewData(object):
                 self.assets['header_form'] = self.get_form()
 
         elif self.page_mark == 'home':
+            self.posts_for_page = 1
             self.assets['header_text'] = "Personal Photography Sharing"
             self.posts = Post.query.filter_by(writing_type="op-ed")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
@@ -57,20 +56,21 @@ class ViewData(object):
 
         elif self.page_mark == 'members':
             self.posts = User.query.all()
-            self.assets['header_text'] = "Members on this site"
+            self.assets['header_text'] = "Site Members"
 
         elif self.page_mark == 'poetry':
             self.posts = Post.query.filter_by(writing_type="featured")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            self.assets['header_text'] = "Poetry Page"
+            self.assets['header_text'] = "Featured"
 
         elif self.page_mark == 'workshop':
             self.posts = Post.query.filter_by(writing_type="poem")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            self.assets['header_text'] = "Workshop Page"
+            self.assets['header_text'] = "Photo Gallery"
 
         elif self.page_mark == 'portfolio':
-            self.posts = g.user.posts\
+            self.assets['header_text'] = "Portfolio"
+            self.posts = g.user.posts.filter_by(writing_type="poem")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
             if not self.form:
                 self.assets['header_form'] = self.get_form()
@@ -111,7 +111,7 @@ class ViewData(object):
                 rendered_form = render_template("assets/forms/poem_form.html", form=self.form)
         elif self.page_mark == 'detail':
             self.form = CommentForm()
-            rendered_form = render_template("assets/forms/comment_form.html", form=self.form)
+            rendered_form = render_template("assets/forms/comment_form.html", form=self.form, post=self.post)
         return rendered_form
 
     def get_context(self):
@@ -207,30 +207,6 @@ def generate_thumbnail(filename, img, box, photo_type, crop, extension):
     image_stream.seek(0)
     thumbnail_file = image_stream
     return thumbnail_name, thumbnail_file, upload_directory
-
-
-class GenericListView(View):
-    def __init__(self, view_data):
-        self.view_data = view_data
-
-    def get_template_name(self):
-        return self.view_data.template_name
-
-    def get_context(self):
-        context = self.view_data.context
-        return context
-
-    def dispatch_request(self):
-        context = self.get_context()
-        return self.render_template(context)
-
-    def render_template(self, context):
-        return render_template(self.get_template_name(), **context)
-
-
-class LoginRequiredListView(GenericListView):
-    decorators = [login_required]
-
 
 class OAuthSignIn(object):
     providers = None
