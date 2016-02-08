@@ -24,12 +24,12 @@
             <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
             <link rel="stylesheet" type="text/css" href="{{ local_static_url }}css/bootstrap3-wysihtml5.min.css" />
 
-
 		<!-- JS -->
             <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
             <script src="{{ local_static_url }}js/_libs/jquery/jquery.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/jquery/jquery-migrate-1.2.1.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/prefixfree.min.js"></script>
+            <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap3-wysihtml5.all.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/moment.min.js"></script>
@@ -51,7 +51,9 @@
 				{% endif %}
 			</ul>
 		</div>
-        <div class="logo"></div>
+        <div class="logo">
+            <img src="{{ local_static_url }}img/icons/camera.svg"/>
+        </div>
 
 		<nav>
             <ul>
@@ -80,7 +82,7 @@
 
     		<div id="side">
 				<section class="social">
-					<h3>Social clubs</h3>
+					<h3>Hangouts</h3>
 					<p><a href="/" title="Netbard on Twitter"><img src="{{ local_static_url }}img/icons/Twitter.svg" alt="Netbard on Twitter" /> Twitter</a></p>
 					<p><a href="/"><img src="{{ local_static_url }}img/icons/Facebook.svg" alt="Netbard on Facebook" /> Facebook</a></p>
 					<p><a href="/"><img src="{{ local_static_url }}img/icons/Instagram.svg" alt="Netbard on Instagram" /> Instagram</a></p>

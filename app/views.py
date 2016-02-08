@@ -35,8 +35,21 @@ class PostAPI(MethodView):
         form = PostForm()
         if form.validate_on_submit():
             slug = slugify(form.header.data)
+            entry_photo = request.files['photo']
+            if entry_photo and allowed_file(entry_photo.filename):
+                filename = secure_filename(entry_photo.filename)
+                img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(432,),
+                               photo_type="thumb", crop=False,
+                               extension=form['photo'].data.mimetype.split('/')[1].upper())
+                entry_photo_name = pre_upload(img_obj)
+
+                thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(160, 160),
+                                     photo_type="thumbnail", crop=True,
+                                     extension=form['photo'].data.mimetype.split('/')[1].upper())
+                thumbnail_name = pre_upload(thumbnail_obj)
+
             post = Post(body=form.body.data, timestamp=datetime.utcnow(),
-                        author=g.user, photo=None, thumbnail=None, header=form.header.data,
+                        author=g.user, photo=entry_photo_name, thumbnail=thumbnail_name, header=form.header.data,
                         writing_type=form.writing_type.data, slug=slug)
             db.session.add(post)
             db.session.commit()
@@ -45,7 +58,7 @@ class PostAPI(MethodView):
                 response['savedsuccess'] = True
                 return json.dumps(response)
             else:
-                return redirect(url_for('posts', page_mark='portfolio'))
+                return redirect("/photos/"+page_mark+"/1")
         else:
             if request.is_xhr:
                 form.errors['iserror'] = True
@@ -104,7 +117,9 @@ class PostAPI(MethodView):
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
 # Create a single post, Read all posts (Restful)
-app.add_url_rule('/photos/<page_mark>/<int:page>', view_func=post_api_view, methods=["POST", "GET"])
+app.add_url_rule('/photos/<page_mark>', view_func=post_api_view, methods=["POST"])
+# Read all posts (Restful)
+app.add_url_rule('/photos/<page_mark>/<int:page>', view_func=post_api_view, methods=["GET"])
 # Get, Update or Delete a single post (Restful)
 app.add_url_rule('/photos/<page_mark>/<int:post_id>', view_func=post_api_view, methods=["PUT", "DELETE"])
 # Read a single post (Non Restful)
@@ -184,17 +199,17 @@ class LoginAPI(MethodView):
     def get(self, get_provider=None, provider=None):
         if get_provider is not None:    # GET OAUTH PROVIDER
             if not current_user.is_anonymous():
-                return redirect(url_for('posts', page_mark='home'))
+                return redirect(url_for('posts', page_mark='home', page=1))
             oauth = OAuthSignIn.get_provider(get_provider)
             return oauth.authorize()
         elif provider is not None:  # OAUTH PROVIDER CALLBACK
             if not current_user.is_anonymous():
-                return redirect(url_for('posts', page_mark='home'))
+                return redirect(url_for('posts', page_mark='home', page=1))
             oauth = OAuthSignIn.get_provider(provider)
             nickname, email = oauth.callback()
             if email is None:
                 flash('Authentication failed.')
-                return redirect(url_for('posts', page_mark='home'))
+                return redirect(url_for('posts', page_mark='home', page=1))
             currentuser = User.query.filter_by(email=email).first()
             if not currentuser:
                 currentuser = User(nickname=nickname, email=email)
@@ -207,7 +222,7 @@ class LoginAPI(MethodView):
                 session.pop('remember_me', None)
             login_user(currentuser, remember=remember_me)
             # return redirect(request.args.get('next') or '/piemail')
-            return redirect(request.args.get('next') or url_for('posts', page_mark='home'))
+            return redirect(request.args.get('next') or url_for('posts', page_mark='home', page=1))
         else:   # LOGIN PAGE
             if g.user is not None and g.user.is_authenticated():
                 return redirect(url_for('members'))
@@ -247,7 +262,7 @@ class MembersAPI(MethodView):
             user = User.query.filter_by(nickname=nickname).first()
             if user is None:
                 flash('User %s not found.' % nickname)
-                return redirect(url_for('posts', page_mark='home'))
+                return redirect(url_for('posts', page_mark='home', page=1))
             if user == g.user:
                 flash('You can\'t follow yourself!')
                 return redirect(redirect_url())
@@ -374,7 +389,7 @@ class FormsAPI(MethodView):
 
     def get(self, page_mark=None, post_id=None):
         if post_id is None:    # Add post form to a page (NoJS)
-            view_data = ViewData(page_mark=page_mark, render_form=True)
+            view_data = ViewData(page_mark=page_mark, render_form=True, editor=request.args['editor'])
             return render_template(view_data.template_name, **view_data.context)
 
         else:  # Delete post (NoJS)

@@ -137,7 +137,7 @@ App.Views.Post = Backbone.View.extend({
 
 // Post collection
 App.Collections.Post = Backbone.Collection.extend({
-    url: '/photos/portfolio',
+    url: '/photos/portfolio/1',
     parse: function(response){return response.myPoems;},
     byAuthor: function (author_id) {
        var filtered = this.filter(function (post) {

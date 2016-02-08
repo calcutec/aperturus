@@ -27,13 +27,11 @@
     {% if page_mark == "detail" %}
         {% include 'assets/posts/post.html' %}
     {% endif %}
-    {% if page_mark == "portfolio" or  (page_mark == "home" and editor == True) %}
+
+    {% if page_mark == "portfolio" or (page_mark == "home" and editor == True) %}
         <noscript>
-            {% if rendered_form %}
-                <h1>Write your poem below!</h1>
-            {% else %}
-                {% include 'assets/posts/post_button.html' %}
-            {% endif %}
+            <h1>Create new entry</h1>
+            <div class="well">{% include 'assets/forms/poem_form.html' %}</div>
         </noscript>
         <script id="formTemplate" type="text/template">{% include 'assets/forms/poem_form.html' %}</script>
         <div id="myPortfolio"></div>
@@ -42,5 +40,5 @@
 {% endblock %}
 
 {% block scripts %}
-{#    <script src="{{ local_static_url }}js/app.js"></script>#}
+    <script src="{{ local_static_url }}js/app.js"></script>
 {% endblock %}

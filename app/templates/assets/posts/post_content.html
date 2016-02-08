@@ -1,6 +1,9 @@
 {% include 'assets/posts/stats.html' %}
     <div class="body frame">
     <h2><a href="{{ url_for('posts', slug=post.slug) }}">{{ post.header }}</a></h2>
+    {% if post.photo %}
+        <img src="{{ static_url }}user_imgs/{{ post.photo }}" alt="amateur_pic" >
+    {% endif %}
     <div class="edit-me comment" data-header="{{ post.header }}" data-body="{{ post.body|safe }}">{{ post.body|safe }}</div>
     </div>
 {% include 'assets/posts/details.html' %}

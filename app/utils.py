@@ -70,7 +70,7 @@ class ViewData(object):
 
         elif self.page_mark == 'portfolio':
             self.assets['header_text'] = "Portfolio"
-            self.posts = g.user.posts.filter_by(writing_type="poem")\
+            self.posts = g.user.posts.filter_by(writing_type="entry")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
             if not self.form:
                 self.assets['header_form'] = self.get_form()
