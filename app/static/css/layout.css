@@ -150,6 +150,19 @@ figcaption, .caption {
 	font-style: italic;
 }
 
+.result {
+    width: 100%;
+    height:20%;
+    background: #fff;
+    margin: 0 auto;
+}
+
+/* Required to make image fluid in IE */
+.result img:not(.png) {
+    width: 100%;
+    height: 20%;
+}
+
 img {
 	border: 0;
 	max-width: 100%;

@@ -22,24 +22,24 @@ App.Models.Post = Backbone.Model.extend({
   }
 });
 
-App.Views.Global = Backbone.View.extend({
-    events: {
-        'click #n-workshop': 'loadWorkshop',
-        'click #n-portfolio': 'loadPortfolio'
-    },
-    loadWorkshop: function(e){
-        e.preventDefault();
-        App.Collections.Post.postCollection.clear_all()
-        App.Views.Posts.poemListView.render()
-    },
-    loadPortfolio: function(e){
-        e.preventDefault();
-        App.Collections.Post.postCollection.clear_all()
-        App.Collections.Post.myPostsCollection = App.Collections.Post.postCollection.byAuthor(14)
-        App.Views.Posts.myPoemListView = new App.Views.Posts({collection: App.Collections.Post.myPostsCollection});
-        App.Views.Posts.myPoemListView.render()
-    }
-});
+//App.Views.Global = Backbone.View.extend({
+//    events: {
+//        'click #n-workshop': 'loadWorkshop',
+//        'click #n-portfolio': 'loadPortfolio'
+//    },
+//    loadWorkshop: function(e){
+//        e.preventDefault();
+//        App.Collections.Post.postCollection.clear_all()
+//        App.Views.Posts.poemListView.render()
+//    },
+//    loadPortfolio: function(e){
+//        e.preventDefault();
+//        App.Collections.Post.postCollection.clear_all()
+//        App.Collections.Post.myPostsCollection = App.Collections.Post.postCollection.byAuthor(14)
+//        App.Views.Posts.myPoemListView = new App.Views.Posts({collection: App.Collections.Post.myPostsCollection});
+//        App.Views.Posts.myPoemListView.render()
+//    }
+//});
 
 // Post view
 App.Views.Post = Backbone.View.extend({
@@ -219,7 +219,7 @@ if ($('#formTemplate').val() !== undefined){
         events: {
             'click #open': 'openModal'
         },
-        template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Poem</button></h1>',
+        template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Entry</button></h1>',
         openModal: function() {
             var view = new App.Views.ModalView();
             new Backbone.BootstrapModal({
@@ -257,9 +257,82 @@ if ($('#formTemplate').val() !== undefined){
 
     App.Views.ModalView = Backbone.View.extend({
         template: _.template($('#formTemplate').html()),
+        result: $('#result'),
+        exifNode: $('#exif'),
+        thumbNode: $('#thumbnail'),
         events: {
-            'submit form': 'submit'
+            'submit form': 'submit',
+            'change #file-input': 'dropChangeHandler'
         },
+        displayImage: function (file, options) {
+            var currentFile = file;
+            if (!loadImage(file, this.replaceResults, options)) {
+                $('#result').children().replaceWith($('<span>Your browser does not support the URL or FileReader API.</span>'));
+            }
+        },
+
+        displayExifData: function (exif) {
+            var tags = exif.getAll(),
+                table = $('#exif').find('table').empty(),
+                row = $('<tr></tr>'),
+                cell = $('<td></td>'),
+                prop;
+            for (prop in tags) {
+                if (tags.hasOwnProperty(prop)) {
+                    //table.append(
+                    //    row.clone()
+                    //        .append(cell.clone().text(prop))
+                    //        .append(cell.clone().text(tags[prop]))
+                    //);
+                    if(prop in {'Make':'', 'Model':'', 'DateTime':'', 'ExposureTime':'', 'ShutterSpeedValue':'',
+                        'FNumber':'', 'ExposureProgram':'', 'MeteringMode':'', 'ExposureMode':'', 'WhiteBalance':'',
+                        'PhotographicSensitivity':'', 'FocalLength':'', 'FocalLengthIn35mmFilm':'', 'LensModel':''}) {
+                            table.append(
+                                row.clone()
+                                    .append(cell.clone().text(prop))
+                                    .append(cell.clone().text(tags[prop]))
+                            );
+                    }
+                }
+            }
+            this.exifNode.show();
+        },
+
+        replaceResults: function (img) {
+            var content;
+            if (!(img.src || img instanceof HTMLCanvasElement)) {
+                content = $('<span>Loading image file failed</span>');
+            } else {
+                content = $('<img src="_blank">').append(img)
+                    // .attr('download', currentFile.name)
+                    .attr('src', img.src || img.toDataURL());
+            }
+            $('#result').children().replaceWith(content);
+        },
+
+
+        dropChangeHandler: function (e) {
+            e.preventDefault();
+            e = e.originalEvent;
+            var target = e.dataTransfer || e.target,
+            file = target && target.files && target.files[0],
+            options = {maxWidth: 1296};
+            if (!file) {
+                return;
+            }
+
+            this.exifNode.hide();
+            this.thumbNode.hide();
+            var self = this;
+            loadImage.parseMetaData(file, function (data) {
+                if (data.exif) {
+                    options.orientation = data.exif.get('Orientation');
+                    self.displayExifData(data.exif);
+                }
+                self.displayImage(file, options);
+            });
+        },
+
         render: function() {
             this.$el.html(this.template);
             console.log('modal rendered');
@@ -286,16 +359,16 @@ $(document).ready(function() {
         })
     });
 
-    App.Collections.Post.postCollection = new App.Collections.Post();
-    App.Collections.Post.postCollection.fetch({
-        success: function() {
-            App.Views.Posts.poemListView = new App.Views.Posts({collection: App.Collections.Post.postCollection});
-            App.Views.Posts.poemListView.attachToView();
-        }
-    });
-    App.Views.Global.globalView = new App.Views.Global({el: '.page'});
-    new App.Router();
-    Backbone.history.start(); // start Backbone history
+    //App.Collections.Post.postCollection = new App.Collections.Post();
+    //App.Collections.Post.postCollection.fetch({
+    //    success: function() {
+    //        App.Views.Posts.poemListView = new App.Views.Posts({collection: App.Collections.Post.postCollection});
+    //        App.Views.Posts.poemListView.attachToView();
+    //    }
+    //});
+    //App.Views.Global.globalView = new App.Views.Global({el: '.page'});
+    //new App.Router();
+    //Backbone.history.start(); // start Backbone history
 });
 
 
