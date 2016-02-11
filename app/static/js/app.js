@@ -10,7 +10,8 @@ App.Models.Post = Backbone.Model.extend({
   urlRoot: '/photos/portfolio',
   defaults: {
     header: '',
-    body: ''
+    body: '',
+    photo: ''
   },
   validate: function(attrs){
     if (!attrs.header){
@@ -219,7 +220,7 @@ if ($('#formTemplate').val() !== undefined){
         events: {
             'click #open': 'openModal'
         },
-        template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Entry</button></h1>',
+        template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Poem</button></h1>',
         openModal: function() {
             var view = new App.Views.ModalView();
             new Backbone.BootstrapModal({
@@ -228,23 +229,44 @@ if ($('#formTemplate').val() !== undefined){
                 animate: true,
                 okText: 'Submit New Post',
                 okCloses: true,
-                enterTriggersOk: true
+                enterTriggersOk: false
             }).open(function(){
                 var poem_text = $('#editable').html();
                 $('#show-form').html(poem_text);
                 var $form = $('#poem-form');
+                var dataForm = new FormData($("form[id*='poem-form']")[0]);
                 var data = $form.serializeObject();
-                var newPostModel = new App.Models.Post(data);
-                newPostModel.save(null, {
-                    success: function (model, response) {
-                        new App.Views.Post({model:model}).render();
-                        return response;
+                dataForm.append('entry_photo', blob);
+                //var newPostModel = new App.Models.Post(data);
+                //var self = this;
+
+                var self = this;
+                $.ajax({
+                    url: '/photos/home',
+                    data: dataForm,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function(data){
+                        alert(data);
+                        //var newPostModel = new App.Models.Post(data);
+                        //newPostModel.save(null, {
+                        //    success: function (model, response) {
+                        //        new App.Views.Post({model:model}).render();
+                        //        return response;
+                        //    },
+                        //    error: function () {
+                        //        alert('your poem did not save properly..')
+                        //    },
+                        //    wait: true
+                        //});
                     },
-                    error: function () {
-                        alert('your poem did not save properly..')
-                    },
-                    wait: true
+                    error: function(data){
+                      alert('no upload');
+                    }
                 });
+
             });
         },
         render: function() {
@@ -261,11 +283,12 @@ if ($('#formTemplate').val() !== undefined){
         exifNode: $('#exif'),
         thumbNode: $('#thumbnail'),
         events: {
-            'submit form': 'submit',
+            'submit form': 'saveFile',
             'change #file-input': 'dropChangeHandler'
         },
+
         displayImage: function (file, options) {
-            var currentFile = file;
+            currentFile = file;
             if (!loadImage(file, this.replaceResults, options)) {
                 $('#result').children().replaceWith($('<span>Your browser does not support the URL or FileReader API.</span>'));
             }
@@ -279,14 +302,10 @@ if ($('#formTemplate').val() !== undefined){
                 prop;
             for (prop in tags) {
                 if (tags.hasOwnProperty(prop)) {
-                    //table.append(
-                    //    row.clone()
-                    //        .append(cell.clone().text(prop))
-                    //        .append(cell.clone().text(tags[prop]))
-                    //);
                     if(prop in {'Make':'', 'Model':'', 'DateTime':'', 'ExposureTime':'', 'ShutterSpeedValue':'',
                         'FNumber':'', 'ExposureProgram':'', 'MeteringMode':'', 'ExposureMode':'', 'WhiteBalance':'',
-                        'PhotographicSensitivity':'', 'FocalLength':'', 'FocalLengthIn35mmFilm':'', 'LensModel':''}) {
+                        'PhotographicSensitivity':'', 'FocalLength':'', 'FocalLengthIn35mmFilm':'', 'LensModel':'',
+                        'Sharpness':'', 'PixelXDimension':'', 'PixelYDimension':''}) {
                             table.append(
                                 row.clone()
                                     .append(cell.clone().text(prop))
@@ -303,13 +322,13 @@ if ($('#formTemplate').val() !== undefined){
             if (!(img.src || img instanceof HTMLCanvasElement)) {
                 content = $('<span>Loading image file failed</span>');
             } else {
-                content = $('<img src="_blank">').append(img)
-                    // .attr('download', currentFile.name)
-                    .attr('src', img.src || img.toDataURL());
+                content = $('<a target="_blank">').append(img)
+                    .attr('download', currentFile.name)
+                    .attr('href', img.src || img.toDataURL());
             }
+            blob = window.dataURLtoBlob && window.dataURLtoBlob(img.toDataURL());
             $('#result').children().replaceWith(content);
         },
-
 
         dropChangeHandler: function (e) {
             e.preventDefault();
@@ -330,6 +349,25 @@ if ($('#formTemplate').val() !== undefined){
                     self.displayExifData(data.exif);
                 }
                 self.displayImage(file, options);
+            });
+        },
+
+        saveFile: function(file) {
+            var data = new FormData();
+            data.append('file', file);
+            $.ajax({
+                url: '/photos/home',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function(data){
+                    alert(data);
+                },
+                error: function(data){
+                  alert('no upload');
+                }
             });
         },
 

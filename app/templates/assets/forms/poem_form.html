@@ -9,22 +9,24 @@
         <span id="error_header" class="help-inline" style="color:red"></span>
     </div>
     <div class="form-group">
-        <label for="photo">Photo</label>
-{#        {{ form.photo(class="form-control", placeholder="Photo", id="file-input") }}#}
-        <p><input type="file" id="file-input"></p>
+        <label for="entry_photo">Photo</label>
+        {{ form.entry_photo(class="form-control", placeholder="Photo", id="file-input") }}
         <div id="result" class="result">
-            <p>This demo works only in browsers with support for the <a href="https://developer.mozilla.org/en/DOM/window.URL">URL</a> or <a href="https://developer.mozilla.org/en/DOM/FileReader">FileReader</a> API.</p>
+            <p></p>
         </div>
-        <br>
         <div id="exif" class="exif">
             <table></table>
         </div>
-        <br>
-        {% for error in form.photo.errors %}
+        {% for error in form.entry_photo.errors %}
             <span class="help-inline" style="color:red">[{{ error }}]</span><br>
         {% endfor %}
         <span id="error_header" class="help-inline" style="color:red"></span>
     </div>
+
+{#    <span class="file-input btn btn-block btn-primary btn-file">#}
+{#      <input id="fileInput" type="file" name="fileInput">#}
+{#    </span>#}
+
     <div class="form-group">
         <label for="body">Body</label>
         {{ form.body(class="form-control", placeholder="Body", id="show-form") }}

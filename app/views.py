@@ -35,17 +35,17 @@ class PostAPI(MethodView):
         form = PostForm()
         if form.validate_on_submit():
             slug = slugify(form.header.data)
-            entry_photo = request.files['photo']
+            entry_photo = request.files['entry_photo']
             if entry_photo and allowed_file(entry_photo.filename):
                 filename = secure_filename(entry_photo.filename)
-                img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(432,),
+                img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(432,288),
                                photo_type="thumb", crop=False,
-                               extension=form['photo'].data.mimetype.split('/')[1].upper())
+                               extension=form['entry_photo'].data.mimetype.split('/')[1].upper())
                 entry_photo_name = pre_upload(img_obj)
 
                 thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(160, 160),
                                      photo_type="thumbnail", crop=True,
-                                     extension=form['photo'].data.mimetype.split('/')[1].upper())
+                                     extension=form['entry_photo'].data.mimetype.split('/')[1].upper())
                 thumbnail_name = pre_upload(thumbnail_obj)
 
             post = Post(body=form.body.data, timestamp=datetime.utcnow(),
