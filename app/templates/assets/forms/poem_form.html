@@ -29,11 +29,11 @@
 
     <div class="form-group">
         <label for="body">Body</label>
-        {{ form.body(class="form-control", placeholder="Body", id="show-form") }}
+        {{ form.body(class="form-control hide", placeholder="Body", id="show-form") }}
         {% for error in form.body.errors %}
             <span class="help-inline" style="color:red">[{{ error }}]</span><br>
         {% endfor %}
-        <div id="editable" class="hide"></div>
+        <div id="editable"></div>
         <span id="error_header" class="help-inline" style="color:red"></span>
     </div>
 {#    {% if page_mark == "home" %}#}
@@ -51,22 +51,22 @@
     </noscript>
 </form>
 
-{#<script>#}
+<script>
 {#    document.getElementById("editable").className = "show";#}
 {#    document.getElementById("show-form").className = "hide";#}
-{#    $('#editable').wysihtml5({#}
-{#    toolbar: {#}
-{#        "style": true,#}
-{#        "font-styles": true,#}
-{#        "emphasis": true,#}
-{#        "lists": true,#}
-{#        "html": false,#}
-{#        "link": false,#}
-{#        "image": false,#}
-{#        "color": false,#}
-{#        fa: true,#}
-{#        ellipsis: false,#}
-{#        strikethrough: true#}
-{#    }#}
-{#    });#}
-{#</script>#}
+    $('#editable').wysihtml5({
+    toolbar: {
+        "style": true,
+        "font-styles": true,
+        "emphasis": true,
+        "lists": true,
+        "html": false,
+        "link": false,
+        "image": false,
+        "color": false,
+        fa: true,
+        ellipsis: false,
+        strikethrough: true
+    }
+    });
+</script>

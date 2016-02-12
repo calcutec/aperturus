@@ -35,7 +35,7 @@ class PostAPI(MethodView):
         form = PostForm()
         if form.validate_on_submit():
             slug = slugify(form.header.data)
-            entry_photo = request.files['entry_photo']
+            entry_photo = request.files['attachment']
             if entry_photo and allowed_file(entry_photo.filename):
                 filename = secure_filename(entry_photo.filename)
                 img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(432,288),

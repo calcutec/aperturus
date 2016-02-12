@@ -8,10 +8,11 @@ window.App = {
 // Post model
 App.Models.Post = Backbone.Model.extend({
   urlRoot: '/photos/portfolio',
+  fileAttribute: 'attachment',
   defaults: {
     header: '',
     body: '',
-    photo: ''
+    entry_photo_name: ''
   },
   validate: function(attrs){
     if (!attrs.header){
@@ -234,41 +235,27 @@ if ($('#formTemplate').val() !== undefined){
                 var poem_text = $('#editable').html();
                 $('#show-form').html(poem_text);
                 var $form = $('#poem-form');
-                var dataForm = new FormData($("form[id*='poem-form']")[0]);
-                var data = $form.serializeObject();
-                dataForm.append('entry_photo', blob);
-                //var newPostModel = new App.Models.Post(data);
-                //var self = this;
-
-                var self = this;
-                $.ajax({
-                    url: '/photos/home',
-                    data: dataForm,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    type: 'POST',
-                    success: function(data){
-                        alert(data);
-                        //var newPostModel = new App.Models.Post(data);
-                        //newPostModel.save(null, {
-                        //    success: function (model, response) {
-                        //        new App.Views.Post({model:model}).render();
-                        //        return response;
-                        //    },
-                        //    error: function () {
-                        //        alert('your poem did not save properly..')
-                        //    },
-                        //    wait: true
-                        //});
+                var newPostModel = new App.Models.Post($form.serializeObject());
+                newPostModel.set('attachment', window.fullblob);
+                newPostModel.set('entry_photo_name', "mylatestphoto");
+                newPostModel.save(null, {
+                    success: function (model, response) {
+                        alert('saved');
+                        new App.Views.Post({model:model}).render();
+                        return response;
                     },
-                    error: function(data){
-                      alert('no upload');
-                    }
+                    error: function () {
+                        alert('your poem did not save properly..')
+                    },
+                    wait: true
                 });
-
             });
         },
+
+
+
+
+
         render: function() {
             this.$el.html(this.template);
             console.log('main rendered');
@@ -285,13 +272,6 @@ if ($('#formTemplate').val() !== undefined){
         events: {
             'submit form': 'saveFile',
             'change #file-input': 'dropChangeHandler'
-        },
-
-        displayImage: function (file, options) {
-            currentFile = file;
-            if (!loadImage(file, this.replaceResults, options)) {
-                $('#result').children().replaceWith($('<span>Your browser does not support the URL or FileReader API.</span>'));
-            }
         },
 
         displayExifData: function (exif) {
@@ -317,59 +297,77 @@ if ($('#formTemplate').val() !== undefined){
             this.exifNode.show();
         },
 
-        replaceResults: function (img) {
-            var content;
-            if (!(img.src || img instanceof HTMLCanvasElement)) {
-                content = $('<span>Loading image file failed</span>');
-            } else {
-                content = $('<a target="_blank">').append(img)
-                    .attr('download', currentFile.name)
-                    .attr('href', img.src || img.toDataURL());
-            }
-            blob = window.dataURLtoBlob && window.dataURLtoBlob(img.toDataURL());
-            $('#result').children().replaceWith(content);
-        },
-
         dropChangeHandler: function (e) {
             e.preventDefault();
-            e = e.originalEvent;
-            var target = e.dataTransfer || e.target,
-            file = target && target.files && target.files[0],
-            options = {maxWidth: 1296};
-            if (!file) {
-                return;
-            }
-
-            this.exifNode.hide();
-            this.thumbNode.hide();
+            var originalfile = e.target.files[0];
+            var options = {canvas:true, maxWidth:900};
+            if (!originalfile) {return;}
             var self = this;
-            loadImage.parseMetaData(file, function (data) {
+            loadImage.parseMetaData(originalfile, function (data) {
                 if (data.exif) {
                     options.orientation = data.exif.get('Orientation');
                     self.displayExifData(data.exif);
                 }
-                self.displayImage(file, options);
+                self.displayImage(originalfile, options);
             });
         },
 
-        saveFile: function(file) {
-            var data = new FormData();
-            data.append('file', file);
-            $.ajax({
-                url: '/photos/home',
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                type: 'POST',
-                success: function(data){
-                    alert(data);
-                },
-                error: function(data){
-                  alert('no upload');
-                }
-            });
+        displayImage: function (originalfile, options) {
+            window.currentfile = originalfile;
+            if (!loadImage(originalfile, this.replaceResults, options)) {
+                $('#result').children().replaceWith($('<span>Your browser does not support the URL or FileReader API.</span>'));
+            }
         },
+
+        recombineHeaders: function(resizedfile, currentfile) {
+            var resizedfileblob = window.dataURLtoBlob && window.dataURLtoBlob(resizedfile.toDataURL());
+            loadImage.parseMetaData(
+                currentfile,
+                function (currentfile) {
+                    if (!currentfile.imageHead) {
+                        return;
+                    }
+                    // Combine data.imageHead with the image body of a resized file
+                    // to create scaled images with the original image meta data, e.g.:
+                    window.fullblob = new Blob([currentfile.imageHead, loadImage.blobSlice.call(resizedfileblob, 20)], {type: currentfile.type});
+                },
+                {
+                    maxMetaDataSize: 262144,
+                    disableImageHead: false
+                }
+            );
+        },
+
+
+        replaceResults: function (img) {
+            var resizedfile = img;
+            var content;
+            if (!(img.src || img instanceof HTMLCanvasElement)) {
+                content = $('<span>Loading image file failed</span>');
+            } else {
+                content = $('<img src="_blank">').append(img)
+                    .attr('src', img.src || img.toDataURL());
+            }
+            $('#result').children().replaceWith(content);
+            var resizedfileblob = window.dataURLtoBlob && window.dataURLtoBlob(resizedfile.toDataURL());
+            loadImage.parseMetaData(
+                currentfile,
+                function (currentfile) {
+                    if (!currentfile.imageHead) {
+                        return;
+                    }
+                    // Combine data.imageHead with the image body of a resized file
+                    // to create scaled images with the original image meta data, e.g.:
+                    window.fullblob = new Blob([currentfile.imageHead, loadImage.blobSlice.call(resizedfileblob, 20)], {type: currentfile.type});
+                },
+                {
+                    maxMetaDataSize: 262144,
+                    disableImageHead: false
+                }
+            );
+        },
+
+
 
         render: function() {
             this.$el.html(this.template);

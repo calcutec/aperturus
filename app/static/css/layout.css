@@ -157,16 +157,16 @@ figcaption, .caption {
     margin: 0 auto;
 }
 
+.result img {
+	border: 0;
+	max-width: 100%;
+	height: auto;
+}
+
 /* Required to make image fluid in IE */
 .result img:not(.png) {
     width: 100%;
     height: 20%;
-}
-
-img {
-	border: 0;
-	max-width: 100%;
-	height: auto;
 }
 
 .columns p {
@@ -417,7 +417,7 @@ header {
 }
 
 /* Required to make image fluid in IE */
-logo img:not(.png) {
+.logo img:not(.png) {
     width: 100%;
     height: 20%;
 }
