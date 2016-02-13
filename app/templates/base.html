@@ -22,10 +22,8 @@
             <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/layout.css" />
             <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/fonts.css" />
             <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/font-awesome.min.css" />
-            <link rel="stylesheet" type="text/css" href="{{ local_static_url }}css/bootstrap3-wysihtml5.min.css" />
 
         <!-- JS -->
-            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
             <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap3-wysihtml5.all.min.js"></script>
@@ -107,13 +105,14 @@
 	</div><!-- /page -->
 		<b id="te"></b>
 	{% block scripts %}
-{#        <script src="{{ local_static_url }}js/editinplace.js"></script>#}
+        		<!-- CSS -->
+            <link rel="stylesheet" type="text/css" href="{{ local_static_url }}css/bootstrap3-wysihtml5.min.css" />
         		<!-- JS -->
             <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
             <script src="{{ local_static_url }}js/_libs/moment.min.js"></script>
+            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
             <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-{#            <script src="{{ local_static_url }}js/_libs/backbone/backbone-forms.js"></script>#}
             <script src="{{ local_static_url }}js/_libs/backbone/backbone-model-file-upload.js"></script>
             <script src="{{ local_static_url }}js/_libs/backbone/backbone.bootstrap-modal.js"></script>
             <script src="{{ local_static_url }}js/app.js"></script>

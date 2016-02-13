@@ -9,7 +9,7 @@ from slugify import slugify
 from .forms import SignupForm, LoginForm, EditForm, PostForm, SearchForm, CommentForm
 from .models import User, Post, Comment
 from .emails import follower_notification
-from .utils import OAuthSignIn, pre_upload, ViewData, allowed_file
+from .utils import OAuthSignIn, pre_upload, s3_upload, allowed_file, ViewData
 from PIL import Image
 import json
 from flask.views import MethodView
@@ -38,19 +38,16 @@ class PostAPI(MethodView):
             entry_photo = request.files['attachment']
             extension = request.files['attachment'].mimetype.split('/')[1].upper()
             if entry_photo and allowed_file(extension):
-                filename = secure_filename(entry_photo.filename)
-                # img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=None,
-                #                photo_type="full", crop=False,
-                #                extension=extension)
-                # entry_photo_name = pre_upload(img_obj)
+                filename = secure_filename(form.entryPhotoName.data)
 
-                thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(432, 288),
-                                     photo_type="thumbnail", crop=True,
-                                     extension=extension)
+                thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(648, 432),
+                                     photo_type="thumbnail", crop=False, extension=extension)
                 thumbnail_name = pre_upload(thumbnail_obj)
 
+                photo_name = s3_upload(filename, entry_photo, "user_imgs")
+
             post = Post(body=form.body.data, timestamp=datetime.utcnow(),
-                        author=g.user, photo=None, thumbnail=thumbnail_name, header=form.header.data,
+                        author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
                         writing_type=form.writing_type.data, slug=slug)
             db.session.add(post)
             db.session.commit()

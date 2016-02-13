@@ -22,14 +22,9 @@
         {% endfor %}
         <span id="error_header" class="help-inline" style="color:red"></span>
     </div>
-
-{#    <span class="file-input btn btn-block btn-primary btn-file">#}
-{#      <input id="fileInput" type="file" name="fileInput">#}
-{#    </span>#}
-
     <div class="form-group">
         <label for="body">Body</label>
-        {{ form.body(class="form-control hide", placeholder="Body", id="show-form") }}
+        {{ form.body(class="form-control hide", placeholder="Body", id="body-text") }}
         {% for error in form.body.errors %}
             <span class="help-inline" style="color:red">[{{ error }}]</span><br>
         {% endfor %}
@@ -45,6 +40,7 @@
             {% endfor %}
             <span id="error_writing_type" class="help-inline" style="color:red"></span>
         </div>
+        {{ form.entryPhotoName(class="hide", id="entry-photo-name") }}
 {#    {% endif %}#}
     <noscript>
         <button id="target" type="submit" class="btn btn-primary">Submit Post</button>

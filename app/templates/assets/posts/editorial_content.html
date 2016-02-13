@@ -1,7 +1,7 @@
 <div class="body frame">
     <h2><a href="{{ url_for('posts', slug=post.slug) }}">{{ post.header }}</a></h2>
     {% if post.photo %}
-        <img src="{{ static_url }}user_imgs/{{ post.thumb }}" alt="amateur_pic" >
+        <img src="{{ static_url }}user_imgs/{{ post.thumbnail }}" alt="amateur_pic" >
     {% endif %}
     <div class="edit-me comment" data-header="{{ post.header }}" data-body="{{ post.body|safe }}">{{ post.body|safe }}</div>
 </div>

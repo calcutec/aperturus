@@ -12,7 +12,7 @@ App.Models.Post = Backbone.Model.extend({
   defaults: {
     header: '',
     body: '',
-    entry_photo_name: ''
+    entryPhotoName: ''
   },
   validate: function(attrs){
     if (!attrs.header){
@@ -116,7 +116,6 @@ App.Views.Post = Backbone.View.extend({
     deletePost: function(e){
         e.preventDefault();
         alert("Do you really want to destroy this post?");
-        var that = this;
         this.model.destroy({
           success: function() {
             console.log('model completely destroyed..');
@@ -232,20 +231,20 @@ if ($('#formTemplate').val() !== undefined){
                 okCloses: true,
                 enterTriggersOk: false
             }).open(function(){
-                var poem_text = $('#editable').html();
-                $('#show-form').html(poem_text);
                 var $form = $('#poem-form');
+                $form.find('#body-text').html($form.find('#editable').html());
                 var newPostModel = new App.Models.Post($form.serializeObject());
-                if (serverBlob === null) {
-                    if (typeof(currentFile) === "undefined"){
-                        alert("file upload has failed")
-                    } else {
-                        newPostModel.set('attachment', currentFile);
-                    }
+                if (currentFile === null){
+                    alert("file upload has failed")
                 } else {
-                    newPostModel.set('attachment', serverBlob);
+                    var entryPhotoName = currentFile.name.split(".")[0]+"-"+$form.find('#csrf_token').val()+"."+currentFile.type.split("/")[1];
+                    newPostModel.set({'entryPhotoName': entryPhotoName});
+                    if (serverBlob === null) {
+                        newPostModel.set('attachment', currentFile);
+                    } else {
+                        newPostModel.set('attachment', serverBlob);
+                    }
                 }
-                newPostModel.set('entry_photo_name', currentFile.name.split(".")[0]+"-"+newPostModel.get('csrf_token')+"."+currentFile.type.split("/")[1]);
                 newPostModel.save(null, {
                     success: function (model, response) {
                         alert('saved');
@@ -281,7 +280,7 @@ if ($('#formTemplate').val() !== undefined){
             //Get reference of FileUpload.
             var fileUpload = document.getElementById("file-input");
             //Check whether the file is valid Image.
-            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.jpeg)$");
             if (regex.test(fileUpload.value.toLowerCase())) {
                 //Check whether HTML5 is supported.
                 if (typeof (fileUpload.files) != "undefined") {
@@ -301,8 +300,8 @@ if ($('#formTemplate').val() !== undefined){
                             var height = this.height;
                             var width = this.width;
                             var size = currentFile.size;
-                            if (width < 432 || height < 288) {
-                                alert("Images must be at least 432px in width and 288px in height");
+                            if (width < 648 || height < 432) {
+                                alert("Images must be at least 648px in width and 432px in height");
                                 return false;
                             } else if (height > 1296 || width > 1296 || size > 1000000) {
                                 self.generateUploadFormThumb(self, currentFile);
