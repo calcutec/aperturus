@@ -39,10 +39,10 @@ class PostAPI(MethodView):
             extension = request.files['attachment'].mimetype.split('/')[1].upper()
             if entry_photo and allowed_file(extension):
                 filename = secure_filename(entry_photo.filename)
-                img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=None,
-                               photo_type="full", crop=False,
-                               extension=extension)
-                entry_photo_name = pre_upload(img_obj)
+                # img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=None,
+                #                photo_type="full", crop=False,
+                #                extension=extension)
+                # entry_photo_name = pre_upload(img_obj)
 
                 thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(432, 288),
                                      photo_type="thumbnail", crop=True,
@@ -50,7 +50,7 @@ class PostAPI(MethodView):
                 thumbnail_name = pre_upload(thumbnail_obj)
 
             post = Post(body=form.body.data, timestamp=datetime.utcnow(),
-                        author=g.user, photo=entry_photo_name, thumbnail=thumbnail_name, header=form.header.data,
+                        author=g.user, photo=None, thumbnail=thumbnail_name, header=form.header.data,
                         writing_type=form.writing_type.data, slug=slug)
             db.session.add(post)
             db.session.commit()

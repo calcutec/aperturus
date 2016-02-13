@@ -199,10 +199,7 @@ def generate_thumbnail(filename, img, box, photo_type, crop, extension):
 
     # save it into a file-like object
     thumbnail_name = photo_type + "_" + filename
-    if photo_type == 'thumbnail':
-        upload_directory = "cordova/www/pics"
-    else:
-        upload_directory = "user_imgs"
+    upload_directory = "user_imgs"
     image_stream = cStringIO.StringIO()
     img.save(image_stream, extension, quality=75)
     image_stream.seek(0)

@@ -245,7 +245,7 @@ if ($('#formTemplate').val() !== undefined){
                 } else {
                     newPostModel.set('attachment', serverBlob);
                 }
-                newPostModel.set('entry_photo_name', "mylatestphoto");
+                newPostModel.set('entry_photo_name', currentFile.name.split(".")[0]+"-"+newPostModel.get('csrf_token')+"."+currentFile.type.split("/")[1]);
                 newPostModel.save(null, {
                     success: function (model, response) {
                         alert('saved');
@@ -306,7 +306,7 @@ if ($('#formTemplate').val() !== undefined){
                                 return false;
                             } else if (height > 1296 || width > 1296 || size > 1000000) {
                                 self.generateUploadFormThumb(self, currentFile);
-                                self.generateServerFile(self, currentFile);
+                                self.generateServerFile(currentFile);
                                 return true;
                             } else {
                                 self.generateUploadFormThumb(self, currentFile);
