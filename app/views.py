@@ -40,7 +40,7 @@ class PostAPI(MethodView):
             if entry_photo and allowed_file(extension):
                 filename = secure_filename(entry_photo.filename)
                 img_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=None,
-                               photo_type="thumb", crop=False,
+                               photo_type="full", crop=False,
                                extension=extension)
                 entry_photo_name = pre_upload(img_obj)
 

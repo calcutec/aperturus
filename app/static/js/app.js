@@ -285,45 +285,31 @@ if ($('#formTemplate').val() !== undefined){
             if (regex.test(fileUpload.value.toLowerCase())) {
                 //Check whether HTML5 is supported.
                 if (typeof (fileUpload.files) != "undefined") {
-                    //Load small version of file
                     currentFile = e.target.files[0]
-                    var self = this;
-                    loadImage(
-                       currentFile,
-                       function (img) {
-                           if(img.type === "error") {
-                               alert("Error loading image " + currentFile);
-                               return false;
-                           } else {
-                               self.replaceResults(img, currentFile);
-                               loadImage.parseMetaData(currentFile, function (data) {
-                                   if (data.exif) {
-                                       self.displayExifData(data.exif);
-                                   }
-                               });
-                           }
-                       },
-                       {maxWidth: 600}
-                    );
                     //Initiate the FileReader object.
                     var reader = new FileReader();
                     //Read the contents of Image File.
                     reader.readAsDataURL(fileUpload.files[0]);
+                    var self = this;
                     reader.onload = function (e) {
                         //Initiate the JavaScript Image object.
                         var image = new Image();
-
                         //Set the Base64 string return from FileReader as source.
                         image.src = e.target.result;
-
                         //Validate the File Height and Width.
                         image.onload = function () {
                             var height = this.height;
                             var width = this.width;
                             var size = currentFile.size;
-                            if (height > 1296 || width > 1296 || size > 1000000) {
-                                self.generateServerFile(currentFile);
+                            if (width < 432 || height < 288) {
+                                alert("Images must be at least 432px in width and 288px in height");
+                                return false;
+                            } else if (height > 1296 || width > 1296 || size > 1000000) {
+                                self.generateUploadFormThumb(self, currentFile);
+                                self.generateServerFile(self, currentFile);
+                                return true;
                             } else {
+                                self.generateUploadFormThumb(self, currentFile);
                                 serverBlob = null;
                                 return true;
                             }
@@ -334,9 +320,29 @@ if ($('#formTemplate').val() !== undefined){
                     return false;
                 }
             } else {
-                alert("Please select a valid Image file.");
+                alert("Please select a jpeg or png image file.");
                 return false;
             }
+        },
+
+        generateUploadFormThumb: function(self, currentFile){
+            loadImage(
+               currentFile,
+               function (img) {
+                   if(img.type === "error") {
+                       alert("Error loading image " + currentFile);
+                       return false;
+                   } else {
+                       self.replaceResults(img, currentFile);
+                       loadImage.parseMetaData(currentFile, function (data) {
+                           if (data.exif) {
+                               self.displayExifData(data.exif);
+                           }
+                       });
+                   }
+               },
+               {maxWidth: 432}
+            );
         },
 
         generateServerFile: function(currentFile){

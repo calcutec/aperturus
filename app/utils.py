@@ -168,32 +168,34 @@ def s3_upload(filename, source_file, upload_directory, acl='public-read'):
 
 
 def generate_thumbnail(filename, img, box, photo_type, crop, extension):
-    """Downsample the image.
-    @param box: tuple(x, y) - the bounding box of the result image
-    """
-    # preresize image with factor 2, 4, 8 and fast algorithm
-    factor = 1
-    while img.size[0]/factor > 2*box[0] and img.size[1]*2/factor > 2*box[1]:
-        factor *= 2
-    if factor > 1:
-        img.thumbnail((img.size[0]/factor, img.size[1]/factor), Image.NEAREST)
 
-    # calculate the cropping box and get the cropped part
-    if crop:
-        x1 = y1 = 0
-        x2, y2 = img.size
-        wratio = 1.0 * x2/box[0]
-        hratio = 1.0 * y2/box[1]
-        if hratio > wratio:
-            y1 = int(y2/2-box[1]*wratio/2)
-            y2 = int(y2/2+box[1]*wratio/2)
-        else:
-            x1 = int(x2/2-box[0]*hratio/2)
-            x2 = int(x2/2+box[0]*hratio/2)
-        img = img.crop((x1, y1, x2, y2))
+    if box is not None:
+        """Downsample the image.
+        @param box: tuple(x, y) - the bounding box of the result image
+        """
+        # preresize image with factor 2, 4, 8 and fast algorithm
+        factor = 1
+        while img.size[0]/factor > 2*box[0] and img.size[1]*2/factor > 2*box[1]:
+            factor *= 2
+        if factor > 1:
+            img.thumbnail((img.size[0]/factor, img.size[1]/factor), Image.NEAREST)
 
-    # Resize the image with best quality algorithm ANTI-ALIAS
-    img.thumbnail(box, Image.ANTIALIAS)
+        # calculate the cropping box and get the cropped part
+        if crop:
+            x1 = y1 = 0
+            x2, y2 = img.size
+            wratio = 1.0 * x2/box[0]
+            hratio = 1.0 * y2/box[1]
+            if hratio > wratio:
+                y1 = int(y2/2-box[1]*wratio/2)
+                y2 = int(y2/2+box[1]*wratio/2)
+            else:
+                x1 = int(x2/2-box[0]*hratio/2)
+                x2 = int(x2/2+box[0]*hratio/2)
+            img = img.crop((x1, y1, x2, y2))
+
+        # Resize the image with best quality algorithm ANTI-ALIAS
+        img.thumbnail(box, Image.ANTIALIAS)
 
     # save it into a file-like object
     thumbnail_name = photo_type + "_" + filename
