@@ -131,9 +131,8 @@ def check_expired(func):
     return decorated_function
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+def allowed_file(extension):
+    return extension in ALLOWED_EXTENSIONS
 
 
 def pre_upload(img_obj):

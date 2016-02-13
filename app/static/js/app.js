@@ -236,12 +236,22 @@ if ($('#formTemplate').val() !== undefined){
                 $('#show-form').html(poem_text);
                 var $form = $('#poem-form');
                 var newPostModel = new App.Models.Post($form.serializeObject());
-                newPostModel.set('attachment', window.fullblob);
+                if (serverBlob === null) {
+                    if (typeof(currentFile) === "undefined"){
+                        alert("file upload has failed")
+                    } else {
+                        newPostModel.set('attachment', currentFile);
+                    }
+                } else {
+                    newPostModel.set('attachment', serverBlob);
+                }
                 newPostModel.set('entry_photo_name', "mylatestphoto");
                 newPostModel.save(null, {
                     success: function (model, response) {
                         alert('saved');
                         new App.Views.Post({model:model}).render();
+                        serverBlob = null;
+                        currentFile = null;
                         return response;
                     },
                     error: function () {
@@ -251,10 +261,6 @@ if ($('#formTemplate').val() !== undefined){
                 });
             });
         },
-
-
-
-
 
         render: function() {
             this.$el.html(this.template);
@@ -266,12 +272,102 @@ if ($('#formTemplate').val() !== undefined){
 
     App.Views.ModalView = Backbone.View.extend({
         template: _.template($('#formTemplate').html()),
-        result: $('#result'),
-        exifNode: $('#exif'),
-        thumbNode: $('#thumbnail'),
-        events: {
-            'submit form': 'saveFile',
-            'change #file-input': 'dropChangeHandler'
+           events: {
+            'change #file-input': 'validateAndUpload'
+        },
+
+        validateAndUpload: function(e) {
+            e.preventDefault();
+            //Get reference of FileUpload.
+            var fileUpload = document.getElementById("file-input");
+            //Check whether the file is valid Image.
+            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                //Check whether HTML5 is supported.
+                if (typeof (fileUpload.files) != "undefined") {
+                    //Load small version of file
+                    currentFile = e.target.files[0]
+                    var self = this;
+                    loadImage(
+                       currentFile,
+                       function (img) {
+                           if(img.type === "error") {
+                               alert("Error loading image " + currentFile);
+                               return false;
+                           } else {
+                               self.replaceResults(img, currentFile);
+                               loadImage.parseMetaData(currentFile, function (data) {
+                                   if (data.exif) {
+                                       self.displayExifData(data.exif);
+                                   }
+                               });
+                           }
+                       },
+                       {maxWidth: 600}
+                    );
+                    //Initiate the FileReader object.
+                    var reader = new FileReader();
+                    //Read the contents of Image File.
+                    reader.readAsDataURL(fileUpload.files[0]);
+                    reader.onload = function (e) {
+                        //Initiate the JavaScript Image object.
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        //Validate the File Height and Width.
+                        image.onload = function () {
+                            var height = this.height;
+                            var width = this.width;
+                            var size = currentFile.size;
+                            if (height > 1296 || width > 1296 || size > 1000000) {
+                                self.generateServerFile(currentFile);
+                            } else {
+                                serverBlob = null;
+                                return true;
+                            }
+                        };
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                    return false;
+                }
+            } else {
+                alert("Please select a valid Image file.");
+                return false;
+            }
+        },
+
+        generateServerFile: function(currentFile){
+            loadImage(
+                currentFile,
+                function (img) {
+                    if(img.type === "error") {
+                        console.log("Error loading image " + currentFile);
+                    } else {
+                        if (img.toBlob) {
+                            img.toBlob(
+                                function (blob) {
+                                    serverBlob = blob
+                                },
+                                'image/jpeg'
+                            );
+                        }
+                    }
+                },
+                {maxWidth: 1296, canvas:true}
+            );
+        },
+
+        replaceResults: function (img, currentFile) {
+            var content;
+            if (!(img.src)) {
+                content = $('<span>Loading image file failed</span>');
+            } else {
+                content = $('<a target="_blank">').append(img).attr('src', img.src);
+            }
+            $('#result').children().replaceWith(content);
         },
 
         displayExifData: function (exif) {
@@ -294,80 +390,7 @@ if ($('#formTemplate').val() !== undefined){
                     }
                 }
             }
-            this.exifNode.show();
         },
-
-        dropChangeHandler: function (e) {
-            e.preventDefault();
-            var originalfile = e.target.files[0];
-            var options = {canvas:true, maxWidth:900};
-            if (!originalfile) {return;}
-            var self = this;
-            loadImage.parseMetaData(originalfile, function (data) {
-                if (data.exif) {
-                    options.orientation = data.exif.get('Orientation');
-                    self.displayExifData(data.exif);
-                }
-                self.displayImage(originalfile, options);
-            });
-        },
-
-        displayImage: function (originalfile, options) {
-            window.currentfile = originalfile;
-            if (!loadImage(originalfile, this.replaceResults, options)) {
-                $('#result').children().replaceWith($('<span>Your browser does not support the URL or FileReader API.</span>'));
-            }
-        },
-
-        recombineHeaders: function(resizedfile, currentfile) {
-            var resizedfileblob = window.dataURLtoBlob && window.dataURLtoBlob(resizedfile.toDataURL());
-            loadImage.parseMetaData(
-                currentfile,
-                function (currentfile) {
-                    if (!currentfile.imageHead) {
-                        return;
-                    }
-                    // Combine data.imageHead with the image body of a resized file
-                    // to create scaled images with the original image meta data, e.g.:
-                    window.fullblob = new Blob([currentfile.imageHead, loadImage.blobSlice.call(resizedfileblob, 20)], {type: currentfile.type});
-                },
-                {
-                    maxMetaDataSize: 262144,
-                    disableImageHead: false
-                }
-            );
-        },
-
-
-        replaceResults: function (img) {
-            var resizedfile = img;
-            var content;
-            if (!(img.src || img instanceof HTMLCanvasElement)) {
-                content = $('<span>Loading image file failed</span>');
-            } else {
-                content = $('<img src="_blank">').append(img)
-                    .attr('src', img.src || img.toDataURL());
-            }
-            $('#result').children().replaceWith(content);
-            var resizedfileblob = window.dataURLtoBlob && window.dataURLtoBlob(resizedfile.toDataURL());
-            loadImage.parseMetaData(
-                currentfile,
-                function (currentfile) {
-                    if (!currentfile.imageHead) {
-                        return;
-                    }
-                    // Combine data.imageHead with the image body of a resized file
-                    // to create scaled images with the original image meta data, e.g.:
-                    window.fullblob = new Blob([currentfile.imageHead, loadImage.blobSlice.call(resizedfileblob, 20)], {type: currentfile.type});
-                },
-                {
-                    maxMetaDataSize: 262144,
-                    disableImageHead: false
-                }
-            );
-        },
-
-
 
         render: function() {
             this.$el.html(this.template);

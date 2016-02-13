@@ -17,7 +17,7 @@ WHOOSH_ENABLED = os.environ.get('HEROKU') is None
 # slow database query threshold (in seconds)
 DATABASE_QUERY_TIMEOUT = 0.5
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['PNG', 'JPEG'])
 
 # email server
 MAIL_SERVER = 'smtp.googlemail.com'  # your mailserver

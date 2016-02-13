@@ -169,6 +169,35 @@ figcaption, .caption {
     height: 20%;
 }
 
+/*.result {*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*height: 100%;*/
+/*}*/
+
+/*canvas {*/
+    /*display: block;*/
+    /*padding: 0;*/
+    /*margin: 0 auto;*/
+
+    /*background-color:red;*/
+/*}*/
+
+/*@media(max-width:1200px) {*/
+    /*.result {*/
+        /*margin: 0 50px;*/
+    /*}*/
+    /*canvas {*/
+        /*width: 100%;*/
+        /*height: auto;*/
+        /*background-color:red;*/
+    /*}*/
+/*}*/
+
+
+
+
+
 .columns p {
     text-indent: 2em;
     margin-bottom: 0;
