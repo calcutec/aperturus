@@ -1,4 +1,4 @@
- <div class="modal fade" id="myModal" role="dialog">
+ <div class="modal" id="myModal" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -24,9 +24,9 @@
                 </div>
                 {% endif %}
 
-                <div class="control-group{% if form.post.errors %} error{% endif %}">
+                <div class="control-group{% if form.body.errors %} error{% endif %}">
                     <label class="control-label" for="post">Poem</label>
-                    {{ form.post(class="form-control hide") }}
+                    {{ form.body(class="form-control hide") }}
                     <div id="editable"></div>
                     <span id="error_post" class="help-inline"></span><br>
                 </div>

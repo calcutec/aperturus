@@ -46,13 +46,16 @@ class ViewData(object):
                 self.assets['header_form'] = self.get_form()
 
         elif self.page_mark == 'home':
-            self.posts_for_page = 1
+            self.posts_for_page = 5
             self.assets['header_text'] = "Personal Photography Sharing"
-            self.posts = Post.query.filter_by(writing_type="op-ed")\
-                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            if self.editor:
-                if not self.form:
-                    self.assets['header_form'] = self.get_form()
+            # self.posts = Post.query.filter_by(writing_type="op-ed")\
+            #     .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
+            self.posts = Post.query.filter_by(writing_type="op-ed").order_by(Post.timestamp.desc())
+            # self.posts = zip(self.fullposts[0], self.fullposts[1], self.fullposts[2], self.fullposts[3], self.fullposts[4])
+            self.assets['header_form'] = self.get_form()
+            # if self.editor:
+            #     if not self.form:
+            #         self.assets['header_form'] = self.get_form()
 
         elif self.page_mark == 'members':
             self.posts = User.query.all()

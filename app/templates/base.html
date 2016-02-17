@@ -1,121 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" id={{ page_mark }} >
-	<head>
-		<meta charset="utf-8">
-
-		<title>
-			Netbard
-		</title>
-
-		<meta name="description" content="Pending" />
-		<meta name="keywords" content="Pending" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Aperatura.com</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta content="Add content description" name="description">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="Add keywords">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
 		<!-- Favicon -->
-		<link rel="shortcut icon" href="{{ local_static_url }}img/icons/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ local_static_url }}img/icons/favicon.ico" type="image/x-icon">
         <link rel="icon" href="{{ local_static_url }}img/icons/favicon.ico" type="image/x-icon">
-
-
-		<!-- CSS -->
-            <link rel="stylesheet" href="{{ local_static_url }}css/bootstrap.min.css" />
-            <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/layout.css" />
-            <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/fonts.css" />
-            <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/font-awesome.min.css" />
-
-        <!-- JS -->
-            <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap3-wysihtml5.all.min.js"></script>
-	</head>
-	<body>
-	<div class="page">
-		<div class="login">
-			<ul>
-                {% if not g.user.is_authenticated() %}
-                    <li class="n-login"><a href="{{ url_for('login') }}">Login</a></li>
-                {% endif %}
-                {% if g.user.is_authenticated() %}
-                    <li class="n-user-id">Hi&nbsp;{{ g.user.nickname }}!</li>
-                    <li class="n-logout"><a href="{{ url_for('logout') }}">Logout</a></li>
-                    <li id="user-type" class="hide">{{ g.user.type }}</li>
-				{% endif %}
-			</ul>
-		</div>
-        <div class="logo">
-            <img src="{{ local_static_url }}img/icons/camera.svg"/>
-        </div>
-
-		<nav>
-            <ul>
-                <li class="n-home"><a href="{{ url_for('posts', page_mark = 'home', page = 1) }}">Home</a></li>
-                <li class="n-members"><a href="{{ url_for('members') }}">Members</a></li>
-                <li class="n-profile"><a href="{{ url_for('members', nickname=g.user.nickname) }}">Profile</a></li>
-            </ul>
-            <ul>
-                <li class="n-poetry"><a href="{{ url_for('posts', page_mark = 'poetry', page = 1) }}">Featured</a></li>
-                <li class="n-workshop"><a id="n-workshop" href="{{ url_for('posts', page_mark = 'workshop', page = 1) }}">Gallery</a></li>
-                <li class="n-portfolio"><a id="n-portfolio" href="{{ url_for('posts', page_mark = 'portfolio', page = 1) }}">Portfolio</a></li>
-            </ul>
-		</nav>
-
-		<div id="content">
-			<header>
-                <div class="icon">
-                    <img src="{{ local_static_url }}{{ page_logo }}" alt="{{ page_logo }}"/>
-                </div>
-				{% block header %}<h1>Create, discuss, and share poetry</h1>{% endblock %}
-			</header>
-
-			<div id="main">
-				{% block content %}{% endblock %}
-			</div> <!-- /main -->
-
-    		<div id="side">
-				<section class="social">
-					<h3>Hangouts</h3>
-					<p><a href="/" title="Netbard on Twitter"><img src="{{ local_static_url }}img/icons/Twitter.svg" alt="Netbard on Twitter" /> Twitter</a></p>
-					<p><a href="/"><img src="{{ local_static_url }}img/icons/Facebook.svg" alt="Netbard on Facebook" /> Facebook</a></p>
-					<p><a href="/"><img src="{{ local_static_url }}img/icons/Instagram.svg" alt="Netbard on Instagram" /> Instagram</a></p>
-					<p><a href="/" title="Netbard on Flickr"><img src="{{ local_static_url }}img/icons/Flickr.svg" alt="Netbard on Flickr" /> Flickr</a></p>
-				</section>
-
-				<section class="contact">
-					<div class="vcard">
-						<h3>Contact</h3>
-						<div class="adr">
-							<p><span class="organization-name fn n org">admin@netbard.com</span></p>
-							<p><span class="street-address">P.O. Box 119</span></p>
-							<p><span class="locality">Arlington</span></p>
-							<p><span class="region">Massachusetts</span>, <span class="country-name">USA</span></p>
-						</div>
-					</div>
-				</section>
-
-				<section class="hc">
-                    <h3>Tech Stuff</h3>
-					<p>Netbard is built with Python and the Flask framework, and hosted by the folks at <a href="https://www.heroku.com/">Heroku</a></p>
-				</section>
-			</div><!-- /side -->
-		</div><!-- /content -->
-
-		<footer>
-			<p>&copy;Netbard. 2015.</p>
-		</footer>
-	</div><!-- /page -->
-		<b id="te"></b>
-	{% block scripts %}
-        		<!-- CSS -->
-            <link rel="stylesheet" type="text/css" href="{{ local_static_url }}css/bootstrap3-wysihtml5.min.css" />
-        		<!-- JS -->
-            <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/moment.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone-model-file-upload.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.bootstrap-modal.js"></script>
-            <script src="{{ local_static_url }}js/app.js"></script>
-	{% endblock %}
-	</body>
+        <link rel="stylesheet" href="{{ local_static_url }}css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ local_static_url }}css/layout.css" />
+        <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
+        <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap.min.js"></script>
+{#        <script src="{{ local_static_url }}js/_libs/bootstrap/bootstrap3-wysihtml5.all.min.js"></script>#}
+    </head>
+   <body>
+        {% block content %}{% endblock %}
+   </body>
 </html>
