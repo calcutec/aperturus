@@ -1,23 +1,11 @@
-/* @group Typography */
-
 *, body {
 	margin: 0;
 	padding: 0;
 }
-
-/*@viewport {*/
-	/*width: device-width;*/
-/*}*/
-
-/*@-ms-viewport {*/
-	/*width: device-width;*/
-/*}*/
-
 html {
 	font-size: 100%;
 	transition: font-size 0.2s;
 }
-
 body {
 	line-height: 1.8;
 	background: #fff;
@@ -26,23 +14,19 @@ body {
 	text-rendering: optimizeLegibility;
 	font-family: 'Cabin', "Hoefler Text", Georgia, Times, serif;
 }
-
 a {
 	text-decoration: none;
 	color: #8787c1;
 	transition: color 0.2s;
 	font-weight: 700;
 }
-
 a:hover,
 a:focus {
 	color: #000;
 }
-
 a:visited {
 	font-weight: normal;
 }
-
 h1, cite, .date {
 font-family:	'Cabin',
 				"Gill Sans",
@@ -54,21 +38,18 @@ font-family:	'Cabin',
 				sans-serif;
 				font-weight: normal;
 }
-
 h2, h2 a, footer, .org, .previous a, .next a, .intrologo {
 	font-family: 'Cabin', sans-serif;
 	font-weight: 400;
 	text-transform: uppercase;
 	letter-spacing: 0.15rem;
 }
-
 h3, h3 a, h4, .archives a, .details, .details a, nav a, .social a {
 	font-family: 'Cabin', sans-serif;
 	font-weight: normal;
 	text-transform: uppercase;
 	letter-spacing: 0.075rem;
 }
-
 h1 {
 	font-size: 2rem;
 	line-height: 1.2;
@@ -76,7 +57,6 @@ h1 {
 	text-align: center;
 	color: #666;
 }
-
 h1 strong {
 	color: darkorange;
 	font-weight: 400;
@@ -89,52 +69,38 @@ h2 {
 	/*color: #e38549;*/
 	text-align: center;
 }
-
 .work article h2 {
 	font-size: 1rem;
 }
-
 .archives h4+h2 {
 	border-top: 1px solid #ddd;
 	margin: 1rem 0 0.5em 0;
 	padding: 1rem 0 0 0;
- }
-
+}
 h3 {
 	font-size: 1rem;
 	line-height: 1.2;
 	margin: 0 0 1rem 0;
 }
-
 #work h3 {
 	margin: 0.5rem 0;
 	font-size: 0.875rem;
 	color: #aaa;
 	text-align: center;
 }
-
-
 section h3 {
 	margin: 0 0 0.5rem 0;
 }
-
 p+h3, ul+h3, ol+h3 {
 	margin: 2rem 0 0.25rem 0;
 }
-
 h3.date {
 	margin: 0 0 1.5em 0;
 	font-size: 0.81em;
 }
-
 h4 {
 	font-size: 0.875em;
 }
-
-.archives h4 {
-	padding: 0 0 0.25rem 5rem;
-}
-
 p, pre, ul, ol, .lines, object, input, code {
 	margin: 0 0 1rem 0;
 }
@@ -149,26 +115,22 @@ figcaption, .caption {
 #home figcaption, .caption {
 	font-style: italic;
 }
-
 .result {
     width: 100%;
     height:20%;
     background: #fff;
     margin: 0 auto;
 }
-
 .result img {
 	border: 0;
 	max-width: 100%;
 	height: auto;
 }
-
 /* Required to make image fluid in IE */
 .result img:not(.png) {
     width: 100%;
     height: 20%;
 }
-
 /*.result {*/
     /*margin: 0;*/
     /*padding: 0;*/
@@ -193,11 +155,6 @@ figcaption, .caption {
         /*background-color:red;*/
     /*}*/
 /*}*/
-
-
-
-
-
 .columns p {
     text-indent: 2em;
     margin-bottom: 0;
@@ -206,7 +163,6 @@ figcaption, .caption {
 blockquote {
     margin: 2% 0 2% 15%;
 }
-
 blockquote p {
     /*text-indent: 0.4rem;*/
     font-size: 1.125rem;
@@ -215,20 +171,11 @@ blockquote p {
     margin-bottom: 0;
     /*border-left: 1px solid rgba(0,0,0,0.3);*/
 }
-
-/*blockquote p:before {*/
-	/*content: '“';*/
-	/*}*/
-/*blockquote p:after {*/
-	/*content: '”';*/
-	/*}*/
-
 cite {
 	display: block;
 	font-style: normal;
 	text-align: right;
 }
-
 pre {
 	background: #f8f8f8;
 	overflow: auto;
@@ -236,35 +183,28 @@ pre {
 	margin: 0 0 1rem 0;
     border-left: 1px solid #ddd;
 }
-
 code {
 	font-family: Consolata, monospace;
 	background: #f8f8f8;
 }
-
 fieldset {
 	border: 0;
 }
-
 article li {
 	margin: 0 0 0.25rem 0;
 }
-
 .intrologo {
 	text-transform: uppercase;
 	font-size: 70%;
 	letter-spacing: 0.1rem;
 }
-
 .login {
     position: absolute;
     top: -1px;
 }
-
 .login ul {
 	list-style-type: none;
 }
-
 .login li {
     display: inline-block;
     box-sizing: border-box;
@@ -275,30 +215,25 @@ article li {
     border-right: 1px solid #ddd;
     font-size: .7rem;
 }
-
 .login li:last-child {
     border-right: none;
 }
-
 nav {
     text-align: center;
 	margin: 1rem 0 0 0;
 }
-
 nav ul {
     display: inline-block;
 	list-style-type: none;
     width: 30%;
 
 }
-
 nav ul span{
     text-transform: uppercase;
 	letter-spacing: 0.2rem;
     font-size: 1rem;
     text-decoration: underline;
 }
-
 /*selected states*/
 #poetry .n-poetry a,
 #workshop .n-workshop a,
@@ -310,13 +245,11 @@ nav ul span{
 	color: #000;
 	border-bottom: 2px solid #E1B200;
 }
-
 .details {
 	list-style: none;
 	font-size: 0.875rem;
 	padding: 0;
 }
-
 .details li {
 	display: inline-block;
 	box-sizing: border-box;
@@ -327,34 +260,27 @@ nav ul span{
 	margin: 0 1rem 0 0;
 	border-right: 1px solid #ddd;
 }
-
 .details li .top {
 	text-transform: none;
 	border-right: none;
 }
-
 .details li:last-child {
 	border-right: none;
 }
-
 .posted b {
 	letter-spacing: 0.1rem;
 	font-weight: normal;
 	color: #666;
 }
-
 .details span {
 	display: block;
 	line-height: 1;
 }
-
 footer {
 	color: #666;
 	font-size: 0.875rem;
 	letter-spacing: 0.05rem;
 }
-
-
 .social p {
 	line-height: 1.8;
 	margin: 0 0 0.2em 0;
@@ -362,7 +288,6 @@ footer {
 	text-transform: uppercase;
 	letter-spacing: 0.1rem;
 }
-
 .vcard p { margin: 0; }
 .vcard .adr { margin: 0 0 0.875em 0;}
 .organization-name {
@@ -378,8 +303,6 @@ footer {
 @media screen and (min-width: 1280px) {
 	html { font-size: 106%;}
 }
-
-
 @media screen and (min-width: 1680px) {
 	html { font-size: 112%;}
 }
@@ -542,8 +465,8 @@ article:last-child {
 
 article img,
 .photo img {
+    width: 100%;
 	height: auto;
-	/*max-height:85vh;*/
 	display: block;
 	margin: 0 auto;
 }
@@ -919,16 +842,6 @@ input.submit {
     width: 95%;
 }
 
-/*.well {*/
-    /*background: rgb(255,255,255);*/
-/*}*/
-
-/*form textarea#edit-me {*/
-     /*width: 95%;*/
-     /*height: 300px;*/
-     /*margin-bottom: 2%;*/
-/*}*/
-
 #edit-button {
     color:#8787c1;
 }
@@ -936,10 +849,6 @@ input.submit {
 #delete-button {
     color:#8787c1;
 }
-
-/*form #header {*/
-     /*width: 95%;*/
-/*}*/
 
 .btn.jumbo {
     font-size: 16px;
@@ -952,10 +861,6 @@ input.submit {
     border-radius: 6px;
 }
 
-/*form label {*/
-    /*margin-bottom: -1px;*/
-/*}*/
-
 .wysihtml5-toolbar {
     display: none;
 }
@@ -963,15 +868,6 @@ input.submit {
 #post-div {
     display: none;
 }
-
-/*.form-horizontal .controls {*/
-    /*margin-left: 0;*/
-/*}*/
-
-
-/*#edit-me {*/
-    /*padding: 0 1% 0 1%;*/
-/*}*/
 
 #comments {
  border-bottom: 1px solid #ddd;
