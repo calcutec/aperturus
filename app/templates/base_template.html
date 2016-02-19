@@ -17,11 +17,15 @@
     {{ assets.body_form|safe if assets.body_form != None }}
     {% if page_mark == "members" %}{% include 'members.html' %}{% endif %}
 
-    {% if page_mark == "profile" or page_mark == "portfolio" or page_mark == "workshop" or page_mark == "home" %}
+    {% if page_mark == "profile" or page_mark == "portfolio" or page_mark == "workshop" %}
         <div id="poem-list">
             {% for post in posts.items %}{% include 'assets/posts/post.html' %}{% endfor %}
         </div>
         {% include 'assets/posts/postie.html' %}
+    {% endif %}
+
+    {% if page_mark == "home" %}
+        {% include 'assets/posts/photos.html' %}
     {% endif %}
 
     {% if page_mark == "detail" %}

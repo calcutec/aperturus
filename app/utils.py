@@ -47,7 +47,7 @@ class ViewData(object):
 
         elif self.page_mark == 'home':
             self.posts_for_page = 1
-            self.assets['header_text'] = "Personal Photography Sharing"
+            self.assets['header_text'] = self.page_mark
             self.posts = Post.query.filter_by(writing_type="op-ed")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
             if self.editor:
@@ -56,20 +56,20 @@ class ViewData(object):
 
         elif self.page_mark == 'members':
             self.posts = User.query.all()
-            self.assets['header_text'] = "Site Members"
+            self.assets['header_text'] = self.page_mark
 
         elif self.page_mark == 'poetry':
             self.posts = Post.query.filter_by(writing_type="featured")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            self.assets['header_text'] = "Featured"
+            self.assets['header_text'] = self.page_mark
 
         elif self.page_mark == 'workshop':
             self.posts = Post.query.filter_by(writing_type="poem")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            self.assets['header_text'] = "Photo Gallery"
+            self.assets['header_text'] = self.page_mark
 
         elif self.page_mark == 'portfolio':
-            self.assets['header_text'] = "Portfolio"
+            self.assets['header_text'] = self.page_mark
             self.posts = g.user.posts.filter_by(writing_type="entry")\
                 .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
             if not self.form:
@@ -77,17 +77,17 @@ class ViewData(object):
 
         elif self.page_mark == 'detail':
             self.post = Post.query.filter(Post.slug == self.slug).first()
-            self.assets['header_text'] = "Poem Details"
+            self.assets['header_text'] = self.page_mark
             if not self.form:
                 self.assets['body_form'] = self.get_form()
 
         elif self.page_mark == 'signup':
-            self.assets['header_text'] = "Signup Page"
+            self.assets['header_text'] = self.page_mark
             if not self.form:
                 self.assets['body_form'] = self.get_form()
 
         elif self.page_mark == 'login':
-            self.assets['header_text'] = "Login Page"
+            self.assets['header_text'] = self.page_mark
             if not self.form:
                 self.assets['body_form'] = self.get_form()
 
