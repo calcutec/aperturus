@@ -39,15 +39,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1544"
+     inkscape:window-width="1440"
      inkscape:window-height="741"
      id="namedview4"
      showgrid="false"
      inkscape:zoom="1.0148148"
-     inkscape:cx="399.14"
+     inkscape:cx="362.82251"
      inkscape:cy="177.86128"
-     inkscape:window-x="83"
-     inkscape:window-y="0"
+     inkscape:window-x="76"
+     inkscape:window-y="99"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg2"
      fit-margin-top="0"
@@ -80,17 +80,17 @@
        id="flowPara3380" /></flowRoot>  <rect
      style="fill:#800000;fill-opacity:1"
      id="rect3434"
-     width="1019.8906"
+     width="750.87604"
      height="236.49632"
      x="0"
      y="0" />
   <rect
      style="fill:#ffffff;fill-opacity:1"
      id="rect3438"
-     width="988.35767"
-     height="199.0511"
+     width="719.34308"
+     height="200.05518"
      x="13.795607"
-     y="20.693439" />
+     y="19.206003" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:58.75109863px;line-height:125%;font-family:'American Typewriter';-inkscape-font-specification:'American Typewriter';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -103,14 +103,12 @@
        x="366.16861"
        y="83.481308"
        id="tspan3364"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:53.58099747px;font-family:'Bodoni SvtyTwo ITC TT';-inkscape-font-specification:'Bodoni SvtyTwo ITC TT'"><tspan
-   id="tspan3347"
-   style="font-size:77.69245148px;font-family:'American Typewriter';-inkscape-font-specification:'American Typewriter'">More Shots in the Dark</tspan></tspan><tspan
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:77.69245148px;font-family:'Arial Hebrew';-inkscape-font-specification:'Arial Hebrew'">Aperturus.com</tspan><tspan
        sodipodi:role="line"
        x="366.16861"
-       y="156.67476"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:53.58099747px;font-family:'Bodoni SvtyTwo ITC TT';-inkscape-font-specification:'Bodoni SvtyTwo ITC TT'"
-       id="tspan3349">A site for sharing personal photography</tspan></text>
+       y="156.54605"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:60.00000011px;font-family:Arial;-inkscape-font-specification:Arial"
+       id="tspan3349">Sharing photography</tspan></text>
   <g
      id="g3351">
     <path
