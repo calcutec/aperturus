@@ -6,7 +6,7 @@ from datetime import datetime
 from app import app, db, lm
 from config import DATABASE_QUERY_TIMEOUT
 from slugify import slugify
-from .forms import SignupForm, LoginForm, EditForm, PostForm, SearchForm, CommentForm
+from .forms import SignupForm, LoginForm, EditForm, PostForm, CommentForm
 from .models import User, Post, Comment
 from .emails import follower_notification
 from .utils import OAuthSignIn, pre_upload, s3_upload, allowed_file, ViewData
@@ -26,7 +26,7 @@ def index():
 @app.route('/logout', methods=['GET'])
 def logout():
         logout_user()
-        return redirect(url_for('login'))
+        return redirect(url_for('posts', page_mark='home', page=1))
 
 
 class PostAPI(MethodView):
@@ -68,22 +68,22 @@ class PostAPI(MethodView):
     def get(self, page_mark=None, slug=None, post_id=None, page=None):
 
         if page_mark == "home" or current_user.is_authenticated():
-            if slug is None and post_id is None:    # Read all posts
-                if request.is_xhr:
-                    posts = Post.query.all()
-                    return jsonify(myPoems=[i.json_view() for i in posts])
-                else:
-                    if g.user is not None and g.user.is_authenticated() and g.user.email == 'burton.wj@gmail.com':
-                        view_data = ViewData(page_mark=page_mark, page=page, editor=True)
+            if page_mark in ['home', 'gallery', 'portfolio']:
+                if slug is None and post_id is None:    # Read all posts
+                    if request.is_xhr:
+                        posts = Post.query.all()
+                        return jsonify(myPoems=[i.json_view() for i in posts])
                     else:
                         view_data = ViewData(page_mark=page_mark, page=page)
 
-                    return render_template(view_data.template_name, **view_data.context)
-            elif slug is not None:       # Read a single post
-                detail_data = ViewData(page_mark="detail", slug=slug)
-                return render_template(detail_data.template_name, **detail_data.context)
-            elif post_id is not None:
-                pass  # Todo create logic for xhr request for a single poem
+                        return render_template(view_data.template_name, **view_data.context)
+                elif slug is not None:       # Read a single post
+                    detail_data = ViewData(page_mark="detail", slug=slug)
+                    return render_template(detail_data.template_name, **detail_data.context)
+                elif post_id is not None:
+                    pass  # Todo create logic for xhr request for a single poem
+            else:
+                return not_found_error("404")
         else:
             return current_app.login_manager.unauthorized()
 
@@ -114,12 +114,12 @@ class PostAPI(MethodView):
 
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
-# Create a single post, Read all posts (Restful)
-app.add_url_rule('/photos/<page_mark>', view_func=post_api_view, methods=["POST"])
-# Read all posts (Restful)
-app.add_url_rule('/photos/<page_mark>/<int:page>', view_func=post_api_view, methods=["GET"])
-# Get, Update or Delete a single post (Restful)
-app.add_url_rule('/photos/<page_mark>/<int:post_id>', view_func=post_api_view, methods=["PUT", "DELETE"])
+# Create a single post
+app.add_url_rule('/photos/', view_func=post_api_view, methods=["POST"])
+# Read all posts for a given page
+app.add_url_rule('/photos/<page_mark>/', view_func=post_api_view, methods=["GET"])
+# Update or Delete a single post
+app.add_url_rule('/photos/detail/<int:post_id>', view_func=post_api_view, methods=["PUT", "DELETE"])
 # Read a single post (Non Restful)
 app.add_url_rule('/photos/detail/<slug>', view_func=post_api_view, methods=["GET"])
 
@@ -471,7 +471,6 @@ def before_request():
         g.user.last_seen = datetime.utcnow()
         db.session.add(g.user)
         db.session.commit()
-        g.search_form = SearchForm()
 
 
 @app.after_request
@@ -494,14 +493,3 @@ def not_found_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html', error=error), 500
-
-
-@app.template_filter('curly')  # Filter to create curly braces
-def curly(value):
-    # Handle value as string  {{'foo'|curly}}
-    if isinstance(value,str):
-        return_value = value
-    # Handle value directly. {{foo|curly}}
-    else:
-        return_value = value._undefined_name
-    return "{{" + return_value + "}}"

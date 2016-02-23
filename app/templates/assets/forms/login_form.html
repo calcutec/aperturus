@@ -1,53 +1,152 @@
-<div class="well">
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs">
-        <li>&nbsp;&nbsp;&nbsp;</li>
-        <li class="active"><a href="{{ url_for('login') }}" data-toggle="tab">Login</a></li>
-        <li><a href="{{ url_for('signup') }}">Create Account</a></li>
-    </ul>
-
-    <div class="tab-content">
-        <div class="row">
-            <div class="span5 login-btns">
+<!-- Login Form -->
+<div class="docs-section" id="forms">
+    <h6 class="docs-header">Login/Signup</h6>
+    <div id="parentHorizontalTab">
+        <ul class="resp-tabs-list hor_1">
+            <li>1-Click Login</li>
+            <li>Email Login</li>
+            <li>User Signup</li>
+        </ul>
+        <div class="resp-tabs-container hor_1 row">
+            <div class="twelve columns">
                 <h3>1-Click-Login</h3>
-                <ul>
-                    <li><a href="{{ url_for('login', get_provider='facebook') }}" class="btn btn-warning"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>
-                    <li><a href="{{ url_for('login', get_provider='twitter') }}" class="btn btn-primary"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>
-                    <li><a href="{{ url_for('login', get_provider='google') }}" class="btn btn-info"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>
+                <ul id="auto-login">
+                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>
+                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='twitter') }}"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>
+                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='google') }}"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>
                 </ul>
-{#                <div class="form-group">#}
-{#                    <label for="rememember-me-auto" style="font-weight: normal;">Keep me logged in</label>#}
-{#                    <input type="checkbox" class="" id="remember-me-auto" value="1" title="checkbox">#}
-{#                </div>#}
             </div>
-            <div class="span5 login-btns">
+            <div class="twelve columns">
                 <h3>Email Login</h3>
                 <form action="{{ url_for('login') }}" id="login-form" method="post" accept-charset="utf-8">
-                {{ form.csrf_token }}
+                {{ loginform.csrf_token }}
                     <div class="form-group">
                         <label for="email">Email</label>
-                        {{ form.email(class="form-control", placeholder="Email") }}
-                        {% for error in form.email.errors %}
+                        {{ loginform.email(class="u-full-width", placeholder="Email") }}
+                        {% for error in loginform.email.errors %}
                             <span class="help-inline" style="color:red">[{{ error }}]</span><br>
                         {% endfor %}
                         <span id="error_email" class="help-inline" style="color:red"></span>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        {{ form.password(class="form-control", placeholder="Password") }}
-                        {% for error in form.password.errors %}
+                        {{ loginform.password(class="u-full-width", placeholder="Password") }}
+                        {% for error in loginform.password.errors %}
                             <span class="help-inline" style="color:red">[{{ error }}]</span><br>
                         {% endfor %}
                         <span id="error_password" class="help-inline" style="color:red"></span>
                     </div>
-{#                    <div class="form-group">#}
-{#                        <label style="font-weight: normal;">Keep me logged in</label>#}
-{#                        <input type="checkbox" class="" id="remember-me-manual" value="1" title="checkbox">#}
-{#                    </div>#}
-                    <button class="btn btn-info" id="login-form-submit" type="submit">Login</button>
+                    <input class="button-primary" id="login-form-submit" type="submit" value="Login">
                 </form>
-{#                <a href="/password-recovery" id="forgot-your-password" style="font-weight: normal">Forgot your Password?</a>#}
+            </div>
+            <div class="twelve columns">
+                <h3>Signup</h3>
+                <form action="{{ url_for('signup') }}" id="signup-form" method="post" accept-charset="utf-8">
+                {{ signupform.csrf_token }}
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        {{ signupform.firstname(class="u-full-width", placeholder="First Name") }}
+                        {% for error in signupform.firstname.errors %}
+                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+                        {% endfor %}
+                        <span id="error_firstname" class="help-inline" style="color:red"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        {{ signupform.lastname(class="u-full-width", placeholder="Last Name") }}
+                        {% for error in signupform.lastname.errors %}
+                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+                        {% endfor %}
+                        <span id="error_lastname" class="help-inline" style="color:red"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        {{ signupform.email(class="u-full-width", placeholder="Email") }}
+                        {% for error in signupform.email.errors %}
+                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+                        {% endfor %}
+                        <span id="error_email" class="help-inline" style="color:red"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        {{ signupform.password(class="u-full-width", placeholder="Password") }}
+                        {% for error in signupform.password.errors %}
+                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+                        {% endfor %}
+                        <span id="error_password" class="help-inline" style="color:red"></span>
+                    </div>
+                    <input class="button-primary" type="submit" value="Signup">
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+{#<div class="docs-section" id="forms">#}
+{#    <h6 class="docs-header">Login</h6>#}
+{#    <p>Login below using automated or email</p>#}
+{#    <div class="docs-example docs-example-forms">#}
+{#        <div class="row">#}
+{#            <div class="six columns">#}
+{#                <h3>1-Click-Login</h3>#}
+{#                <ul>#}
+{#                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>#}
+{#                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='twitter') }}"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>#}
+{#                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='google') }}"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+{#            <div class="six columns">#}
+{#                <h3>Email Login</h3>#}
+{#                <form action="{{ url_for('login') }}" id="login-form" method="post" accept-charset="utf-8">#}
+{#                {{ form.csrf_token }}#}
+{#                    <div class="form-group">#}
+{#                        <label for="email">Email</label>#}
+{#                        {{ form.email(class="u-full-width", placeholder="Email") }}#}
+{#                        {% for error in form.email.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_email" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="password">Password</label>#}
+{#                        {{ form.password(class="u-full-width", placeholder="Password") }}#}
+{#                        {% for error in form.password.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_password" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <input class="button-primary" id="login-form-submit" type="submit" value="Login">#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+
+{#<form>#}
+{#    <div class="row">#}
+{#      <div class="six columns">#}
+{#        <label for="exampleEmailInput">Title</label>#}
+{#        <input class="u-full-width" type="email" placeholder="My Latest Photo" id="PhotoTitle">#}
+{#      </div>#}
+{#      <div class="six columns">#}
+{#        <label for="exampleRecipientInput">Type</label>#}
+{#        <select class="u-full-width" id="exampleRecipientInput">#}
+{#          <option value="Option 1">Action</option>#}
+{#          <option value="Option 2">Abstract</option>#}
+{#          <option value="Option 3">Architecture</option>#}
+{#          <option value="Option 4">Astro</option>#}
+{#          <option value="Option 5">Landscape</option>#}
+{#          <option value="Option 6">Portrait</option>#}
+{#          <option value="Option 7">Street</option>#}
+{#          <option value="Option 8">Macro</option>#}
+{#        </select>#}
+{#      </div>#}
+{#    </div>#}
+{#    <label for="exampleMessage">About</label>#}
+{#    <textarea class="u-full-width" placeholder="About &hellip;" id="exampleMessage"></textarea>#}
+{#    <label class="send-notification">#}
+{#      <input type="checkbox">#}
+{#      <span class="label-body">Send notification to followers</span>#}
+{#    </label>#}
+{#    <input class="button-primary" type="submit" value="Submit">#}
+{#</form>#}

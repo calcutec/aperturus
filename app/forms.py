@@ -88,15 +88,3 @@ class PostForm(Form):
 class CommentForm(Form):
     comment = StringField('comment', validators=[DataRequired()])
     submit = SubmitField("Send")
-    
-
-class SearchForm(Form):
-    search = StringField('search', validators=[DataRequired()])
-
-
-class ContactForm(Form):
-    name = StringField("Name")
-    email = StringField("Email")
-    subject = StringField("Subject")
-    message = TextAreaField("Message")
-    submit = SubmitField("Send")

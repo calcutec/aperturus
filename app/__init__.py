@@ -1,15 +1,18 @@
 import os
 from flask import Flask
+from jinja2 import ChoiceLoader, FileSystemLoader
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
 from config import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, \
     MAIL_PASSWORD, SQLALCHEMY_DATABASE_URI
-from .momentjs import momentjs
 from flask.json import JSONEncoder
 from flask_wtf.csrf import CsrfProtect
 
 app = Flask(__name__)
+base_dir = os.path.dirname(os.path.realpath(__file__))
+app.jinja_loader = ChoiceLoader([FileSystemLoader(os.path.join(base_dir, 'templates')),
+                                 FileSystemLoader(os.path.join(base_dir, 'static', 'templates'))]);
 app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 db = SQLAlchemy(app)
@@ -28,7 +31,8 @@ app.config['OAUTH_CREDENTIALS'] = {
     },
     'google': {
         'id': os.environ['GOOGLE_AUTH'],
-        'secret': os.environ['GOOGLE_AUTH_SECRET']
+        'secret': os.environ['GOOGLE_AUTH_SECRET'],
+        'immediate': 'true'
     }
 }
 
@@ -78,7 +82,6 @@ if os.environ.get('HEROKU') is not None:
     app.logger.setLevel(logging.INFO)
     app.logger.info('homeporch startup')
 
-app.jinja_env.globals['momentjs'] = momentjs
 
 app.config["S3_LOCATION"] = 'https://s3.amazonaws.com/netbardus/'
 app.config["S3_UPLOAD_DIRECTORY"] = 'user_imgs'

@@ -3,18 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from app import db
 from app import app
-from config import WHOOSH_ENABLED
 from flask import url_for, render_template, g
 from flask.ext.login import UserMixin
-
-import sys
-if sys.version_info >= (3, 0):
-    enable_search = False
-else:
-    enable_search = WHOOSH_ENABLED
-    if enable_search:
-        import flask.ext.whooshalchemy as whooshalchemy
-
 
 followers = db.Table(
     'followers',
@@ -125,8 +115,8 @@ class User(UserMixin, db.Model):
         return Post.query.order_by(Post.timestamp.desc())
 
     @staticmethod
-    def all_poems():
-        return Post.query.filter(Post.writing_type == 'poem').order_by(Post.timestamp.desc())
+    def all_posts():
+        return Post.query.exclude(Post.writing_type == 'op-ed').order_by(Post.timestamp.desc())
 
     @staticmethod
     def all_op_eds():
@@ -250,6 +240,3 @@ class Comment(db.Model):
 
     def __repr__(self):  # pragma: no cover
         return '<Comment %r>' % self.body
-
-if enable_search:
-    whooshalchemy.whoosh_index(app, Post)

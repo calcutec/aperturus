@@ -15,7 +15,7 @@ from functools import update_wrapper
 
 
 class ViewData(object):
-    def __init__(self, page_mark, slug=None, nickname=None, page=1, form=None, render_form=None,
+    def __init__(self, page_mark='home', slug=None, nickname=None, page=1, form=None, render_form=None,
                  posts_for_page=POSTS_PER_PAGE, editor=None):
         self.posts_for_page = posts_for_page
         self.slug = slug
@@ -25,7 +25,7 @@ class ViewData(object):
         self.template_name = "base_template.html"
         self.title = page_mark.title()
         self.page_logo = "img/icons/" + page_mark + ".svg"
-        self.form = form
+        self.form = None
         self.render_form = render_form
         self.editor = editor
         self.profile_user = None
@@ -48,32 +48,30 @@ class ViewData(object):
         elif self.page_mark == 'home':
             self.posts_for_page = 1
             self.assets['header_text'] = self.page_mark
-            self.posts = Post.query.filter_by(writing_type="op-ed")\
-                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            if self.editor:
-                if not self.form:
-                    self.assets['header_form'] = self.get_form()
+            self.posts = Post.query.filter_by(writing_type="op-ed").order_by(Post.timestamp.desc())
+            # .paginate(self.page, self.posts_for_page, False)
+            self.assets['body_form'] = self.get_form()
 
         elif self.page_mark == 'members':
             self.posts = User.query.all()
             self.assets['header_text'] = self.page_mark
 
         elif self.page_mark == 'poetry':
-            self.posts = Post.query.filter_by(writing_type="featured")\
-                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
+            self.posts = Post.query.filter_by(writing_type="featured").order_by(Post.timestamp.desc())
+            # .paginate(self.page, self.posts_for_page, False)
             self.assets['header_text'] = self.page_mark
 
-        elif self.page_mark == 'workshop':
-            self.posts = Post.query.filter_by(writing_type="poem")\
-                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
+        elif self.page_mark == 'gallery':
+            self.posts = Post.query.filter_by(writing_type="entry").order_by(Post.timestamp.desc())
+            # .paginate(self.page, self.posts_for_page, False)
             self.assets['header_text'] = self.page_mark
+            self.assets['body_form'] = self.get_form()
 
         elif self.page_mark == 'portfolio':
             self.assets['header_text'] = self.page_mark
-            self.posts = g.user.posts.filter_by(writing_type="entry")\
-                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            if not self.form:
-                self.assets['header_form'] = self.get_form()
+            self.posts = g.user.posts.filter(Post.writing_type == "entry").order_by(Post.timestamp.desc())
+            # .paginate(self.page, self.posts_for_page, False)
+            self.assets['body_form'] = self.get_form()
 
         elif self.page_mark == 'detail':
             self.post = Post.query.filter(Post.slug == self.slug).first()
@@ -92,26 +90,24 @@ class ViewData(object):
                 self.assets['body_form'] = self.get_form()
 
     def get_form(self):
-        rendered_form = None
-        if self.page_mark == 'signup':
-            self.form = SignupForm()
-            rendered_form = render_template("assets/forms/signup_form.html", form=self.form)
-        elif self.page_mark == 'login':
-            self.form = LoginForm()
-            rendered_form = render_template("assets/forms/login_form.html", form=self.form)
-        elif self.page_mark == 'profile':
-            self.form = EditForm()
-            self.form.nickname.data = g.user.nickname
-            self.form.about_me.data = g.user.about_me
-            if self.render_form:  # Only render profile form on request, using button to show on noJS profile page
-                rendered_form = render_template("assets/forms/profile_form.html", form=self.form)
-        elif self.page_mark == 'portfolio' or self.page_mark == 'home':
-            self.form = PostForm()
-            if self.render_form:  # Only render post form on request, using button to show on noJS portfolio page
-                rendered_form = render_template("assets/forms/poem_form.html", form=self.form)
-        elif self.page_mark == 'detail':
-            self.form = CommentForm()
-            rendered_form = render_template("assets/forms/comment_form.html", form=self.form, post=self.post)
+        if not g.user.is_authenticated():
+                rendered_form = render_template("assets/forms/login_form.html", loginform=LoginForm(), signupform=SignupForm())
+        else:
+            if self.page_mark == 'home':
+                if g.user.email == 'burton.wj@gmail.com':
+                    form = PostForm()
+                    rendered_form = render_template("assets/forms/photo_form.html", form=form, page_mark=self.page_mark)
+            if self.page_mark == 'portfolio' or self.page_mark == 'gallery':
+                form = PostForm()
+                rendered_form = render_template("assets/forms/photo_form.html", form=form, page_mark=self.page_mark)
+            elif self.page_mark == 'profile':
+                form = EditForm()
+                form.nickname.data = g.user.nickname
+                form.about_me.data = g.user.about_me
+                rendered_form = render_template("assets/forms/profile_form.html", form=form)
+            elif self.page_mark == 'detail':
+                form = CommentForm()
+                rendered_form = render_template("assets/forms/comment_form.html", form=form, post=self.post)
         return rendered_form
 
     def get_context(self):
@@ -205,6 +201,7 @@ def generate_thumbnail(filename, img, box, photo_type, crop, extension):
     image_stream.seek(0)
     thumbnail_file = image_stream
     return thumbnail_name, thumbnail_file, upload_directory
+
 
 class OAuthSignIn(object):
     providers = None

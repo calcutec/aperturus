@@ -5,23 +5,42 @@ window.App = {
   Router: {}
 };
 
+// List of API URLs.
+var URLs = {
+    posts: function(page_mark) {
+        return "/photos/"+ page_mark;
+    },
+    post: function(id) {
+        return "/photos/detail/"+ id ;
+    },
+};
+
+// Helper for accessing the URL list.
+var apiUrl = function(type) {
+    return URLs[type] ?
+        URLs[type].apply(this, [].slice.call(arguments, 1)) :
+        undefined;
+};
+
 // Post model
 App.Models.Post = Backbone.Model.extend({
-  urlRoot: '/photos/portfolio',
-  fileAttribute: 'attachment',
-  defaults: {
-    header: '',
-    body: '',
-    entryPhotoName: ''
-  },
-  validate: function(attrs){
-    if (!attrs.header){
-        alert('Your post must have a header!');
+    url: function() {
+        return apiUrl('post', this.id);
+    },
+    fileAttribute: 'attachment',
+        defaults: {
+        header: '',
+        body: '',
+        entryPhotoName: ''
+    },
+    validate: function(attrs){
+        if (!attrs.header){
+            alert('Your post must have a header!');
+        }
+        if (attrs.body.length < 2){
+            alert('Your post must have more than one letter!');
+        }
     }
-    if (attrs.body.length < 2){
-        alert('Your post must have more than one letter!');
-    }
-  }
 });
 
 //App.Views.Global = Backbone.View.extend({
@@ -138,7 +157,9 @@ App.Views.Post = Backbone.View.extend({
 
 // Post collection
 App.Collections.Post = Backbone.Collection.extend({
-    url: '/photos/portfolio/1',
+    url: function() {
+        return apiUrl('posts', $('html').attr('id'));
+    },
     parse: function(response){return response.myPoems;},
     byAuthor: function (author_id) {
        var filtered = this.filter(function (post) {
@@ -185,7 +206,13 @@ App.Router = Backbone.Router.extend({
         'edit/:id': 'edit' // http://netbard.com/photos/portfolio/#edit/7
     },
     start: function(){
-        console.log('now in view for reading photos');
+        console.log('now in view' + Backbone.history.location.href);
+        var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
+        $("#nav ul li a").each(function(){
+            if($(this).attr("href") == pgurl) {
+                $(this).addClass("active");
+            }
+        })
     },
     edit: function(id){
         console.log('edit route with id: ' + id);
@@ -407,10 +434,6 @@ if ($('#formTemplate').val() !== undefined){
 
 
 $(document).ready(function() {
-    if ($('#formTemplate').val() !== undefined){
-        App.Views.ModalDisplay.modalDisplayView = new App.Views.ModalDisplay();
-        App.Views.ModalDisplay.modalDisplayView.render();
-    }
 
     var csrftoken = $('meta[name=csrf-token]').attr('content');
     $(function(){
@@ -423,16 +446,102 @@ $(document).ready(function() {
         })
     });
 
-    //App.Collections.Post.postCollection = new App.Collections.Post();
-    //App.Collections.Post.postCollection.fetch({
-    //    success: function() {
-    //        App.Views.Posts.poemListView = new App.Views.Posts({collection: App.Collections.Post.postCollection});
-    //        App.Views.Posts.poemListView.attachToView();
-    //    }
-    //});
+      // Variables
+    var $nav = $('.navbar'),
+        $body = $('body'),
+        $navbarlogo = $('#navbar-logo'),
+        $window = $(window),
+        $popoverLink = $('[data-popover]'),
+        navOffsetTop = $nav.offset().top,
+        $document = $(document);
+
+    function init() {
+        $window.on('scroll', onScroll);
+        $window.on('resize', resize);
+        $popoverLink.on('click', openPopover);
+        $document.on('click', closePopover);
+        $('a[href^="#"]').on('click', smoothScroll);
+    }
+
+    function smoothScroll(e) {
+        e.preventDefault();
+        $(document).off("scroll");
+        var target = this.hash;
+        var $target = $(target);
+        $('html, body').stop().animate({
+            'scrollTop': $target.offset().top-40
+        }, 0, 'swing', function () {
+            window.location.hash = target;
+            $(document).on("scroll", onScroll);
+        });
+    }
+
+    function openPopover(e) {
+        e.preventDefault();
+        closePopover();
+        var popover = $($(this).data('popover'));
+        popover.toggleClass('open');
+        e.stopImmediatePropagation();
+    }
+
+    function closePopover(e) {
+        if($('.popover.open').length > 0) {
+          $('.popover').removeClass('open')
+        }
+    }
+
+    $("#button").click(function() {
+        $('html, body').animate({
+            scrollTop: $("#elementtoScrollToID").offset().top
+        }, 2000);
+    });
+
+    function resize() {
+        $body.removeClass('has-docked-nav');
+        navOffsetTop = $nav.offset().top;
+        onScroll()
+    }
+
+    function onScroll() {
+        if(navOffsetTop < $window.scrollTop() && !$body.hasClass('has-docked-nav')) {
+            $body.addClass('has-docked-nav');
+            $navbarlogo.removeClass('hide');
+        }
+        if(navOffsetTop > $window.scrollTop() && $body.hasClass('has-docked-nav')) {
+            $body.removeClass('has-docked-nav');
+            $navbarlogo.addClass('hide');
+        }
+    }
+
+    //Horizontal Tab
+    $('#parentHorizontalTab').easyResponsiveTabs({
+        type: 'default', //Types: default, vertical, accordion
+        width: 'auto', //auto or any width like 600px
+        fit: true, // 100% fit in a container
+        tabidentify: 'hor_1', // The tab groups identifier
+        activate: function(event) { // Callback function if tab is switched
+            var $tab = $(this);
+            var $info = $('#nested-tabInfo');
+            var $name = $('span', $info);
+            $name.text($tab.text());
+            $info.show();
+        }
+    });
+
+    init();
+
+    App.Collections.Post.postCollection = new App.Collections.Post();
+    App.Collections.Post.postCollection.fetch({
+        success: function() {
+            App.Views.Posts.poemListView = new App.Views.Posts({collection: App.Collections.Post.postCollection});
+            App.Views.Posts.poemListView.attachToView();
+        }
+    });
+
+
     //App.Views.Global.globalView = new App.Views.Global({el: '.page'});
-    //new App.Router();
-    //Backbone.history.start(); // start Backbone history
+    new App.Router();
+    Backbone.history.start(); // start Backbone history
 });
 
 
