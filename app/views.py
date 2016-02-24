@@ -6,15 +6,19 @@ from datetime import datetime
 from app import app, db, lm
 from config import DATABASE_QUERY_TIMEOUT
 from slugify import slugify
-from .forms import SignupForm, LoginForm, EditForm, PostForm, CommentForm
-from .models import User, Post, Comment
+from .forms import SignupForm, LoginForm, EditForm, PostForm
+from .models import User, Post
 from .emails import follower_notification
 from .utils import OAuthSignIn, pre_upload, s3_upload, allowed_file, ViewData
 from PIL import Image
-import time, os, json, base64, hmac, urllib
+import time
+import os
+import json
+import base64
+import hmac
+import urllib
 from hashlib import sha1
 from flask.views import MethodView
-import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,9 +27,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 @app.route("/submit_form/", methods=["POST"])
 def submit_form():
     # Collect the data posted from the HTML form in account.html:
-    username = request.form["username"]
-    full_name = request.form["full_name"]
-    avatar_url = request.form["avatar_url"]
+    # username = request.form["username"]
+    # full_name = request.form["full_name"]
+    # avatar_url = request.form["avatar_url"]
 
     # Provide some procedure for storing the new details
     # update_account(username, full_name, avatar_url)
@@ -49,7 +53,8 @@ def sign_s3():
     amz_headers = "x-amz-acl:public-read"
 
     # Generate the StringToSign:
-    string_to_sign = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (mime_type, expires, amz_headers, app.config['S3_BUCKET'], object_name)
+    string_to_sign = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (mime_type, expires, amz_headers, app.config['S3_BUCKET'],
+                                                    object_name)
 
     # Generate the signature with which the StringToSign can be signed:
     signature = base64.encodestring(hmac.new(app.config['AWS_SECRET_ACCESS_KEY'], string_to_sign.encode('utf8'),
@@ -85,6 +90,8 @@ class PostAPI(MethodView):
     def post(self, page_mark=None):
         form = PostForm()
         if form.validate_on_submit():
+            thumbnail_name = None
+            photo_name = None
             slug = slugify(form.header.data)
             entry_photo = request.files['entry_photo']
             extension = entry_photo.mimetype.split('/')[1].upper()
@@ -122,9 +129,9 @@ class PostAPI(MethodView):
             if page_mark in ['home', 'gallery', 'portfolio']:
                 if slug is None and post_id is None:    # Read all posts
                     if request.is_xhr:
-                        posts = Post.query.all()
                         result = {'iserror': False, 'savedsuccess': True}
                         return json.dumps(result)
+                        # posts = Post.query.all()
                         # return jsonify(myPoems=[i.json_view() for i in posts])
                         # formerly rendered client-side; change to return json and render client-side
                     else:
@@ -143,7 +150,7 @@ class PostAPI(MethodView):
 
     # Update Post
     @login_required
-    def put(self, post_id ):
+    def put(self, post_id):
         form = PostForm()
         if form.validate_on_submit():
             update_post = Post.query.get(post_id)
