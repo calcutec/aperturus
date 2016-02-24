@@ -1,34 +1,7 @@
 {% extends "base.html" %}
-
-{#{% block header %}#}
-{#    <h1>{{ assets.header_text }}</h1>#}
-{#    {% if page_mark == "profile" %}#}
-{#        {% if rendered_form %}#}
-{#            <h1>Update your profile below!</h1>#}
-{#        {% else %}#}
-{#            {% include 'assets/profile/profile_header.html' %}#}
-{#        {% endif %}#}
-{#    {% endif %}#}
-{#    {{ assets.header_form|safe if assets.header_form != None }}#}
-{#{% endblock %}#}
-
 {% block content %}
-{#    {% include 'flash.html' %}#}
-{#    {{ assets.body_form|safe if assets.body_form != None }}#}
-{#    {% if page_mark == "members" %}{% include 'members.html' %}{% endif %}#}
-{##}
-{#    {% if page_mark == "profile" or page_mark == "portfolio" or page_mark == "workshop" %}#}
-{#        <div id="poem-list">#}
-{#            {% for post in posts.items %}{% include 'assets/posts/post.html' %}{% endfor %}#}
-{#        </div>#}
-{#        {% include 'assets/posts/postie.html' %}#}
-{#    {% endif %}#}
-
     {% if page_mark == "home" %}
+        {% include 'main_entry.html' %}
         {% include 'entry.html' %}
     {% endif %}
-{##}
-{#    {% if page_mark == "detail" %}#}
-{#        {% include 'assets/posts/post.html' %}#}
-{#    {% endif %}#}
 {% endblock %}

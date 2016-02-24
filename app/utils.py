@@ -22,9 +22,6 @@ class ViewData(object):
         self.nickname = nickname
         self.page = page
         self.page_mark = page_mark
-        self.template_name = "base_template.html"
-        self.title = page_mark.title()
-        self.page_logo = "img/icons/" + page_mark + ".svg"
         self.form = None
         self.render_form = render_form
         self.editor = editor
@@ -38,56 +35,36 @@ class ViewData(object):
         self.get_context()
 
     def get_items(self):
-        if self.page_mark == 'profile':
-            self.profile_user = User.query.filter_by(nickname=self.nickname).first()
-            self.posts = Post.query.filter_by(author=self.profile_user)\
-                .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
-            if not self.form:
-                self.assets['header_form'] = self.get_form()
-
-        elif self.page_mark == 'home':
+        if self.page_mark == 'home':
             self.posts_for_page = 1
-            self.assets['header_text'] = self.page_mark
             self.posts = Post.query.filter_by(writing_type="op-ed").order_by(Post.timestamp.desc())
             # .paginate(self.page, self.posts_for_page, False)
             self.assets['body_form'] = self.get_form()
 
-        elif self.page_mark == 'members':
-            self.posts = User.query.all()
-            self.assets['header_text'] = self.page_mark
-
-        elif self.page_mark == 'poetry':
-            self.posts = Post.query.filter_by(writing_type="featured").order_by(Post.timestamp.desc())
-            # .paginate(self.page, self.posts_for_page, False)
-            self.assets['header_text'] = self.page_mark
-
         elif self.page_mark == 'gallery':
             self.posts = Post.query.filter_by(writing_type="entry").order_by(Post.timestamp.desc())
             # .paginate(self.page, self.posts_for_page, False)
-            self.assets['header_text'] = self.page_mark
             self.assets['body_form'] = self.get_form()
 
         elif self.page_mark == 'portfolio':
-            self.assets['header_text'] = self.page_mark
             self.posts = g.user.posts.filter(Post.writing_type == "entry").order_by(Post.timestamp.desc())
             # .paginate(self.page, self.posts_for_page, False)
             self.assets['body_form'] = self.get_form()
 
+        elif self.page_mark == 'profile':
+            self.profile_user = User.query.filter_by(nickname=self.nickname).first()
+            self.posts = Post.query.filter_by(author=self.profile_user)
+            # .order_by(Post.timestamp.desc()).paginate(self.page, self.posts_for_page, False)
+            if not self.form:
+                self.assets['header_form'] = self.get_form()
+
         elif self.page_mark == 'detail':
             self.post = Post.query.filter(Post.slug == self.slug).first()
-            self.assets['header_text'] = self.page_mark
             if not self.form:
                 self.assets['body_form'] = self.get_form()
 
-        elif self.page_mark == 'signup':
-            self.assets['header_text'] = self.page_mark
-            if not self.form:
-                self.assets['body_form'] = self.get_form()
-
-        elif self.page_mark == 'login':
-            self.assets['header_text'] = self.page_mark
-            if not self.form:
-                self.assets['body_form'] = self.get_form()
+        elif self.page_mark == 'members':
+            self.posts = User.query.all()
 
     def get_form(self):
         if not g.user.is_authenticated():
@@ -111,9 +88,8 @@ class ViewData(object):
         return rendered_form
 
     def get_context(self):
-        self.context = {'post': self.post, 'posts': self.posts, 'title': self.title, 'profile_user': self.profile_user,
-                        'page_logo': self.page_logo, 'page_mark': self.page_mark, 'form': self.form,
-                        'assets': self.assets, 'editor': self.editor}
+        self.context = {'post': self.post, 'posts': self.posts, 'profile_user': self.profile_user,
+                        'page_mark': self.page_mark, 'form': self.form, 'assets': self.assets, 'editor': self.editor}
 
 
 def check_expired(func):

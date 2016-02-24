@@ -159,9 +159,9 @@ class Post(db.Model):
         if self.writing_type is None:
             self.writing_type == "poem"
 
-    def get_post_widget(self):
-        post_widget = render_template('assets/posts/post_content.html', page_mark='portfolio', post=self, g=g)
-        return post_widget
+    # def get_post_widget(self):
+    #     post_widget = render_template('assets/posts/post_content.html', page_mark='portfolio', post=self, g=g)
+    #     return post_widget
 
     def get_voter_ids(self):
         """
@@ -219,9 +219,9 @@ class Post(db.Model):
         db.session.commit()  # for the vote count
         return vote_status
 
-    def json_view(self):
-        return {'id': self.id, 'author': self.user_id, 'header': self.header, 'body': self.body,
-                'post_widget': self.get_post_widget()}
+    # def json_view(self):
+    #     return {'id': self.id, 'author': self.user_id, 'header': self.header, 'body': self.body,
+    #             'post_widget': self.get_post_widget()}
 
     def get_absolute_url(self):
         return url_for('post', kwargs={"slug": self.slug})
