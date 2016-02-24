@@ -52,7 +52,8 @@ def sign_s3():
     string_to_sign = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (mime_type, expires, amz_headers, app.config['S3_BUCKET'], object_name)
 
     # Generate the signature with which the StringToSign can be signed:
-    signature = base64.encodestring(hmac.new(app.config['AWS_SECRET_ACCESS_KEY'], string_to_sign.encode('utf8'), sha1).digest())
+    signature = base64.encodestring(hmac.new(app.config['AWS_SECRET_ACCESS_KEY'], string_to_sign.encode('utf8'),
+                                             sha1).digest())
     # Remove surrounding whitespace and quote special characters:
     signature = urllib.quote_plus(signature.strip())
 
@@ -60,7 +61,8 @@ def sign_s3():
     url = 'https://%s.s3.amazonaws.com/%s' % (app.config['S3_BUCKET'], object_name)
 
     content = json.dumps({
-        'signed_request': '%s?AWSAccessKeyId=%s&Expires=%s&Signature=%s' % (url, app.config['AWS_SECRET_ACCESS_KEY'], expires, signature),
+        'signed_request': '%s?AWSAccessKeyId=%s&Expires=%s&Signature=%s' % (url, app.config['AWS_SECRET_ACCESS_KEY'],
+                                                                            expires, signature),
         'url': url,
     })
 
