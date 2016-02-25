@@ -86,6 +86,7 @@ if os.environ.get('HEROKU') is not None:
 app.config["S3_LOCATION"] = 'https://s3.amazonaws.com/netbardus/'
 app.config["S3_UPLOAD_DIRECTORY"] = 'user_imgs'
 app.config["S3_BUCKET"] = 'netbardus'
+app.config["S3_REGION"] = 'us-east-1'
 app.config["AWS_ACCESS_KEY_ID"] = os.environ['AWS_ACCESS_KEY_ID']
 app.config["AWS_SECRET_ACCESS_KEY"] = os.environ['AWS_SECRET_ACCESS_KEY']
 

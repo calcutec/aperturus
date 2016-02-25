@@ -10,8 +10,12 @@ import cStringIO
 from flask import request, redirect, url_for, render_template, g, flash, current_app, make_response
 from models import User, Post
 from functools import wraps
-from datetime import timedelta
 from functools import update_wrapper
+import hmac
+from uuid import uuid4
+from base64 import b64encode
+import hashlib
+from datetime import datetime, timedelta
 
 
 class ViewData(object):
@@ -22,7 +26,7 @@ class ViewData(object):
         self.nickname = nickname
         self.page = page
         self.page_mark = page_mark
-        self.form = None
+        self.form = form
         self.render_form = render_form
         self.editor = editor
         self.profile_user = None
@@ -40,6 +44,7 @@ class ViewData(object):
             self.posts = Post.query.filter_by(writing_type="op-ed").order_by(Post.timestamp.desc())
             # .paginate(self.page, self.posts_for_page, False)
             self.assets['body_form'] = self.get_form()
+            self.assets['image_form'] = self.create_s3_form()
 
         elif self.page_mark == 'gallery':
             self.posts = Post.query.filter_by(writing_type="entry").order_by(Post.timestamp.desc())
@@ -67,13 +72,16 @@ class ViewData(object):
             self.posts = User.query.all()
 
     def get_form(self):
+        rendered_form = None
         if not g.user.is_authenticated():
-                rendered_form = render_template("assets/forms/login_form.html", loginform=LoginForm(), signupform=SignupForm())
+                rendered_form = render_template("assets/forms/login_form.html", loginform=LoginForm(),
+                                                signupform=SignupForm())
         else:
             if self.page_mark == 'home':
                 if g.user.email == 'burton.wj@gmail.com':
                     form = PostForm()
                     rendered_form = render_template("assets/forms/photo_form.html", form=form, page_mark=self.page_mark)
+
             if self.page_mark == 'portfolio' or self.page_mark == 'gallery':
                 form = PostForm()
                 rendered_form = render_template("assets/forms/photo_form.html", form=form, page_mark=self.page_mark)
@@ -86,6 +94,67 @@ class ViewData(object):
                 form = CommentForm()
                 rendered_form = render_template("assets/forms/comment_form.html", form=form, post=self.post)
         return rendered_form
+
+    def create_s3_form(self):
+        key = str(uuid4())
+        form = self.s3_upload_form(app.config['AWS_ACCESS_KEY_ID'], app.config['AWS_SECRET_ACCESS_KEY'],
+                                   app.config['S3_REGION'], 'aperturus', key=key)
+        ctx = {'region': app.config['S3_REGION'], 'bucket': 'aperturus', 'form': form}
+        return render_template('assets/forms/S3_upload_form.html', **ctx)
+
+    def hmac_sha256(self, key, msg):
+        return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
+
+    def sign(self, key, date, region, service, msg):
+        date = date.strftime('%Y%m%d')
+        hash1 = self.hmac_sha256('AWS4'+key, date)
+        hash2 = self.hmac_sha256(hash1, region)
+        hash3 = self.hmac_sha256(hash2, service)
+        key = self.hmac_sha256(hash3, 'aws4_request')
+        return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    def s3_upload_form(self, access_key, secret_key, region, bucket, key=None, prefix=None):
+        assert (key is not None) or (prefix is not None)
+        if (key is not None) and (prefix is not None):
+            assert key.startswith(prefix)
+        now = datetime.utcnow()
+        form = {
+            'acl': 'private',
+            'success_action_status': '200',
+            'x-amz-algorithm': 'AWS4-HMAC-SHA256',
+            'x-amz-credential': '{}/{}/{}/s3/aws4_request'.format(access_key, now.strftime('%Y%m%d'), region),
+            'x-amz-date': now.strftime('%Y%m%dT000000Z'),
+        }
+        expiration = now + timedelta(minutes=30)
+        policy = {
+          'expiration': expiration.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          'conditions': [
+            {'bucket': bucket},
+            {'acl': 'private'},
+            ['content-length-range', 32, 10485760],
+            {'success_action_status': form['success_action_status']},
+            {'x-amz-algorithm':       form['x-amz-algorithm']},
+            {'x-amz-credential':      form['x-amz-credential']},
+            {'x-amz-date':            form['x-amz-date']},
+          ]
+        }
+        if region == 'us-east-1':
+            form['action'] = 'https://{}.s3.amazonaws.com/'.format(bucket)
+        else:
+            form['action'] = 'https://{}.s3-{}.amazonaws.com/'.format(bucket, region)
+        if key is not None:
+            form['key'] = key
+            policy['conditions'].append(
+              {'key':    key},
+            )
+        if prefix is not None:
+            form['prefix'] = prefix
+            policy['conditions'].append(
+              ["starts-with", "$key", prefix],
+            )
+        form['policy'] = b64encode(json.dumps(policy))
+        form['x-amz-signature'] = self.sign(secret_key, now, region, 's3', form['policy'])
+        return form
 
     def get_context(self):
         self.context = {'post': self.post, 'posts': self.posts, 'profile_user': self.profile_user,
@@ -114,19 +183,19 @@ def pre_upload(img_obj):
 
 
 def s3_upload(filename, source_file, upload_directory, acl='public-read'):
-    """ Uploads WTForm File Object to Amazon S3
-
-        Expects following app.config attributes to be set:
-            S3_KEY              :   S3 API Key
-            S3_SECRET           :   S3 Secret Key
-            S3_BUCKET           :   What bucket to upload to
-            S3_UPLOAD_DIRECTORY :   Which S3 Directory.
-
-        The default sets the access rights on the uploaded file to
-        public-read.  Optionally, can generate a unique filename via
-        the uuid4 function combined with the file extension from
-        the source file(to avoid filename collision for user uploads.
-    """
+    # """ Uploads WTForm File Object to Amazon S3
+    #
+    #     Expects following app.config attributes to be set:
+    #         S3_KEY              :   S3 API Key
+    #         S3_SECRET           :   S3 Secret Key
+    #         S3_BUCKET           :   What bucket to upload to
+    #         S3_UPLOAD_DIRECTORY :   Which S3 Directory.
+    #
+    #     The default sets the access rights on the uploaded file to
+    #     public-read.  Optionally, can generate a unique filename via
+    #     the uuid4 function combined with the file extension from
+    #     the source file(to avoid filename collision for user uploads.
+    # """
 
     # Connect to S3 and upload file.
     conn = boto.connect_s3(app.config["AWS_ACCESS_KEY_ID"], app.config["AWS_SECRET_ACCESS_KEY"])

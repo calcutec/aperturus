@@ -12,7 +12,7 @@ var URLs = {
     },
     post: function(id) {
         return "/photos/detail/"+ id ;
-    },
+    }
 };
 
 // Helper for accessing the URL list.
@@ -197,7 +197,6 @@ App.Views.Posts = Backbone.View.extend({ // plural to distinguish as the view fo
     }
 });
 
-
 // Backbone router
 App.Router = Backbone.Router.extend({
     routes: { // sets the routes
@@ -239,198 +238,193 @@ $.fn.serializeObject = function()
     return o;
 };
 
+//App.Views.ModalDisplay = Backbone.View.extend({
+//    el: '#myPortfolio',
+//    events: {
+//        'click #open': 'openModal'
+//    },
+//    template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Poem</button></h1>',
+//    openModal: function() {
+//        var view = new App.Views.ModalView();
+//        new Backbone.BootstrapModal({
+//            content: view,
+//            title: 'Create a poem',
+//            animate: true,
+//            okText: 'Submit New Post',
+//            okCloses: true,
+//            enterTriggersOk: false
+//        }).open(function(){
+//            var $form = $('#poem-form');
+//            $form.find('#body-text').html($form.find('#editable').html());
+//            var newPostModel = new App.Models.Post($form.serializeObject());
+//            if (currentFile === null){
+//                alert("file upload has failed")
+//            } else {
+//                var entryPhotoName = currentFile.name.split(".")[0]+"-"+$form.find('#csrf_token').val()+"."+currentFile.type.split("/")[1];
+//                newPostModel.set({'entryPhotoName': entryPhotoName});
+//                if (serverBlob === null) {
+//                    newPostModel.set('attachment', currentFile);
+//                } else {
+//                    newPostModel.set('attachment', serverBlob);
+//                }
+//            }
+//            newPostModel.save(null, {
+//                success: function (model, response) {
+//                    alert('saved');
+//                    new App.Views.Post({model:model}).render();
+//                    serverBlob = null;
+//                    currentFile = null;
+//                    return response;
+//                },
+//                error: function () {
+//                    alert('your poem did not save properly..')
+//                },
+//                wait: true
+//            });
+//        });
+//    },
+//
+//    render: function() {
+//        this.$el.html(this.template);
+//        console.log('main rendered');
+//        return this;
+//    }
+//});
 
+App.Views.PhotoFormView = Backbone.View.extend({
+    template: _.template($('#photo-form').html()),
+       events: {
+        'change #file-input': 'validateAndUpload'
+    },
 
-if ($('#formTemplate').val() !== undefined){
-    App.Views.ModalDisplay = Backbone.View.extend({
-        el: '#myPortfolio',
-        events: {
-            'click #open': 'openModal'
-        },
-        template: '<h1><button type="button" id="open" class="btn btn-info btn-lg">Create Poem</button></h1>',
-        openModal: function() {
-            var view = new App.Views.ModalView();
-            new Backbone.BootstrapModal({
-                content: view,
-                title: 'Create a poem',
-                animate: true,
-                okText: 'Submit New Post',
-                okCloses: true,
-                enterTriggersOk: false
-            }).open(function(){
-                var $form = $('#poem-form');
-                $form.find('#body-text').html($form.find('#editable').html());
-                var newPostModel = new App.Models.Post($form.serializeObject());
-                if (currentFile === null){
-                    alert("file upload has failed")
-                } else {
-                    var entryPhotoName = currentFile.name.split(".")[0]+"-"+$form.find('#csrf_token').val()+"."+currentFile.type.split("/")[1];
-                    newPostModel.set({'entryPhotoName': entryPhotoName});
-                    if (serverBlob === null) {
-                        newPostModel.set('attachment', currentFile);
-                    } else {
-                        newPostModel.set('attachment', serverBlob);
-                    }
-                }
-                newPostModel.save(null, {
-                    success: function (model, response) {
-                        alert('saved');
-                        new App.Views.Post({model:model}).render();
-                        serverBlob = null;
-                        currentFile = null;
-                        return response;
-                    },
-                    error: function () {
-                        alert('your poem did not save properly..')
-                    },
-                    wait: true
-                });
-            });
-        },
-
-        render: function() {
-            this.$el.html(this.template);
-            console.log('main rendered');
-            return this;
-        }
-
-    });
-
-    App.Views.ModalView = Backbone.View.extend({
-        template: _.template($('#formTemplate').html()),
-           events: {
-            'change #file-input': 'validateAndUpload'
-        },
-
-        validateAndUpload: function(e) {
-            e.preventDefault();
-            //Get reference of FileUpload.
-            var fileUpload = document.getElementById("file-input");
-            //Check whether the file is valid Image.
-            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.jpeg)$");
-            if (regex.test(fileUpload.value.toLowerCase())) {
-                //Check whether HTML5 is supported.
-                if (typeof (fileUpload.files) != "undefined") {
-                    currentFile = e.target.files[0]
-                    //Initiate the FileReader object.
-                    var reader = new FileReader();
-                    //Read the contents of Image File.
-                    reader.readAsDataURL(fileUpload.files[0]);
-                    var self = this;
-                    reader.onload = function (e) {
-                        //Initiate the JavaScript Image object.
-                        var image = new Image();
-                        //Set the Base64 string return from FileReader as source.
-                        image.src = e.target.result;
-                        //Validate the File Height and Width.
-                        image.onload = function () {
-                            var height = this.height;
-                            var width = this.width;
-                            var size = currentFile.size;
-                            if (width < 648 || height < 432) {
-                                alert("Images must be at least 648px in width and 432px in height");
-                                return false;
-                            } else if (height > 1296 || width > 1296 || size > 1000000) {
-                                self.generateUploadFormThumb(self, currentFile);
-                                self.generateServerFile(currentFile);
-                                return true;
-                            } else {
-                                self.generateUploadFormThumb(self, currentFile);
-                                serverBlob = null;
-                                return true;
-                            }
-                        };
-                    }
-                } else {
-                    alert("This browser does not support HTML5.");
-                    return false;
+    validateAndUpload: function(e) {
+        e.preventDefault();
+        //Get reference of FileUpload.
+        var fileUpload = document.getElementById("file-input");
+        //Check whether the file is valid Image.
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.jpeg)$");
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            //Check whether HTML5 is supported.
+            if (typeof (fileUpload.files) != "undefined") {
+                currentFile = e.target.files[0]
+                //Initiate the FileReader object.
+                var reader = new FileReader();
+                //Read the contents of Image File.
+                reader.readAsDataURL(fileUpload.files[0]);
+                var self = this;
+                reader.onload = function (e) {
+                    //Initiate the JavaScript Image object.
+                    var image = new Image();
+                    //Set the Base64 string return from FileReader as source.
+                    image.src = e.target.result;
+                    //Validate the File Height and Width.
+                    image.onload = function () {
+                        var height = this.height;
+                        var width = this.width;
+                        var size = currentFile.size;
+                        if (width < 648 || height < 432) {
+                            alert("Images must be at least 648px in width and 432px in height");
+                            return false;
+                        } else if (height > 1296 || width > 1296 || size > 1000000) {
+                            self.generateUploadFormThumb(self, currentFile);
+                            self.generateServerFile(currentFile);
+                            return true;
+                        } else {
+                            self.generateUploadFormThumb(self, currentFile);
+                            serverBlob = null;
+                            return true;
+                        }
+                    };
                 }
             } else {
-                alert("Please select a jpeg or png image file.");
+                alert("This browser does not support HTML5.");
                 return false;
             }
-        },
+        } else {
+            alert("Please select a jpeg or png image file.");
+            return false;
+        }
+    },
 
-        generateUploadFormThumb: function(self, currentFile){
-            loadImage(
-               currentFile,
-               function (img) {
-                   if(img.type === "error") {
-                       alert("Error loading image " + currentFile);
-                       return false;
-                   } else {
-                       self.replaceResults(img, currentFile);
-                       loadImage.parseMetaData(currentFile, function (data) {
-                           if (data.exif) {
-                               self.displayExifData(data.exif);
-                           }
-                       });
-                   }
-               },
-               {maxWidth: 432}
-            );
-        },
+    generateUploadFormThumb: function(self, currentFile){
+        loadImage(
+           currentFile,
+           function (img) {
+               if(img.type === "error") {
+                   alert("Error loading image " + currentFile);
+                   return false;
+               } else {
+                   self.replaceResults(img, currentFile);
+                   loadImage.parseMetaData(currentFile, function (data) {
+                       if (data.exif) {
+                           self.displayExifData(data.exif);
+                       }
+                   });
+               }
+           },
+           {maxWidth: 432}
+        );
+    },
 
-        generateServerFile: function(currentFile){
-            loadImage(
-                currentFile,
-                function (img) {
-                    if(img.type === "error") {
-                        console.log("Error loading image " + currentFile);
-                    } else {
-                        if (img.toBlob) {
-                            img.toBlob(
-                                function (blob) {
-                                    serverBlob = blob
-                                },
-                                'image/jpeg'
-                            );
-                        }
-                    }
-                },
-                {maxWidth: 1296, canvas:true}
-            );
-        },
-
-        replaceResults: function (img, currentFile) {
-            var content;
-            if (!(img.src)) {
-                content = $('<span>Loading image file failed</span>');
-            } else {
-                content = $('<a target="_blank">').append(img).attr('src', img.src);
-            }
-            $('#result').children().replaceWith(content);
-        },
-
-        displayExifData: function (exif) {
-            var tags = exif.getAll(),
-                table = $('#exif').find('table').empty(),
-                row = $('<tr></tr>'),
-                cell = $('<td></td>'),
-                prop;
-            for (prop in tags) {
-                if (tags.hasOwnProperty(prop)) {
-                    if(prop in {'Make':'', 'Model':'', 'DateTime':'', 'ExposureTime':'', 'ShutterSpeedValue':'',
-                        'FNumber':'', 'ExposureProgram':'', 'MeteringMode':'', 'ExposureMode':'', 'WhiteBalance':'',
-                        'PhotographicSensitivity':'', 'FocalLength':'', 'FocalLengthIn35mmFilm':'', 'LensModel':'',
-                        'Sharpness':'', 'PixelXDimension':'', 'PixelYDimension':''}) {
-                            table.append(
-                                row.clone()
-                                    .append(cell.clone().text(prop))
-                                    .append(cell.clone().text(tags[prop]))
-                            );
+    generateServerFile: function(currentFile){
+        loadImage(
+            currentFile,
+            function (img) {
+                if(img.type === "error") {
+                    console.log("Error loading image " + currentFile);
+                } else {
+                    if (img.toBlob) {
+                        img.toBlob(
+                            function (blob) {
+                                serverBlob = blob
+                            },
+                            'image/jpeg'
+                        );
                     }
                 }
-            }
-        },
+            },
+            {maxWidth: 1296, canvas:true}
+        );
+    },
 
-        render: function() {
-            this.$el.html(this.template);
-            console.log('modal rendered');
-            return this;
+    replaceResults: function (img, currentFile) {
+        var content
+        if (!(img.src || img instanceof HTMLCanvasElement)) {
+          content = $('<span>Loading image file failed</span>')
+        } else {
+          content = $(img);
         }
-    });
-}
+        $('#result').children().replaceWith(content.addClass('u-full-width').removeAttr('width').removeAttr('height'))
+    },
+
+    displayExifData: function (exif) {
+        var tags = exif.getAll(),
+            table = $('#exif').find('table').empty(),
+            row = $('<tr></tr>'),
+            cell = $('<td></td>'),
+            prop;
+        for (prop in tags) {
+            if (tags.hasOwnProperty(prop)) {
+                if(prop in {'Make':'', 'Model':'', 'DateTime':'', 'ExposureTime':'', 'ShutterSpeedValue':'',
+                    'FNumber':'', 'ExposureProgram':'', 'MeteringMode':'', 'ExposureMode':'', 'WhiteBalance':'',
+                    'PhotographicSensitivity':'', 'FocalLength':'', 'FocalLengthIn35mmFilm':'', 'LensModel':'',
+                    'Sharpness':'', 'PixelXDimension':'', 'PixelYDimension':''}) {
+                        table.append(
+                            row.clone()
+                                .append(cell.clone().text(prop))
+                                .append(cell.clone().text(tags[prop]))
+                        );
+                }
+            }
+        }
+    },
+
+    render: function() {
+        this.$el.html(this.template);
+        console.log('modal rendered');
+        return this;
+    }
+});
 
 
 $(document).ready(function() {
@@ -530,65 +524,7 @@ $(document).ready(function() {
 
     init();
 
-
-    /*
-        Function to carry out the actual PUT request to S3 using the signed request from the Python app.
-    */
-    function upload_file(file, signed_request, url){
-        var xhr = new XMLHttpRequest();
-        xhr.open("PUT", signed_request);
-        xhr.setRequestHeader('x-amz-acl', 'public-read');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                document.getElementById("preview").src = url;
-                document.getElementById("avatar_url").value = url;
-            }
-        };
-        xhr.onerror = function() {
-            alert("Could not upload file.");
-        };
-        xhr.send(file);
-    }
-    /*
-        Function to get the temporary signed request from the Python app.
-        If request successful, continue to upload the file using this signed
-        request.
-    */
-    function get_signed_request(file){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/sign_s3?file_name="+file.name+"&file_type="+file.type);
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState === 4){
-                if(xhr.status === 200){
-                    var response = JSON.parse(xhr.responseText);
-                    upload_file(file, response.signed_request, response.url);
-                }
-                else{
-                    alert("Could not get signed URL.");
-                }
-            }
-        };
-        xhr.send();
-    }
-    /*
-       Function called when file input updated. If there is a file selected, then
-       start upload procedure by asking for a signed request from the app.
-    */
-    function init_upload(){
-        var files = document.getElementById("file_input").files;
-        var file = files[0];
-        if(file == null){
-            alert("No file selected.");
-            return;
-        }
-        get_signed_request(file);
-    }
-    /*
-       Bind listeners when the page loads.
-    */
-    (function() {
-        document.getElementById("file_input").onchange = init_upload;
-    })();
+    formview = new App.Views.PhotoFormView({el: '#photoform'});
 
     //App.Collections.Post.postCollection = new App.Collections.Post();
     //App.Collections.Post.postCollection.fetch({

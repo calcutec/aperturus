@@ -11,67 +11,12 @@ from .models import User, Post
 from .emails import follower_notification
 from .utils import OAuthSignIn, pre_upload, s3_upload, allowed_file, ViewData
 from PIL import Image
-import time
 import os
 import json
-import base64
-import hmac
-import urllib
-from hashlib import sha1
+
 from flask.views import MethodView
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-
-# Listen for POST requests to yourdomain.com/submit_form/
-@app.route("/submit_form/", methods=["POST"])
-def submit_form():
-    # Collect the data posted from the HTML form in account.html:
-    # username = request.form["username"]
-    # full_name = request.form["full_name"]
-    # avatar_url = request.form["avatar_url"]
-
-    # Provide some procedure for storing the new details
-    # update_account(username, full_name, avatar_url)
-
-    # Redirect to the user's profile page, if appropriate
-    return redirect(url_for('posts', page_mark='home'))
-
-
-# Listen for GET requests to yourdomain.com/sign_s3/
-#
-# Please see https://gist.github.com/RyanBalfanz/f07d827a4818fda0db81 for an example using
-# Python 3 for this view.
-@app.route('/sign_s3/')
-def sign_s3():
-    # Collect information on the file from the GET parameters of the request:
-    object_name = urllib.quote_plus(request.args.get('file_name'))
-    mime_type = request.args.get('file_type')
-
-    # Set the expiry time of the signature (in seconds) and declare the permissions of the file to be uploaded
-    expires = int(time.time()+60*60*24)
-    amz_headers = "x-amz-acl:public-read"
-
-    # Generate the StringToSign:
-    string_to_sign = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (mime_type, expires, amz_headers, app.config['S3_BUCKET'],
-                                                    object_name)
-
-    # Generate the signature with which the StringToSign can be signed:
-    signature = base64.encodestring(hmac.new(app.config['AWS_SECRET_ACCESS_KEY'], string_to_sign.encode('utf8'),
-                                             sha1).digest())
-    # Remove surrounding whitespace and quote special characters:
-    signature = urllib.quote_plus(signature.strip())
-
-    # Build the URL of the file in anticipation of its imminent upload:
-    url = 'https://%s.s3.amazonaws.com/%s' % (app.config['S3_BUCKET'], object_name)
-
-    content = json.dumps({
-        'signed_request': '%s?AWSAccessKeyId=%s&Expires=%s&Signature=%s' % (url, app.config['AWS_SECRET_ACCESS_KEY'],
-                                                                            expires, signature),
-        'url': url,
-    })
-
-    return content
 
 
 @app.route('/', methods=['GET'])
@@ -114,7 +59,7 @@ class PostAPI(MethodView):
                 response['savedsuccess'] = True
                 return json.dumps(response)
             else:
-                return redirect("/photos/"+page_mark+"/1")
+                return redirect("/photos/"+page_mark)
         else:
             if request.is_xhr:
                 form.errors['iserror'] = True
@@ -307,7 +252,7 @@ app.add_url_rule('/callback/<provider>', view_func=login_api_view, methods=["GET
 
 
 class MembersAPI(MethodView):
-    def post(self, nickname=None):
+    def post(self):
         form = EditForm()  # Update Member Data
         response = self.update_user(form)
         return response
@@ -471,7 +416,7 @@ app.add_url_rule('/members/<action>/<nickname>', view_func=member_api_view, meth
 
 
 class ActionsAPI(MethodView):
-        def post(self, page_mark=None, action=None, post_id=None):
+        def post(self, action=None, post_id=None):
             if action == 'vote':   # Vote on post
                 post_id = post_id
                 user_id = g.user.id
@@ -481,7 +426,7 @@ class ActionsAPI(MethodView):
                 vote_status = post.vote(user_id=user_id)
                 return jsonify(new_votes=post.votes, vote_status=vote_status)
 
-        def get(self, page_mark=None, action=None, post_id=None):
+        def get(self, action=None, post_id=None):
             if action == 'vote':   # Vote on post
                 post_id = post_id
                 user_id = g.user.id

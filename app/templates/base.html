@@ -55,6 +55,7 @@
             <footer>
                 {% if assets %}
                     {{ assets.body_form|safe if assets.body_form != None }}
+                    {{ assets.image_form|safe if assets.image_form != None }}
                 {% endif %}
             </footer>
             {% block scripts %}
