@@ -1,3 +1,4 @@
+
 .hide {
   display: none;
 }
@@ -21,7 +22,10 @@ footer {
     letter-spacing: -3.5px;
     position: relative
 }
-
+table {
+  table-layout: fixed;
+  width: 100%
+}
 #title section::first-letter {
     text-transform: uppercase
 }
@@ -230,6 +234,10 @@ ul#auto-login li a.button.button-primary {
   .navbar-link { margin-right: 24px;  }
   ul#auto-login li a.button.button-primary {
     width: 50%}
+}
+
+@media (max-width: 400px) {
+    table td {width:50%; word-wrap:break-word;}
 }
 
 
