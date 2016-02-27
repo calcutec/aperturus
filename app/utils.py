@@ -11,11 +11,12 @@ from flask import request, redirect, url_for, render_template, g, flash, current
 from models import User, Post
 from functools import wraps
 from functools import update_wrapper
+from datetime import timedelta
+from datetime import datetime
 import hmac
 from uuid import uuid4
 from base64 import b64encode
 import hashlib
-from datetime import datetime, timedelta
 
 
 class ViewData(object):
@@ -121,6 +122,7 @@ class ViewData(object):
         form = {
             'acl': 'private',
             'success_action_status': '200',
+            # 'success_action_status_redirect': "http://localhost:8000/photos/home",
             'x-amz-algorithm': 'AWS4-HMAC-SHA256',
             'x-amz-credential': '{}/{}/{}/s3/aws4_request'.format(access_key, now.strftime('%Y%m%d'), region),
             'x-amz-date': now.strftime('%Y%m%dT000000Z'),
@@ -133,6 +135,7 @@ class ViewData(object):
             {'acl': 'private'},
             ['content-length-range', 32, 10485760],
             {'success_action_status': form['success_action_status']},
+            # {'success_action_status_redirect': form['success_action_status_redirect']},
             {'x-amz-algorithm':       form['x-amz-algorithm']},
             {'x-amz-credential':      form['x-amz-credential']},
             {'x-amz-date':            form['x-amz-date']},
@@ -196,7 +199,6 @@ def s3_upload(filename, source_file, upload_directory, acl='public-read'):
     #     the uuid4 function combined with the file extension from
     #     the source file(to avoid filename collision for user uploads.
     # """
-
     # Connect to S3 and upload file.
     conn = boto.connect_s3(app.config["AWS_ACCESS_KEY_ID"], app.config["AWS_SECRET_ACCESS_KEY"])
     b = conn.get_bucket(app.config["S3_BUCKET"])

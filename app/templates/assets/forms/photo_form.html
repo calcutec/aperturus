@@ -1,9 +1,9 @@
 <!-- Photo Form -->
-<div class="well" id="photoform">
+<div class="well hide" id="entry-form">
     <h6 class="docs-header">Post Photo</h6>
     <p>Post your latest photo entry using the form below. You can later attach more images or a gallery of photos this entry</p>
     <div class="docs-example docs-example-forms">
-        <form id="photo-form" action="/photos/" method="post" enctype="multipart/form-data" name="post">
+        <form id="photo-form" action="/photos/home" method="post" enctype="multipart/form-data" name="post">
             {{ form.csrf_token }}
             <div class="row">
             <div class="form-group">
@@ -14,20 +14,20 @@
                 {% endfor %}
                 <span id="error_header" class="help-inline" style="color:red"></span>
             </div>
-            <div class="form-group">
-                <label for="entry_photo">Photo</label>
-                    <div id="result" class="result">
-                        <p>This upload works only in modern browsers</p>
-                    </div>
-                <div id="exif" class="exif">
-                    <table></table>
-                </div>
-                {{ form.entry_photo(class="u-full-width", placeholder="Photo", id="file-input") }}
-                {% for error in form.entry_photo.errors %}
-                    <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                {% endfor %}
-                <span id="error_header" class="help-inline" style="color:red"></span>
-            </div>
+{#            <div class="form-group">#}
+{#                <label for="entry_photo">Photo</label>#}
+{#                    <div id="result" class="result">#}
+{#                        <p>This upload works only in modern browsers</p>#}
+{#                    </div>#}
+{#                <div id="exif" class="exif">#}
+{#                    <table></table>#}
+{#                </div>#}
+{#                {{ form.entry_photo(class="u-full-width", placeholder="Photo", id="file-input") }}#}
+{#                {% for error in form.entry_photo.errors %}#}
+{#                    <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                {% endfor %}#}
+{#                <span id="error_header" class="help-inline" style="color:red"></span>#}
+{#            </div>#}
             <div class="form-group">
                 <label for="body">Body</label>
                 {{ form.body(class="u-full-width", placeholder="Body", id="body-text") }}
@@ -47,7 +47,7 @@
                     <span id="error_writing_type" class="help-inline" style="color:red"></span>
                 </div>
             {% endif %}
-            <input class="button-primary" type="submit" value="Post Photo">
+            <input class="button-primary" id="photo-submit" type="submit" value="Post Photo">
             </div>
         </form>
     </div>

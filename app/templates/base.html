@@ -53,10 +53,12 @@
             </main>
 
             <footer>
+            <div id="entry-forms">
                 {% if assets %}
-                    {{ assets.body_form|safe if assets.body_form != None }}
+{#                    {{ assets.body_form|safe if assets.body_form != None }}#}
                     {{ assets.image_form|safe if assets.image_form != None }}
                 {% endif %}
+            </div>
             </footer>
             {% block scripts %}
                 <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>

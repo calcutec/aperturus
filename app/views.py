@@ -13,10 +13,29 @@ from .utils import OAuthSignIn, pre_upload, s3_upload, allowed_file, ViewData
 from PIL import Image
 import os
 import json
+import cStringIO
+import tinify
+tinify.key = "OEhg0piEcaEcTKjXVzzS1vLIlefPCXcd"
+
 
 from flask.views import MethodView
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+def handle_tinyjpg_errors(method):
+    try:  # Use the Tinify API client.
+        method
+    except tinify.AccountError, e:  # Verify your API key and account limit.
+        print "The error message is: %s" % e.message
+    except tinify.ClientError, e:  # Check your source image and request options.
+        pass
+    except tinify.ServerError, e:  # Temporary issue with the Tinify API.
+        pass
+    except tinify.ConnectionError, e:  # A network connection error occurred.
+        pass
+    except Exception, e:  # Something else went wrong, unrelated to the Tinify API.
+        pass
 
 
 @app.route('/', methods=['GET'])
@@ -41,13 +60,32 @@ class PostAPI(MethodView):
             entry_photo = request.files['entry_photo']
             extension = entry_photo.mimetype.split('/')[1].upper()
             if entry_photo and allowed_file(extension):
-                filename = secure_filename(form.entryPhotoName.data)
+                source = tinify.from_file(entry_photo.stream)
+                resized = source.resize(
+                    method="scale",
+                    width=150
+                )
+                source.store(
+                    service="s3",
+                    aws_access_key_id=app.config["AWS_ACCESS_KEY_ID"],
+                    aws_secret_access_key=app.config["AWS_SECRET_ACCESS_KEY"],
+                    region=app.config["S3_REGION"],
+                    path="aperturus/user-images/optimized.jpg"
+                )
+                resized.store(
+                    service="s3",
+                    aws_access_key_id=app.config["AWS_ACCESS_KEY_ID"],
+                    aws_secret_access_key=app.config["AWS_SECRET_ACCESS_KEY"],
+                    region=app.config["S3_REGION"],
+                    path="aperturus/user-images/resized.jpg"
+                )
 
-                thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(648, 432),
-                                     photo_type="thumbnail", crop=False, extension=extension)
-                thumbnail_name = pre_upload(thumbnail_obj)
-
-                photo_name = s3_upload(filename, entry_photo, "user_imgs")
+                #
+                # thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(648, 432),
+                #                      photo_type="thumbnail", crop=False, extension=extension)
+                # thumbnail_name = pre_upload(thumbnail_obj)
+                #
+                # photo_name = s3_upload(filename, entry_photo, "user_imgs")
 
             post = Post(body=form.body.data, timestamp=datetime.utcnow(),
                         author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
@@ -120,10 +158,8 @@ class PostAPI(MethodView):
 
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
-# Create a single post
-app.add_url_rule('/photos/', view_func=post_api_view, methods=["POST"])
-# Read all posts for a given page
-app.add_url_rule('/photos/<page_mark>/', view_func=post_api_view, methods=["GET"])
+# Read all posts for a given page, Create a new post
+app.add_url_rule('/photos/<page_mark>', view_func=post_api_view, methods=["GET", "POST"])
 # Update or Delete a single post
 app.add_url_rule('/photos/detail/<int:post_id>', view_func=post_api_view, methods=["PUT", "DELETE"])
 # Read a single post (Non Restful)
