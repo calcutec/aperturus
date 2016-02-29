@@ -9,33 +9,11 @@ from slugify import slugify
 from .forms import SignupForm, LoginForm, EditForm, PostForm
 from .models import User, Post
 from .emails import follower_notification
-from .utils import OAuthSignIn, pre_upload, s3_upload, allowed_file, ViewData
-from PIL import Image
+from .utils import OAuthSignIn, allowed_file, BasePage as ViewData
 import os
 import json
-import cStringIO
-import tinify
-tinify.key = "OEhg0piEcaEcTKjXVzzS1vLIlefPCXcd"
-
-
 from flask.views import MethodView
-
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-
-def handle_tinyjpg_errors(method):
-    try:  # Use the Tinify API client.
-        method
-    except tinify.AccountError, e:  # Verify your API key and account limit.
-        print "The error message is: %s" % e.message
-    except tinify.ClientError, e:  # Check your source image and request options.
-        pass
-    except tinify.ServerError, e:  # Temporary issue with the Tinify API.
-        pass
-    except tinify.ConnectionError, e:  # A network connection error occurred.
-        pass
-    except Exception, e:  # Something else went wrong, unrelated to the Tinify API.
-        pass
 
 
 @app.route('/', methods=['GET'])
@@ -43,7 +21,7 @@ def index():
     return redirect(url_for('posts', page_mark='home'))
 
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout/', methods=['GET'])
 def logout():
         logout_user()
         return redirect(url_for('posts', page_mark='home'))
@@ -60,38 +38,11 @@ class PostAPI(MethodView):
             entry_photo = request.files['entry_photo']
             extension = entry_photo.mimetype.split('/')[1].upper()
             if entry_photo and allowed_file(extension):
-                source = tinify.from_file(entry_photo.stream)
-                resized = source.resize(
-                    method="scale",
-                    width=150
-                )
-                source.store(
-                    service="s3",
-                    aws_access_key_id=app.config["AWS_ACCESS_KEY_ID"],
-                    aws_secret_access_key=app.config["AWS_SECRET_ACCESS_KEY"],
-                    region=app.config["S3_REGION"],
-                    path="aperturus/user-images/optimized.jpg"
-                )
-                resized.store(
-                    service="s3",
-                    aws_access_key_id=app.config["AWS_ACCESS_KEY_ID"],
-                    aws_secret_access_key=app.config["AWS_SECRET_ACCESS_KEY"],
-                    region=app.config["S3_REGION"],
-                    path="aperturus/user-images/resized.jpg"
-                )
-
-                #
-                # thumbnail_obj = dict(filename=filename, img=Image.open(entry_photo.stream), box=(648, 432),
-                #                      photo_type="thumbnail", crop=False, extension=extension)
-                # thumbnail_name = pre_upload(thumbnail_obj)
-                #
-                # photo_name = s3_upload(filename, entry_photo, "user_imgs")
-
-            post = Post(body=form.body.data, timestamp=datetime.utcnow(),
-                        author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
-                        writing_type=form.writing_type.data, slug=slug)
-            db.session.add(post)
-            db.session.commit()
+                post = Post(body=form.body.data, timestamp=datetime.utcnow(),
+                            author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
+                            writing_type=form.writing_type.data, slug=slug)
+                db.session.add(post)
+                db.session.commit()
             if request.is_xhr:
                 response = post.json_view()
                 response['savedsuccess'] = True
@@ -103,13 +54,11 @@ class PostAPI(MethodView):
                 form.errors['iserror'] = True
                 return json.dumps(form.errors)
             else:
-                detail_data = ViewData(page_mark=page_mark, form=form)
-                return render_template("base_template.html", **detail_data.context)
+                context = {'assets': ViewData(page_mark=page_mark).assets}
+                return render_template("base.html", **context)
 
     def get(self, page_mark=None, slug=None, post_id=None, page=None):
-
         if page_mark == "home" or current_user.is_authenticated():
-            if page_mark in ['home', 'gallery', 'portfolio']:
                 if slug is None and post_id is None:    # Read all posts
                     if request.is_xhr:
                         result = {'iserror': False, 'savedsuccess': True}
@@ -118,16 +67,13 @@ class PostAPI(MethodView):
                         # return jsonify(myPoems=[i.json_view() for i in posts])
                         # formerly rendered client-side; change to return json and render client-side
                     else:
-                        view_data = ViewData(page_mark=page_mark, page=page)
-
-                        return render_template("base_template.html", **view_data.context)
+                        context = {'assets': ViewData(page_mark=page_mark).assets}
+                        return render_template("base.html", **context)
                 elif slug is not None:       # Read a single post
-                    detail_data = ViewData(page_mark="detail", slug=slug)
-                    return render_template("base_template.html", **detail_data.context)
+                        context = {'assets': ViewData(page_mark=page_mark).assets}
+                        return render_template("base.html", **context)
                 elif post_id is not None:
                     pass  # Todo create logic for xhr request for a single poem
-            else:
-                return not_found_error("404")
         else:
             return current_app.login_manager.unauthorized()
 
@@ -159,11 +105,12 @@ class PostAPI(MethodView):
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
 # Read all posts for a given page, Create a new post
-app.add_url_rule('/photos/<page_mark>', view_func=post_api_view, methods=["GET", "POST"])
+app.add_url_rule('/photos/<any("home", "gallery", "profile", "login"):page_mark>/',
+                 view_func=post_api_view, methods=["GET", "POST"])
 # Update or Delete a single post
-app.add_url_rule('/photos/detail/<int:post_id>', view_func=post_api_view, methods=["PUT", "DELETE"])
+app.add_url_rule('/photos/detail/<int:post_id>/', view_func=post_api_view, methods=["PUT", "DELETE"])
 # Read a single post (Non Restful)
-app.add_url_rule('/photos/detail/<slug>', view_func=post_api_view, methods=["GET"])
+app.add_url_rule('/photos/detail/<slug>/', view_func=post_api_view, methods=["GET"])
 
 
 class SignupAPI(MethodView):
@@ -171,7 +118,7 @@ class SignupAPI(MethodView):
         if g.user is not None and g.user.is_authenticated():
             return redirect(url_for('members'))
         signup_data = ViewData("signup", form=form)
-        return render_template("base_template.html", **signup_data.context)
+        return render_template("base.html", **signup_data.context)
 
     def post(self):
         form = SignupForm()
@@ -194,8 +141,8 @@ class SignupAPI(MethodView):
                 newuser = self.save_user(form)
                 return redirect(url_for("members", nickname=newuser.nickname))
             else:
-                signup_data = ViewData("signup", form=form)
-                return render_template("base_template.html", **signup_data.context)
+                context = {'assets': ViewData(page_mark="signup").assets}
+                return render_template("base.html", **context)
 
     def save_user(self, form):
         newuser = User(form.firstname.data, form.email.data, firstname=form.firstname.data,
@@ -233,8 +180,8 @@ class LoginAPI(MethodView):
                 returninguser = self.login_returning_user(form)
                 return redirect(url_for('members', nickname=returninguser.nickname))
             else:
-                login_data = ViewData("login", form=form)
-                return render_template("base_template.html", **login_data.context)
+                context = {'assets': ViewData(page_mark="login").assets}
+                return render_template("base.html", **context)
 
     def get(self, get_provider=None, provider=None):
         if get_provider is not None:    # GET OAUTH PROVIDER
@@ -262,12 +209,12 @@ class LoginAPI(MethodView):
                 session.pop('remember_me', None)
             login_user(currentuser, remember=remember_me)
             # return redirect(request.args.get('next') or '/piemail')
-            return redirect(request.args.get('next') or url_for('posts', page_mark='home', page=1))
+            return redirect(request.args.get('next') or url_for('posts', page_mark='home'))
         else:   # LOGIN PAGE
             if g.user is not None and g.user.is_authenticated():
                 return redirect(url_for('members'))
-            login_data = ViewData("login")
-            return render_template("base_template.html", **login_data.context)
+            context = {'assets': ViewData(page_mark="login").assets}
+            return render_template("base.html", **context)
 
     def login_returning_user(self, form):
         returninguser = User.query.filter_by(email=form.email.data).first()
@@ -296,8 +243,8 @@ class MembersAPI(MethodView):
     @login_required
     def get(self, nickname=None, action=None):
         if action == 'update':
-            profile_data = ViewData(page_mark="profile", render_form=True, nickname=nickname)
-            return render_template("base_template.html", **profile_data.context)
+            context = {'assets': ViewData(page_mark="profile").assets}
+            return render_template("base.html", **context)
         elif action == 'follow':
             user = User.query.filter_by(nickname=nickname).first()
             if user is None:
@@ -314,8 +261,8 @@ class MembersAPI(MethodView):
             db.session.commit()
             flash('You are now following %s.' % nickname)
             follower_notification(user, g.user)
-            profile_data = ViewData("profile", nickname=nickname)
-            return render_template("base_template.html", **profile_data.context)
+            context = {'assets': ViewData(page_mark="profile").assets}
+            return render_template("base.html", **context)
         elif action == 'unfollow':
             user = User.query.filter_by(nickname=nickname).first()
             if user is None:
@@ -331,25 +278,25 @@ class MembersAPI(MethodView):
             db.session.add(u)
             db.session.commit()
             flash('You have stopped following %s.' % nickname)
-            profile_data = ViewData("profile", nickname=nickname)
-            return render_template("base_template.html", **profile_data.context)
+            context = {'assets': ViewData(page_mark="profile").assets}
+            return render_template("base.html", **context)
         elif nickname is None:  # Display all members
             if request.url_rule.rule == '/phonegap/':
                 view_data = ViewData(page_mark='phonegap')
-                return render_template("base_template.html", **view_data.context)
+                return render_template("base.html", **view_data.context)
             if request.url_rule.rule == '/piemail/':
                 view_data = ViewData(page_mark='piemail')
-                return render_template("base_template.html", **view_data.context)
+                return render_template("base.html", **view_data.context)
             else:
                 if request.is_xhr:
                     employee_dict = User.query.all()
                     return jsonify(employees=[i.json_view() for i in employee_dict])
                 else:
                     view_data = ViewData(page_mark='members')
-                    return render_template("base_template.html", **view_data.context)
+                    return render_template("base.html", **view_data.context)
         else:  # Display a single member
             profile_data = ViewData(page_mark="profile", nickname=nickname)
-            return render_template("base_template.html", **profile_data.context)
+            return render_template("base.html", **profile_data.context)
 
     @login_required
     def delete(self, nickname):
@@ -365,30 +312,14 @@ class MembersAPI(MethodView):
             return json.dumps(form.errors)
         else:  # Once form is valid, original form is called and processed
             if form.validate(g.user):
-                profile_photo = request.files['profile_photo']
-                if profile_photo and allowed_file(profile_photo.filename):
-                    filename = secure_filename(profile_photo.filename)
-                    img_obj = dict(filename=filename, img=Image.open(profile_photo.stream), box=(400, 300),
-                                   photo_type="thumb", crop=True,
-                                   extension=form['profile_photo'].data.mimetype.split('/')[1].upper())
-                    profile_photo_name = pre_upload(img_obj)
-
-                    thumbnail_obj = dict(filename=filename, img=Image.open(profile_photo.stream), box=(160, 160),
-                                         photo_type="thumbnail", crop=True,
-                                         extension=form['profile_photo'].data.mimetype.split('/')[1].upper())
-                    thumbnail_name = pre_upload(thumbnail_obj)
-
-                    g.user.profile_photo = profile_photo_name
-                    g.user.thumbnail = thumbnail_name
-
                 g.user.nickname = form.nickname.data
                 g.user.about_me = form.about_me.data
                 db.session.add(g.user)
                 db.session.commit()
                 profile_data = ViewData(page_mark="profile", nickname=g.user.nickname, form=form)
-                return render_template("base_template.html", **profile_data.context)
+                return render_template("base.html", **profile_data.context)
             profile_data = ViewData(page_mark="profile", nickname=g.user.nickname, form=form)
-            return render_template("base_template.html", **profile_data.context)
+            return render_template("base.html", **profile_data.context)
 
 member_api_view = MembersAPI.as_view('members')  # URLS for MEMBER API
 # Read, Update and Destroy a single member

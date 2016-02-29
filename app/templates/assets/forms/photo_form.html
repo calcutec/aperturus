@@ -1,54 +1,61 @@
-<!-- Photo Form -->
-<div class="well hide" id="entry-form">
+
+<div class="well">
     <h6 class="docs-header">Post Photo</h6>
     <p>Post your latest photo entry using the form below. You can later attach more images or a gallery of photos this entry</p>
     <div class="docs-example docs-example-forms">
-        <form id="photo-form" action="/photos/home" method="post" enctype="multipart/form-data" name="post">
-            {{ form.csrf_token }}
-            <div class="row">
-            <div class="form-group">
-                <label for="header">Title</label>
-                {{ form.header(class="u-full-width", placeholder="Title") }}
-                {% for error in form.header.errors %}
-                    <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                {% endfor %}
-                <span id="error_header" class="help-inline" style="color:red"></span>
-            </div>
+    {{ S3form|safe }}
+{#    <form id="s3-form" action="{{ form.action }}" method="POST" enctype="multipart/form-data">#}
+{#        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">#}
+{#        <input type="hidden" name="acl"    value="{{ form.acl }}">#}
+{#        <input type="hidden" name="key"    value="{{ form.key }}">#}
+{#        <input type="hidden" name="policy" value="{{ form.policy }}">#}
+{#        <input type="hidden" name="success_action_status" value="200">#}
+{#        <input type="hidden" name="success_action_status_redirect" value="http://localhost:8000/photos/home">#}
+{#        <input type="hidden" name="x-amz-algorithm"  value="{{ form['x-amz-algorithm'] }}">#}
+{#        <input type="hidden" name="x-amz-credential" value="{{ form['x-amz-credential'] }}">#}
+{#        <input type="hidden" name="x-amz-date"       value="{{ form['x-amz-date'] }}">#}
+{#        <input type="hidden" name="x-amz-signature"  value="{{ form['x-amz-signature'] }}">#}
+{#        <div id="result" class="result">#}
+{#            <p></p>#}
+{#        </div>#}
+{#        <div id="exif" class="exif">#}
+{#            <table></table>#}
+{#        </div>#}
+{#        <input id="file-input" type="file" name="file">#}
+{#        <input class="button-primary" id="photo-submit" type="submit" value="Confirm and upload">#}
+{#    </form>#}
+{#    <form class="hide" id="photo-form" action="/photos/home" method="post" enctype="multipart/form-data" name="post">#}
+{#        {{ photoform.csrf_token }}#}
+{#        <div class="row">#}
+{#        <div class="form-group">#}
+{#            <label for="header">Title</label>#}
+{#            {{ photoform.header(class="u-full-width", placeholder="Title") }}#}
+{#            {% for error in photoform.header.errors %}#}
+{#                <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#            {% endfor %}#}
+{#            <span id="error_header" class="help-inline" style="color:red"></span>#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#            <label for="body">Body</label>#}
+{#            {{ photoform.body(class="u-full-width", placeholder="Body", id="body-text") }}#}
+{#            {% for error in photoform.body.errors %}#}
+{#                <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#            {% endfor %}#}
+{#            <div id="editable"></div>#}
+{#            <span id="error_header" class="help-inline" style="color:red"></span>#}
+{#        </div>#}
+{#        {% if page_mark == "home" %}#}
 {#            <div class="form-group">#}
-{#                <label for="entry_photo">Photo</label>#}
-{#                    <div id="result" class="result">#}
-{#                        <p>This upload works only in modern browsers</p>#}
-{#                    </div>#}
-{#                <div id="exif" class="exif">#}
-{#                    <table></table>#}
-{#                </div>#}
-{#                {{ form.entry_photo(class="u-full-width", placeholder="Photo", id="file-input") }}#}
-{#                {% for error in form.entry_photo.errors %}#}
+{#                <label for="writing_type">Writing Type</label>#}
+{#                {{ photoform.writing_type(class="u-full-width") }}#}
+{#                {% for error in photoform.writing_type.errors %}#}
 {#                    <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
 {#                {% endfor %}#}
-{#                <span id="error_header" class="help-inline" style="color:red"></span>#}
+{#                <span id="error_writing_type" class="help-inline" style="color:red"></span>#}
 {#            </div>#}
-            <div class="form-group">
-                <label for="body">Body</label>
-                {{ form.body(class="u-full-width", placeholder="Body", id="body-text") }}
-                {% for error in form.body.errors %}
-                    <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                {% endfor %}
-                <div id="editable"></div>
-                <span id="error_header" class="help-inline" style="color:red"></span>
-            </div>
-            {% if page_mark == "home" %}
-                <div class="form-group">
-                    <label for="writing_type">Writing Type</label>
-                    {{ form.writing_type(class="u-full-width") }}
-                    {% for error in form.writing_type.errors %}
-                        <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                    {% endfor %}
-                    <span id="error_writing_type" class="help-inline" style="color:red"></span>
-                </div>
-            {% endif %}
-            <input class="button-primary" id="photo-submit" type="submit" value="Post Photo">
-            </div>
-        </form>
+{#        {% endif %}#}
+{#        <input class="button-primary" id="photo-submit" type="submit" value="Post Photo">#}
+{#        </div>#}
+{#    </form>#}
     </div>
 </div>

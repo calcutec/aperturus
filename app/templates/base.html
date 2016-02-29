@@ -41,7 +41,9 @@
                 </div>
                 <div id="sub-header">
                     <div id="headline" class="feature-headline">
-                        <div id="title"><section>{{ page_mark }}</section></div>
+                        {% if assets %}
+                            {{ assets.title|safe if assets.title != None }}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="navbar-spacer"></div>
@@ -49,16 +51,18 @@
             </header>
 
             <main>
-                {% block content %}{% endblock %}
+                <div id="entry-forms">
+                    {% if assets %}
+                        {{ assets.main_entry|safe if assets.main_entry != None }}
+                        {{ assets.body_form|safe if assets.body_form != None }}
+                    {% endif %}
+                </div>
             </main>
 
             <footer>
-            <div id="entry-forms">
                 {% if assets %}
-{#                    {{ assets.body_form|safe if assets.body_form != None }}#}
-                    {{ assets.image_form|safe if assets.image_form != None }}
+                    {{ assets.archives|safe if assets.archives != None }}
                 {% endif %}
-            </div>
             </footer>
             {% block scripts %}
                 <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
@@ -68,7 +72,6 @@
                 <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
                 <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
                 <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/backbone-model-file-upload.js"></script>
                 <script src="{{ local_static_url }}js/app.js"></script>
             {% endblock %}
         </div>

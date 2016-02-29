@@ -247,7 +247,7 @@ $.fn.submitData = function(e){
     }, false);
     xhr.onreadystatechange = function(e){
         if(xhr.readyState == 4){
-          console.log('loading complete!') //complete! - check xhr.status
+          console.log(xhr.statusText) //complete! - check xhr.status
         }
     };
     xhr.open('POST', 'https://aperturus.s3.amazonaws.com/', true);
@@ -258,40 +258,9 @@ $.fn.submitData = function(e){
 
 
 App.Views.EntryFormsView = Backbone.View.extend({
-    s3Form: _.template($('#s3-form').html()),
-    //entryForm: _.template($('#entry-form').html()),
+    el: '#s3-form',
     events: {
         'change #file-input': 'validateanddisplaysample',
-        'submit': 'sendToS3'
-    },
-
-    sendToS3: function(e) {
-        var $form = $('#s3-form');
-        $form.submitData(e);
-
-
-        //e.preventDefault();
-        //this.$el.find('#body-text').html(this.$el.find('#editable').html());
-        //var newPostModel = new App.Models.Post($form.serializeObject());
-        //var entryPhotoName = currentFile.name.split(".")[0]+"-"+this.$el.find('#csrf_token').val()+"."+currentFile.type.split("/")[1];
-        //newPostModel.set({'entryPhotoName': entryPhotoName});
-        //if (typeof(serverBlob) === "undefined") {
-        //    newPostModel.set('attachment', currentFile);
-        //} else {
-        //    newPostModel.set('attachment', serverBlob);
-        //}
-        //newPostModel.save(null, {
-        //    success: function (model, response) {
-        //        alert('saved');
-        //        new App.Views.Post({model:model}).render();
-        //        currentFile = null;
-        //        return response;
-        //    },
-        //    error: function () {
-        //        alert('your poem did not save properly..')
-        //    },
-        //    wait: true
-        //});
     },
 
     validateanddisplaysample: function(e) {
@@ -424,6 +393,24 @@ App.Views.EntryFormsView = Backbone.View.extend({
 
 $(document).ready(function() {
 
+    $( "#s3-form" ).submit(function( e ) {
+        e.preventDefault();
+        var data = new FormData(this);
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener('progress',function(e){
+            console.log('now loading')
+        }, false);
+        xhr.onreadystatechange = function(e){
+            if(xhr.readyState == 4){
+              console.log('loading complete!') //complete! - check xhr.status
+            }
+        };
+        xhr.open('POST', 'https://aperturus.s3.amazonaws.com/', true);
+        xhr.send(data);
+        return false;
+    });
+
+
     var csrftoken = $('meta[name=csrf-token]').attr('content');
     $(function(){
         $.ajaxSetup({
@@ -519,7 +506,7 @@ $(document).ready(function() {
 
     init();
 
-    window.formview = new App.Views.EntryFormsView({el: $('#s3-form')});
+    window.formview = new App.Views.EntryFormsView();
 
     //App.Collections.Post.postCollection = new App.Collections.Post();
     //App.Collections.Post.postCollection.fetch({
@@ -530,7 +517,7 @@ $(document).ready(function() {
     //});
     //
     //
-    ////App.Views.Global.globalView = new App.Views.Global({el: '.page'});
+    App.Views.Global.globalView = new App.Views.Global({el: '.page'});
     //new App.Router();
     //Backbone.history.start(); // start Backbone history
 });
