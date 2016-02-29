@@ -1,0 +1,34 @@
+<form class="hide" id="photo-text-form" action="/photos/gallery/" method="post" enctype="multipart/form-data" name="post">
+    {{ phototextform.csrf_token }}
+    <div class="row">
+    <div class="form-group">
+        <label for="header">Title</label>
+        {{ phototextform.header(class="u-full-width", placeholder="Title") }}
+        {% for error in phototextform.header.errors %}
+            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+        {% endfor %}
+        <span id="error_header" class="help-inline" style="color:red"></span>
+    </div>
+    <div class="form-group">
+        <label for="body">Body</label>
+        {{ phototextform.body(class="u-full-width", placeholder="Body", id="body-text") }}
+        {% for error in phototextform.body.errors %}
+            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+        {% endfor %}
+        <div id="editable"></div>
+        <span id="error_header" class="help-inline" style="color:red"></span>
+    </div>
+    {% if page_mark == "home" %}
+        <div class="form-group">
+            <label for="writing_type">Writing Type</label>
+            {{ phototextform.writing_type(class="u-full-width") }}
+            {% for error in phototextform.writing_type.errors %}
+                <span class="help-inline" style="color:red">[{{ error }}]</span><br>
+            {% endfor %}
+            <span id="error_writing_type" class="help-inline" style="color:red"></span>
+        </div>
+    {% endif %}
+    <div class="button-primary" id="test-button">Test Button</div>
+    <input class="button-primary" id="photo-submit" type="submit" value="Post Photo">
+    </div>
+</form>
