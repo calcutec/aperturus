@@ -79,7 +79,7 @@ class PostForm(Form):
     my_choices = [('entry', 'Entry'), ('op-ed', 'Op-ed'), ('featured', 'Featured')]
     body = TextAreaField('Post', validators=[DataRequired()])
     header = StringField('Header', validators=[DataRequired()])
-    writing_type = SelectField('Post Type', choices=my_choices, default='poem')
+    writing_type = SelectField('Post Type', choices=my_choices, default='entry')
     entry_photo = FileField('Your photo', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
     entryPhotoName = StringField('File Name')
     submit = SubmitField("Send")

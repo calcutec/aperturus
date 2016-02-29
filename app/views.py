@@ -32,17 +32,14 @@ class PostAPI(MethodView):
     def post(self, page_mark=None):
         form = PostForm()
         if form.validate_on_submit():
-            thumbnail_name = None
-            photo_name = None
+            thumbnail_name = "TBD"
+            photo_name = "TBD"
             slug = slugify(form.header.data)
-            entry_photo = request.files['entry_photo']
-            extension = entry_photo.mimetype.split('/')[1].upper()
-            if entry_photo and allowed_file(extension):
-                post = Post(body=form.body.data, timestamp=datetime.utcnow(),
-                            author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
-                            writing_type=form.writing_type.data, slug=slug)
-                db.session.add(post)
-                db.session.commit()
+            post = Post(body=form.body.data, timestamp=datetime.utcnow(),
+                        author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
+                        writing_type=form.writing_type.data, slug=slug)
+            db.session.add(post)
+            db.session.commit()
             if request.is_xhr:
                 response = post.json_view()
                 response['savedsuccess'] = True

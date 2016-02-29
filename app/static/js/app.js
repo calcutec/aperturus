@@ -255,12 +255,46 @@ $.fn.submitData = function(e){
     return false;
 };
 
+App.Views.PhotoTextFormView = Backbone.View.extend({
+    el: 'photo-text-form',
+    initialize: function(){
+        $("#photo-text-form").removeClass("hide").fadeIn();
+    },
+    events: {
+        'submit': 'postnewentry',
+        'click .submit-button':   'updatePost',
+        'click #test-button':   'testAlert'
+    },
 
+    testAlert: function() {
+        alert('test worked!');
+    },
 
-App.Views.EntryFormsView = Backbone.View.extend({
+    postnewentry: function(e) {
+        e.preventDefault();
+        this.$el.find('#body-text').html(this.$el.find('#editable').html());
+        var newPostModel = new App.Models.Post($form.serializeObject());
+        var entryPhotoName = currentFile.name.split(".")[0]+"-"+this.$el.find('#csrf_token').val()+"."+currentFile.type.split("/")[1];
+        newPostModel.set({'entryPhotoName': entryPhotoName});
+        newPostModel.save(null, {
+            success: function (model, response) {
+                alert('saved');
+                new App.Views.Post({model:model}).render();
+                currentFile = null;
+                return response;
+            },
+            error: function () {
+                alert('your poem did not save properly..')
+            },
+            wait: true
+        });
+    }
+});
+
+App.Views.S3FormView = Backbone.View.extend({
     el: '#s3-form',
     events: {
-        'change #file-input': 'validateanddisplaysample',
+        'change #file-input': 'validateanddisplaysample'
     },
 
     validateanddisplaysample: function(e) {
@@ -358,7 +392,8 @@ App.Views.EntryFormsView = Backbone.View.extend({
         } else {
           content = $(img);
         }
-        $('#result').children().replaceWith(content.addClass('u-full-width').removeAttr('width').removeAttr('height'))
+        $('#result').children().replaceWith(content.addClass('u-full-width').removeAttr('width').removeAttr('height').fadeIn());
+        $('#photo-submit').removeClass("hide");
     },
 
     displayExifData: function (exif) {  // Save Exif data to an entry model attribute to save on Flask model
@@ -393,23 +428,31 @@ App.Views.EntryFormsView = Backbone.View.extend({
 
 $(document).ready(function() {
 
+    window.s3formview = new App.Views.S3FormView();
+
     $( "#s3-form" ).submit(function( e ) {
         e.preventDefault();
         var data = new FormData(this);
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener('progress',function(e){
-            console.log('now loading')
+            $( "#progress-bar").html(e.loaded+" of "+e.total+" bytes loaded");
         }, false);
         xhr.onreadystatechange = function(e){
             if(xhr.readyState == 4){
-              console.log('loading complete!') //complete! - check xhr.status
+                if(xhr.status == 200){
+                    window.s3formview.$el.hide();
+                    window.phototextformview = new App.Views.PhotoTextFormView();
+
+                } else {
+                    console.log(xhr.statusText)
+                }
+
             }
         };
         xhr.open('POST', 'https://aperturus.s3.amazonaws.com/', true);
         xhr.send(data);
         return false;
     });
-
 
     var csrftoken = $('meta[name=csrf-token]').attr('content');
     $(function(){
@@ -506,8 +549,6 @@ $(document).ready(function() {
 
     init();
 
-    window.formview = new App.Views.EntryFormsView();
-
     //App.Collections.Post.postCollection = new App.Collections.Post();
     //App.Collections.Post.postCollection.fetch({
     //    success: function() {
@@ -517,7 +558,7 @@ $(document).ready(function() {
     //});
     //
     //
-    App.Views.Global.globalView = new App.Views.Global({el: '.page'});
+    //App.Views.Global.globalView = new App.Views.Global({el: '.page'});
     //new App.Router();
     //Backbone.history.start(); // start Backbone history
 });

@@ -51,9 +51,10 @@ class BasePage(object):
                                                 signupform=SignupForm())
         else:
             if self.page_mark == 'gallery':
-                S3form = self.create_s3_form()
-                # photoform = PostForm()
-                rendered_form = render_template("assets/forms/photo_form.html", S3form=S3form)
+                s3_form = self.create_s3_form()
+                photo_text_form = render_template("assets/forms/photo_text_form.html", phototextform=PostForm())
+                rendered_form = render_template("assets/forms/photo_form.html", S3form=s3_form,
+                                                PhotoTextForm=photo_text_form)
             elif self.page_mark == 'profile':
                 form = EditForm()
                 form.nickname.data = g.user.nickname

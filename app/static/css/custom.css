@@ -1,7 +1,16 @@
-
-.hide {
-  display: none;
+.progresscontainer {
+    width: 500px;
+    margin: 0 auto;
 }
+.progress_outer {
+    border: 1px solid #000;
+}
+.progress {
+    width: 20%;
+    background: #DEDEDE;
+    height: 20px;
+}
+
 footer {
     margin-bottom: 10px; }
 .container {
@@ -268,4 +277,8 @@ ul#auto-login li a.button.button-primary {
   #headline {
       font-size: 7rem;
       line-height: 80px; }
+}
+
+.hide {
+  display: none !important;
 }
