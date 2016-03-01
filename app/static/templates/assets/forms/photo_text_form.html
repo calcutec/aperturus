@@ -1,0 +1,20 @@
+<form id="photo-text-form" action="/photos/gallery/" method="post" enctype="multipart/form-data" name="post">
+    {{ phototextform.csrf_token }}
+    <div class="row">
+    <div class="form-group">
+        <label for="header">Title</label>
+        <input class="u-full-width" id="header" name="header" placeholder="Title" type="text" value="">
+
+        <span id="error_header" class="help-inline" style="color:red"></span>
+    </div>
+    <div class="form-group">
+        <label for="body">Body</label>
+        <textarea class="u-full-width" id="body-text" name="body" placeholder="Body"></textarea>
+
+        <div id="editable"></div>
+        <span id="error_header" class="help-inline" style="color:red"></span>
+    </div>
+    <input class="button-primary" id="photo-submit" type="submit" value="Post Photo">
+    </div>
+</form>
+

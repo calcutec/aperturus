@@ -9,7 +9,7 @@ from slugify import slugify
 from .forms import SignupForm, LoginForm, EditForm, PostForm
 from .models import User, Post
 from .emails import follower_notification
-from .utils import OAuthSignIn, allowed_file, BasePage as ViewData
+from .utils import OAuthSignIn, allowed_file, BasePage as ViewData, crossdomain
 import os
 import json
 from flask.views import MethodView
@@ -19,6 +19,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 @app.route('/', methods=['GET'])
 def index():
     return redirect(url_for('posts', page_mark='home'))
+
+
+@app.route('/postfile/gallery/', methods=['POST', 'GET', 'UPDATE'])
+@crossdomain(origin='*')
+def postfile():
+    response = {'savedsuccess': True}
+    return json.dumps(response)
 
 
 @app.route('/logout/', methods=['GET'])

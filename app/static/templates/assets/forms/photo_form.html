@@ -1,0 +1,17 @@
+
+<div class="well">
+    <h6 class="docs-header">Add a New Photo</h6>
+{#    <p>Post your latest photo entry using the form below. You can later attach more images or a gallery of photos this entry</p>#}
+    <div class="docs-example docs-example-forms">
+        <div id="result" class="result">
+            <p></p>
+        </div>
+        <span id="progress-bar"></span>
+        <div id="exif" class="exif hide">
+            <table></table>
+        </div>
+        {{ S3form|safe }}
+{#        {{ PhotoTextForm|safe }}#}
+        <div id="photo-form-target"></div>
+    </div>
+</div>

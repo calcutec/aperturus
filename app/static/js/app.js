@@ -24,11 +24,12 @@ var apiUrl = function(type) {
 
 // Post model
 App.Models.Post = Backbone.Model.extend({
-    url: function() {
-        return apiUrl('posts', $('html').attr('id'));
-    },
-    fileAttribute: 'entry_photo',
-        defaults: {
+    //url: function() {
+    //    //return apiUrl('posts', $('html').attr('id'));
+    //    return apiUrl('posts', 'gallery');
+    //},
+    url: "/photos/gallery/",
+    defaults: {
         header: '',
         body: '',
         entryPhotoName: ''
@@ -37,8 +38,8 @@ App.Models.Post = Backbone.Model.extend({
         if (!attrs.header){
             alert('Your post must have a header!');
         }
-        if (attrs.body.length < 2){
-            alert('Your post must have more than one letter!');
+        if (!attrs.body){
+            alert('Your post must have a story');
         }
     }
 });
@@ -256,9 +257,9 @@ $.fn.submitData = function(e){
 };
 
 App.Views.PhotoTextFormView = Backbone.View.extend({
-    el: 'photo-text-form',
+    el: '#photo-form-target',
     initialize: function(){
-        $("#photo-text-form").removeClass("hide").fadeIn();
+        this.render()
     },
     events: {
         'submit': 'postnewentry',
@@ -272,15 +273,17 @@ App.Views.PhotoTextFormView = Backbone.View.extend({
 
     postnewentry: function(e) {
         e.preventDefault();
-        this.$el.find('#body-text').html(this.$el.find('#editable').html());
-        var newPostModel = new App.Models.Post($form.serializeObject());
-        var entryPhotoName = currentFile.name.split(".")[0]+"-"+this.$el.find('#csrf_token').val()+"."+currentFile.type.split("/")[1];
-        newPostModel.set({'entryPhotoName': entryPhotoName});
+        var newPostModel = new App.Models.Post(this.$el.find('form').serializeObject());
+        if (currentFile === null){
+            alert("file upload has failed")
+        } else {
+            var entryPhotoName = currentFile.name.split(".")[0]+"-hexgenerator."+currentFile.type.split("/")[1];
+            newPostModel.set({'entryPhotoName': entryPhotoName});
+        }
         newPostModel.save(null, {
             success: function (model, response) {
                 alert('saved');
                 new App.Views.Post({model:model}).render();
-                currentFile = null;
                 return response;
             },
             error: function () {
@@ -288,6 +291,10 @@ App.Views.PhotoTextFormView = Backbone.View.extend({
             },
             wait: true
         });
+    },
+    render: function() {
+        this.$el.html(nunjucks.render('/assets/forms/photo_text_form.html', { "phototextform['csrf_token']": '12345' }));
+        return this;
     }
 });
 
@@ -328,7 +335,7 @@ App.Views.S3FormView = Backbone.View.extend({
                         } else {
                             self.generateUploadFormThumb(self, currentFile);
                         }
-                        if (height > 1296 || width > 1296 || size > 1000000) {
+                        if (height > 4896 || width > 4896 || size > 2000000) {
                             self.generateServerFile(currentFile);
                         }
                     };
@@ -381,7 +388,7 @@ App.Views.S3FormView = Backbone.View.extend({
                     }
                 }
             },
-            {maxWidth: 1296, canvas:true}
+            {maxWidth: 4896, canvas:true}
         );
     },
 
@@ -429,10 +436,14 @@ App.Views.S3FormView = Backbone.View.extend({
 $(document).ready(function() {
 
     window.s3formview = new App.Views.S3FormView();
+    nunjucks.configure('/static/templates');
 
     $( "#s3-form" ).submit(function( e ) {
         e.preventDefault();
         var data = new FormData(this);
+        if (typeof(serverBlob) !== "undefined") {
+            data.append('image', serverBlob);
+        }
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener('progress',function(e){
             $( "#progress-bar").html(e.loaded+" of "+e.total+" bytes loaded");
