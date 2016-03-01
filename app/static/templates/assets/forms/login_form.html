@@ -1,86 +1,96 @@
-<!-- Login Form -->
-<div class="docs-section" id="forms">
-    <h6 class="docs-header">Login/Signup</h6>
-    <div id="parentHorizontalTab">
-        <ul class="resp-tabs-list hor_1">
-            <li>1-Click Login</li>
-            <li>Email Login</li>
-            <li>User Signup</li>
+<div class="well row">
+    <div class="twelve columns">
+        <h3>1-Click-Login</h3>
+        <ul id="auto-login">
+            <li><a class="button button-primary" href="{{ url_for('login', get_provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>
+            <li><a class="button button-primary" href="{{ url_for('login', get_provider='twitter') }}"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>
+            <li><a class="button button-primary" href="{{ url_for('login', get_provider='google') }}"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>
         </ul>
-        <div class="resp-tabs-container hor_1 row">
-            <div class="twelve columns">
-                <h3>1-Click-Login</h3>
-                <ul id="auto-login">
-                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>
-                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='twitter') }}"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>
-                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='google') }}"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>
-                </ul>
-            </div>
-            <div class="twelve columns">
-                <h3>Email Login</h3>
-                <form action="{{ url_for('login') }}" id="login-form" method="post" accept-charset="utf-8">
-                {{ loginform.csrf_token }}
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        {{ loginform.email(class="u-full-width", placeholder="Email") }}
-                        {% for error in loginform.email.errors %}
-                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                        {% endfor %}
-                        <span id="error_email" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        {{ loginform.password(class="u-full-width", placeholder="Password") }}
-                        {% for error in loginform.password.errors %}
-                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                        {% endfor %}
-                        <span id="error_password" class="help-inline" style="color:red"></span>
-                    </div>
-                    <input class="button-primary" id="login-form-submit" type="submit" value="Login">
-                </form>
-            </div>
-            <div class="twelve columns">
-                <h3>Signup</h3>
-                <form action="{{ url_for('signup') }}" id="signup-form" method="post" accept-charset="utf-8">
-                {{ signupform.csrf_token }}
-                    <div class="form-group">
-                        <label for="firstname">First Name</label>
-                        {{ signupform.firstname(class="u-full-width", placeholder="First Name") }}
-                        {% for error in signupform.firstname.errors %}
-                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                        {% endfor %}
-                        <span id="error_firstname" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">Last Name</label>
-                        {{ signupform.lastname(class="u-full-width", placeholder="Last Name") }}
-                        {% for error in signupform.lastname.errors %}
-                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                        {% endfor %}
-                        <span id="error_lastname" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        {{ signupform.email(class="u-full-width", placeholder="Email") }}
-                        {% for error in signupform.email.errors %}
-                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                        {% endfor %}
-                        <span id="error_email" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        {{ signupform.password(class="u-full-width", placeholder="Password") }}
-                        {% for error in signupform.password.errors %}
-                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>
-                        {% endfor %}
-                        <span id="error_password" class="help-inline" style="color:red"></span>
-                    </div>
-                    <input class="button-primary" type="submit" value="Signup">
-                </form>
-            </div>
-        </div>
     </div>
 </div>
+{#<!-- Login Form -->#}
+{#<div class="docs-section" id="forms">#}
+{#    <h6 class="docs-header">Login/Signup</h6>#}
+{#    <div id="parentHorizontalTab">#}
+{#        <ul class="resp-tabs-list hor_1">#}
+{#            <li>1-Click Login</li>#}
+{#            <li>Email Login</li>#}
+{#            <li>User Signup</li>#}
+{#        </ul>#}
+{#        <div class="resp-tabs-container hor_1 row">#}
+{#            <div class="twelve columns">#}
+{#                <h3>1-Click-Login</h3>#}
+{#                <ul id="auto-login">#}
+{#                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>#}
+{#                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='twitter') }}"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>#}
+{#                    <li><a class="button button-primary" href="{{ url_for('login', get_provider='google') }}"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+{#            <div class="twelve columns">#}
+{#                <h3>Email Login</h3>#}
+{#                <form action="{{ url_for('login') }}" id="login-form" method="post" accept-charset="utf-8">#}
+{#                {{ loginform.csrf_token }}#}
+{#                    <div class="form-group">#}
+{#                        <label for="email">Email</label>#}
+{#                        {{ loginform.email(class="u-full-width", placeholder="Email") }}#}
+{#                        {% for error in loginform.email.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_email" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="password">Password</label>#}
+{#                        {{ loginform.password(class="u-full-width", placeholder="Password") }}#}
+{#                        {% for error in loginform.password.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_password" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <input class="button-primary" id="login-form-submit" type="submit" value="Login">#}
+{#                </form>#}
+{#            </div>#}
+{#            <div class="twelve columns">#}
+{#                <h3>Signup</h3>#}
+{#                <form action="{{ url_for('signup') }}" id="signup-form" method="post" accept-charset="utf-8">#}
+{#                {{ signupform.csrf_token }}#}
+{#                    <div class="form-group">#}
+{#                        <label for="firstname">First Name</label>#}
+{#                        {{ signupform.firstname(class="u-full-width", placeholder="First Name") }}#}
+{#                        {% for error in signupform.firstname.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_firstname" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="lastname">Last Name</label>#}
+{#                        {{ signupform.lastname(class="u-full-width", placeholder="Last Name") }}#}
+{#                        {% for error in signupform.lastname.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_lastname" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="email">Email</label>#}
+{#                        {{ signupform.email(class="u-full-width", placeholder="Email") }}#}
+{#                        {% for error in signupform.email.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_email" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <label for="password">Password</label>#}
+{#                        {{ signupform.password(class="u-full-width", placeholder="Password") }}#}
+{#                        {% for error in signupform.password.errors %}#}
+{#                            <span class="help-inline" style="color:red">[{{ error }}]</span><br>#}
+{#                        {% endfor %}#}
+{#                        <span id="error_password" class="help-inline" style="color:red"></span>#}
+{#                    </div>#}
+{#                    <input class="button-primary" type="submit" value="Signup">#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
 
 {#<div class="docs-section" id="forms">#}
 {#    <h6 class="docs-header">Login</h6>#}

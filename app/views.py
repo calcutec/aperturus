@@ -39,8 +39,8 @@ class PostAPI(MethodView):
     def post(self, page_mark=None):
         form = PostForm()
         if form.validate_on_submit():
-            thumbnail_name = "TBD"
-            photo_name = "TBD"
+            photo_name = form.entryPhotoName.data
+            thumbnail_name = "thumbnail" + photo_name
             slug = slugify(form.header.data)
             post = Post(body=form.body.data, timestamp=datetime.utcnow(),
                         author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,

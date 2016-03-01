@@ -219,9 +219,8 @@ class Post(db.Model):
         db.session.commit()  # for the vote count
         return vote_status
 
-    # def json_view(self):
-    #     return {'id': self.id, 'author': self.user_id, 'header': self.header, 'body': self.body,
-    #             'post_widget': self.get_post_widget()}
+    def json_view(self):
+        return {'id': self.id, 'author': self.author.nickname, 'header': self.header, 'body': self.body, 'photo': self.photo}
 
     def get_absolute_url(self):
         return url_for('post', kwargs={"slug": self.slug})
