@@ -4,7 +4,7 @@ from forms import SignupForm, EditForm, PostForm, CommentForm, LoginForm
 from rauth import OAuth2Service
 import json
 import urllib2
-from flask import request, redirect, url_for, render_template, g, flash, current_app, make_response
+from flask import request, redirect, url_for, render_template, g, flash, current_app, make_response, jsonify
 from models import User, Post
 from functools import wraps
 from functools import update_wrapper
@@ -30,6 +30,7 @@ class BasePage(object):
         if self.page_mark is not "login":
             assets['main_entry'] = render_template("main_entry.html", posts=posts)
             assets['archives'] = render_template("archives.html", posts=posts)
+            assets['initial_data'] = json.dumps({'posts':[i.json_view() for i in posts]})
         return assets
 
     def getposts(self):

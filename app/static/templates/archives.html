@@ -1,24 +1,34 @@
-    <div class="value-props row">
-      <div class="six columns columns-sm value-prop">
-        <img class="value-img" src="{{ local_static_url }}img/aperturus/placeholder.jpg">
-        Light as a feather at ~400 lines &amp; built with mobile in mind.
-      </div>
-      <div class="six columns columns-sm value-prop">
-        <img class="value-img" src="{{ local_static_url }}img/aperturus/placeholder.jpg">
-        Quick to start with zero compiling or installing necessary.
-      </div>
-    </div>
-    <div class="value-props row">
-      <div class="four columns columns-sm value-prop">
-        <img class="value-img" src="{{ local_static_url }}img/aperturus/placeholder.jpg">
-        Light as a feather at ~400 lines &amp; built with mobile in mind.
-      </div>
-      <div class="four columns columns-sm value-prop">
-        <img class="value-img" src="{{ local_static_url }}img/aperturus/placeholder.jpg">
-        Styles designed to be a starting point, not a UI framework.
-      </div>
-      <div class="four columns columns-sm value-prop">
-        <img class="value-img" src="{{ local_static_url }}img/aperturus/placeholder.jpg">
-        Quick to start with zero compiling or installing necessary.
-      </div>
-    </div>
+<div class="value-props row">
+   {% if posts[1] %}
+        <div class="six columns columns-sm value-prop">
+            <img class="value-img" src="{{ static_url }}user-images/{{ posts[1].photo }}">
+            {{ posts[1].header }}
+        </div>
+   {% endif %}
+   {% if posts[2] %}
+        <div class="six columns columns-sm value-prop">
+            <img class="value-img" src="{{ static_url }}user-images/{{ posts[2].photo }}">
+            {{ posts[2].header }}
+        </div>
+   {% endif %}
+</div>
+<div class="value-props row">
+    {% if posts[3] %}
+        <div class="four columns columns-sm value-prop">
+            <img class="value-img" src="{{ static_url }}user-images/{{ posts[3].photo }}">
+            {{ posts[3].header }}
+        </div>
+    {% endif %}
+    {% if posts[4] %}
+        <div class="four columns columns-sm value-prop">
+            <img class="value-img" src="{{ static_url }}user-images/{{ posts[4].photo }}">
+            {{ posts[4].header }}
+        </div>
+    {% endif %}
+    {% if posts[5] %}
+        <div class="four columns columns-sm value-prop">
+            <img class="value-img" src="{{ static_url }}user-images/{{ posts[5].photo }}">
+            {{ posts[5].header }}
+        </div>
+    {% endif %}
+</div>

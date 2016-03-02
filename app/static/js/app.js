@@ -1,12 +1,11 @@
-//window.App = {
-//  Models: {},
-//  Collections: {},
-//  Views: {},
-//  Router: {}
-//};
+window.App = {
+  Models: {},
+  Collections: {},
+  Views: {},
+  Router: {}
+};
 
-// Backbone router
-var Router = Backbone.Router.extend({
+App.Router.MainRouter = Backbone.Router.extend({
     routes: { // sets the routes
         '':         'start', // http://netbard.com/photos/portfolio/
         'create': 'create', // http://netbard.com/photos/portfolio/#create
@@ -14,12 +13,18 @@ var Router = Backbone.Router.extend({
     },
     start: function(){
         console.log('now in view' + Backbone.history.location.href);
-        var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
-        $("#nav ul li a").each(function(){
-            if($(this).attr("href") == pgurl) {
-                $(this).addClass("active");
-            }
-        })
+        var page_mark = Backbone.history.location.pathname.split("/")[2];
+        if ( page_mark == "home" || page_mark == "gallery") {
+            var photolist = new App.Collections.PhotoList(initialdata); // loaded from data.js
+            var PhotoApp = new App.Views.MainView({collection:photolist, page_mark:page_mark}) ;
+        }
+        //var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
+        //$("#nav ul li a").each(function(){
+        //    console.log($(this).attr("href"))
+        //    if($(this).attr("href") == pgurl) {
+        //        $(this).addClass("active");
+        //    }
+        //})
     },
     edit: function(id){
         console.log('edit route with id: ' + id);
@@ -29,16 +34,30 @@ var Router = Backbone.Router.extend({
     }
 });
 
-var Mail = Backbone.Model.extend( {
-
+App.Models.Photo = Backbone.Model.extend( {
     defaults: {
+        author: '',
+        title: '',
+        body: '',
+        photoname: '',
         subject: '',
         read: false,
         star: false,
         selected:false,
         archived:false,
-        label: ''
+        label: '',
+        static_url: 'https://s3.amazonaws.com/aperturus/'
     },
+
+    validate: function(attrs){
+        if (!attrs.header){
+            alert('Your post must have a title!');
+        }
+        if (!attrs.body){
+            alert('Your post must have a story');
+        }
+    },
+
     markRead: function() {
         this.save( {read: true } );
     },
@@ -60,97 +79,15 @@ var Mail = Backbone.Model.extend( {
     }
 });
 
+App.Views.MainView = Backbone.View.extend({
+    el: $("#photoapp"),
 
-
-var MailList = Backbone.Collection.extend({
-    model: Mail,
-
-    localStorage: new Store("mails"),
-
-    unread: function() {
-        return _(this.filter( function(mail) { return !mail.get('read');} ) );
-    },
-
-    inbox: function(){
-        return _(this.filter( function(mail) { return !mail.get('archived');}));
-    },
-
-    starred: function(){
-        return _(this.filter( function(mail) { return mail.get('star');}));
-    },
-
-    unread_count: function() {
-        return (this.filter ( function(mail) { return !mail.get('read');})).length;
-    },
-
-    labelled:function(label){
-        return _(this.filter( function(mail) { return label in mail.get('label') } ));
-    },
-
-    starcount: function(){
-        return (this.filter( function(mail) { return mail.get('star')})).length;
-    },
-
-    search: function(word){
-        if (word=="") return this;
-
-        var pat = new RegExp(word, 'gi');
-        return _(this.filter(function(mail) {
-            return pat.test(mail.get('subject')) || pat.test(mail.get('sender')); }));
-    },
-    comparator: function(mail){
-        return -mail.get('timestamp');
-    }
-
-});
-
-var MailView = Backbone.View.extend({
-    tagName: "li",
-
-    template: _.template( $("#mail-item").html()),
-
-    events: {
-        "click .mail-subject,.sender" : "markRead",
-        "click .star" : "star",
-        "click .check" : "select"
-    },
-
-    initialize: function() {
-        this.model.bind('change', this.render, this);
-    },
-
-    render: function() {
-        $(this.el).html( this.template(this.model.toJSON()) );
-        return this;
-    },
-
-    unrender: function(){
-        $(this.el).remove();
-    },
-
-    markRead: function() {
-        this.model.markRead();
-    },
-
-    star: function() {
-        this.model.starMail();
-    },
-
-    select: function(){
-        this.model.selectMail();
-    }
-});
-
-var InboxView = Backbone.View.extend({
-    template: _.template($("#summary-tmpl").html()),
-
-    el: $("#mailapp"),
-
-    initialize: function(){
-
+    initialize: function(options){
+        _.extend(this, _.pick(options, "page_mark"));
         this.collection.bind('change', this.renderSideMenu, this);
         this.render(this.collection);
-        this.renderSideMenu();
+        //this.renderSideMenu();
+        this.renderTitle();
     },
 
     events: {
@@ -204,25 +141,113 @@ var InboxView = Backbone.View.extend({
     },
 
     render: function(records){
-        $('ul#mail-list', this.el).html('');
+        $('ul#photo-list', this.el).html('');
         var self = this;
         records.each(function(item){
             self.addOne(item);
         }, this);
     },
 
-    renderSideMenu: function(){
-        $("#sidemenu").html( this.template(
-            {'inbox': this.collection.unread_count(),
-             'starred':this.collection.starcount(),}));
+    renderTitle: function(){
+        $("#headline").html(
+            nunjucks.render('title.html', {'page_mark': this.page_mark})
+        );
     },
 
-    addOne: function (mail) {
-        var itemView = new MailView({ model: mail});
+    //renderSideMenu: function(){
+    //    $("#summary").html(
+    //        nunjucks.render('summary_template.html', {
+    //            'inbox': this.collection.unread_count(),
+    //            'starred':this.collection.starcount()
+    //        })
+    //    );
+    //},
 
-        $('ul#mail-list', this.el).append(itemView.render().el);
+    addOne: function (photo) {
+        var itemView = new App.Views.PhotoView({ model: photo});
+
+        $('div#photo-list', this.el).append(itemView.render().el);
     }
 });
+
+App.Collections.PhotoList = Backbone.Collection.extend({
+    model: App.Models.Photo,
+
+    localStorage: new Backbone.LocalStorage("photos"),
+
+    unread: function() {
+        return _(this.filter( function(photo) { return !photo.get('read');} ) );
+    },
+
+    inbox: function(){
+        return _(this.filter( function(photo) { return !photo.get('archived');}));
+    },
+
+    starred: function(){
+        return _(this.filter( function(photo) { return photo.get('star');}));
+    },
+
+    unread_count: function() {
+        return (this.filter ( function(photo) { return !photo.get('read');})).length;
+    },
+
+    labelled:function(label){
+        return _(this.filter( function(photo) { return label in photo.get('label') } ));
+    },
+
+    starcount: function(){
+        return (this.filter( function(photo) { return photo.get('star')})).length;
+    },
+
+    search: function(word){
+        if (word=="") return this;
+
+        var pat = new RegExp(word, 'gi');
+        return _(this.filter(function(photo) {
+            return pat.test(photo.get('subject')) || pat.test(photo.get('sender')); }));
+    },
+    comparator: function(photo){
+        return -photo.get('timestamp');
+    }
+
+});
+
+App.Views.PhotoView = Backbone.View.extend({
+    tagName: "article",
+
+    events: {
+        "click .photo-subject,.sender" : "markRead",
+        "click .star" : "star",
+        "click .check" : "select"
+    },
+
+    initialize: function() {
+        this.model.bind('change', this.render, this);
+    },
+
+    render: function() {
+        this.$el.html(nunjucks.render('main_entry.html', this.model.toJSON()));
+        return this;
+    },
+
+    unrender: function(){
+        $(this.el).remove();
+    },
+
+    markRead: function() {
+        this.model.markRead();
+    },
+
+    star: function() {
+        this.model.starMail();
+    },
+
+    select: function(){
+        this.model.selectMail();
+    }
+});
+
+/*
 
 // List of API URLs.
 var URLs = {
@@ -626,41 +651,41 @@ var apiUrl = function(type) {
 //    }
 //});
 
+*/
 
 $(document).ready(function() {
-
-    var list = new MailList(data); // loaded from data.js
-    var App = new InboxView({collection:list}) ;
-
-    window.s3formview = new App.Views.S3FormView();
     nunjucks.configure('/static/templates');
+    new App.Router.MainRouter();
+    Backbone.history.start(); // start Backbone history
+    //window.s3formview = new App.Views.S3FormView();
 
-    $( "#s3-form" ).submit(function( e ) {
-        e.preventDefault();
-        var data = new FormData(this);
-        if (typeof(serverBlob) !== "undefined") {
-            data.append('image', serverBlob);
-        }
-        var xhr = new XMLHttpRequest();
-        xhr.upload.addEventListener('progress',function(e){
-            $( "#progress-bar").html(e.loaded+" of "+e.total+" bytes loaded");
-        }, false);
-        xhr.onreadystatechange = function(e){
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
-                    window.s3formview.$el.hide();
-                    window.phototextformview = new App.Views.PhotoTextFormView();
 
-                } else {
-                    console.log(xhr.statusText)
-                }
-
-            }
-        };
-        xhr.open('POST', 'https://aperturus.s3.amazonaws.com/', true);
-        xhr.send(data);
-        return false;
-    });
+    //$( "#s3-form" ).submit(function( e ) {
+    //    e.preventDefault();
+    //    var data = new FormData(this);
+    //    if (typeof(serverBlob) !== "undefined") {
+    //        data.append('image', serverBlob);
+    //    }
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.upload.addEventListener('progress',function(e){
+    //        $( "#progress-bar").html(e.loaded+" of "+e.total+" bytes loaded");
+    //    }, false);
+    //    xhr.onreadystatechange = function(e){
+    //        if(xhr.readyState == 4){
+    //            if(xhr.status == 200){
+    //                window.s3formview.$el.hide();
+    //                window.phototextformview = new App.Views.PhotoTextFormView();
+    //
+    //            } else {
+    //                console.log(xhr.statusText)
+    //            }
+    //
+    //        }
+    //    };
+    //    xhr.open('POST', 'https://aperturus.s3.amazonaws.com/', true);
+    //    xhr.send(data);
+    //    return false;
+    //});
 
     var csrftoken = $('meta[name=csrf-token]').attr('content');
     $(function(){
@@ -673,90 +698,6 @@ $(document).ready(function() {
         })
     });
 
-      // Variables
-    var $nav = $('.navbar'),
-        $body = $('body'),
-        $navbarlogo = $('#navbar-logo'),
-        $window = $(window),
-        $popoverLink = $('[data-popover]'),
-        navOffsetTop = $nav.offset().top,
-        $document = $(document);
-
-    function init() {
-        $window.on('scroll', onScroll);
-        $window.on('resize', resize);
-        $popoverLink.on('click', openPopover);
-        $document.on('click', closePopover);
-        $('a[href^="#"]').on('click', smoothScroll);
-    }
-
-    function smoothScroll(e) {
-        e.preventDefault();
-        $(document).off("scroll");
-        var target = this.hash;
-        var $target = $(target);
-        $('html, body').stop().animate({
-            'scrollTop': $target.offset().top-40
-        }, 0, 'swing', function () {
-            window.location.hash = target;
-            $(document).on("scroll", onScroll);
-        });
-    }
-
-    function openPopover(e) {
-        e.preventDefault();
-        closePopover();
-        var popover = $($(this).data('popover'));
-        popover.toggleClass('open');
-        e.stopImmediatePropagation();
-    }
-
-    function closePopover(e) {
-        if($('.popover.open').length > 0) {
-          $('.popover').removeClass('open')
-        }
-    }
-
-    $("#button").click(function() {
-        $('html, body').animate({
-            scrollTop: $("#elementtoScrollToID").offset().top
-        }, 2000);
-    });
-
-    function resize() {
-        $body.removeClass('has-docked-nav');
-        navOffsetTop = $nav.offset().top;
-        onScroll()
-    }
-
-    function onScroll() {
-        if(navOffsetTop < $window.scrollTop() && !$body.hasClass('has-docked-nav')) {
-            $body.addClass('has-docked-nav');
-            $navbarlogo.removeClass('hide');
-        }
-        if(navOffsetTop > $window.scrollTop() && $body.hasClass('has-docked-nav')) {
-            $body.removeClass('has-docked-nav');
-            $navbarlogo.addClass('hide');
-        }
-    }
-
-    //Horizontal Tab
-    $('#parentHorizontalTab').easyResponsiveTabs({
-        type: 'default', //Types: default, vertical, accordion
-        width: 'auto', //auto or any width like 600px
-        fit: true, // 100% fit in a container
-        tabidentify: 'hor_1', // The tab groups identifier
-        activate: function(event) { // Callback function if tab is switched
-            var $tab = $(this);
-            var $info = $('#nested-tabInfo');
-            var $name = $('span', $info);
-            $name.text($tab.text());
-            $info.show();
-        }
-    });
-
-    init();
-
     //App.Collections.Post.postCollection = new App.Collections.Post();
     //App.Collections.Post.postCollection.fetch({
     //    success: function() {
@@ -767,6 +708,4 @@ $(document).ready(function() {
     //
     //
     //App.Views.Global.globalView = new App.Views.Global({el: '.page'});
-    //new App.Router();
-    //Backbone.history.start(); // start Backbone history
 });

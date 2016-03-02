@@ -157,7 +157,7 @@ class Post(db.Model):
     def __init__(self, **kwargs):
         super(Post, self).__init__(**kwargs)
         if self.writing_type is None:
-            self.writing_type == "poem"
+            self.writing_type == "entry"
 
     # def get_post_widget(self):
     #     post_widget = render_template('assets/posts/post_content.html', page_mark='portfolio', post=self, g=g)
@@ -220,7 +220,7 @@ class Post(db.Model):
         return vote_status
 
     def json_view(self):
-        return {'id': self.id, 'author': self.author.nickname, 'header': self.header, 'body': self.body, 'photo': self.photo}
+        return {'id': self.id, 'author': self.author.nickname, 'title': self.header, 'body': self.body, 'photo': self.photo}
 
     def get_absolute_url(self):
         return url_for('post', kwargs={"slug": self.slug})

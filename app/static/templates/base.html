@@ -25,7 +25,6 @@
     <link rel="stylesheet" href="{{ local_static_url }}css/normalize.css">
     <link rel="stylesheet" href="{{ local_static_url }}css/skeleton.css">
     <link rel="stylesheet" href="{{ local_static_url }}css/custom.css">
-    <link rel="stylesheet" href="{{ local_static_url }}css/easy-responsive-tabs.css">
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -33,7 +32,7 @@
 
     </head>
 	<body>
-        <div class="container">
+        <div class="container" id="photoapp">
             <header>
                 <div class="row header">
                     <div class="12 columns columns-sm center-align">
@@ -42,9 +41,7 @@
                 </div>
                 <div id="sub-header">
                     <div id="headline" class="feature-headline">
-                        {% if assets %}
-                            {{ assets.title|safe if assets.title != None }}
-                        {% endif %}
+                        <noscript>{% if assets %}{{ assets.title|safe if assets.title != None }}{% endif %}</noscript>
                     </div>
                 </div>
                 <div class="navbar-spacer"></div>
@@ -52,27 +49,29 @@
             </header>
 
             <main>
+                <div id="photo-list"></div>
                 <div id="entry-forms">
-                    {% if assets %}
-                        {{ assets.main_entry|safe if assets.main_entry != None }}
-                        {{ assets.body_form|safe if assets.body_form != None }}
-                    {% endif %}
+                    <noscript>
+                        {% if assets %}
+                            {{ assets.main_entry|safe if assets.main_entry != None }}
+                            {{ assets.body_form|safe if assets.body_form != None }}
+                        {% endif %}
+                    </noscript>
                 </div>
             </main>
 
             <footer>
-                {% if assets %}
-                    {{ assets.archives|safe if assets.archives != None }}
-                {% endif %}
+                <noscript>{% if assets %}{{ assets.archives|safe if assets.archives != None }}{% endif %}</noscript>
             </footer>
             {% block scripts %}
                 <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
                 <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
-                <script src="{{ local_static_url }}js/_libs/easyResponsiveTabs.js"></script>
                 <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
                 <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
                 <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
                 <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
+                <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
+                <script src="{{ local_static_url }}js/data.js"></script>
                 <script src="{{ local_static_url }}js/app.js"></script>
             {% endblock %}
         </div>
