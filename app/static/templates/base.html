@@ -2,7 +2,7 @@
 <html lang="en" id="{{ page_mark }}">
     <head>
     <noscript>
-        {% if not knownnojs %}
+        {% if not knowntohatejs %}
             <meta http-equiv="refresh" content="0; /photos/home/?javascript=false">
         {% endif %}
     </noscript>
@@ -54,17 +54,18 @@
             </header>
 
             <main>
-{#                <div class="value-props row" id="photo-main"></div>#}
-                <div id="photo-list"></div>
-{#                <script>#}
-{#                    {% if assets %}#}
-{#                        {{ assets.photo_list|safe if assets.photo_list != None }}#}
-{#                        {{ assets.body_form|safe if assets.body_form != None }}#}
-{#                    {% endif %}#}
-{#                </script>#}
+
+                    <div id="photo-list"></div>
+                    <noscript>
+                        {% if assets %}
+                            {{ assets.photo_list|safe if assets.photo_list != None }}
+                            {{ assets.body_form|safe if assets.body_form != None }}
+                        {% endif %}
+                    </noscript>
             </main>
             {% block scripts %}
                 <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
+                <script src="{{ local_static_url }}js/scrollthing.js"></script>
                 <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
                 <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
                 <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>

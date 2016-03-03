@@ -71,8 +71,15 @@ class PostAPI(MethodView):
                         # return jsonify(myPoems=[i.json_view() for i in posts])
                         # formerly rendered client-side; change to return json and render client-side
                     else:
-                        context = {'assets': ViewData(page_mark=page_mark).assets}
-                        return render_template("base.html", **context)
+                        if request.args.get("javascript", None) is not None: # on subsequent load check nojs param
+                            session['knowntohatejs'] = "true"
+                            app.jinja_env.globals['knowntohatejs'] = "true"
+                            return redirect("/photos/home/")
+                        else:
+                            if 'knowntohatejs' in session:
+                                context = {'assets': ViewData(page_mark=page_mark).assets}
+                                return render_template("base.html", **context)
+                            return render_template("base.html")
                 elif slug is not None:       # Read a single post
                         context = {'assets': ViewData(page_mark=page_mark).assets}
                         return render_template("base.html", **context)
