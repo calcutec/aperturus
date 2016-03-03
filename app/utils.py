@@ -1,12 +1,11 @@
 from app import app
-from config import ALLOWED_EXTENSIONS, POSTS_PER_PAGE
+from config import ALLOWED_EXTENSIONS
 from forms import SignupForm, EditForm, PostForm, CommentForm, LoginForm
 from rauth import OAuth2Service
 import json
 import urllib2
-from flask import request, redirect, url_for, render_template, g, flash, current_app, make_response, jsonify
+from flask import request, redirect, url_for, render_template, g, current_app, make_response
 from models import User, Post
-from functools import wraps
 from functools import update_wrapper
 from datetime import timedelta
 from datetime import datetime
@@ -28,9 +27,11 @@ class BasePage(object):
         assets['title'] = render_template("title.html", page_mark=self.page_mark)
         assets['body_form'] = renderedform
         if self.page_mark is not "login":
-            assets['main_entry'] = render_template("main_entry.html", posts=posts)
-            assets['archives'] = render_template("archives.html", posts=posts)
-            assets['initial_data'] = json.dumps({'posts':[i.json_view() for i in posts]})
+            # assets['main_entry'] = render_template("main_entry.html", posts=posts)
+            # assets['archives'] = render_template("archives.html", posts=posts)
+            assets['photo_list'] = render_template("photo_list.html", posts=posts)
+
+            assets['initial_data'] = json.dumps({'posts': [i.json_view() for i in posts[0:6]]})
         return assets
 
     def getposts(self):
@@ -40,8 +41,10 @@ class BasePage(object):
         elif self.page_mark == 'gallery':
             posts = Post.query.filter_by(writing_type="entry").order_by(Post.timestamp.desc())
         elif self.page_mark == 'profile':
-            posts = Post.query.filter_by(author=self.profile_user).order_by(Post.timestamp.desc())
+            posts = Post.query.filter_by(author=g.user).order_by(Post.timestamp.desc())
         elif self.page_mark == 'members':
+            posts = User.query.all()
+        elif self.page_mark == 'detail':
             posts = User.query.all()
         return posts
 
@@ -62,7 +65,8 @@ class BasePage(object):
                 form.about_me.data = g.user.about_me
                 rendered_form = render_template("assets/forms/profile_form.html", form=EditForm)
             elif self.page_mark == 'detail':
-                rendered_form = render_template("assets/forms/comment_form.html", form=CommentForm(), post=self.post)
+                rendered_form = render_template("assets/forms/comment_form.html", form=CommentForm(),
+                                                post=self.getposts)
         return rendered_form
 
     def create_s3_form(self):

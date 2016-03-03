@@ -1,34 +1,20 @@
 <div class="value-props row">
    {% if posts[1] %}
-        <div class="six columns columns-sm value-prop">
-            <img class="value-img" src="{{ static_url }}user-images/{{ posts[1].photo }}">
-            {{ posts[1].header }}
-        </div>
+       {% set post = posts[1] %}
+       {% include "archive_entry.html" %}
    {% endif %}
    {% if posts[2] %}
-        <div class="six columns columns-sm value-prop">
-            <img class="value-img" src="{{ static_url }}user-images/{{ posts[2].photo }}">
-            {{ posts[2].header }}
-        </div>
+       {% set post = posts[2] %}
+       {% include "archive_entry.html" %}
    {% endif %}
 </div>
 <div class="value-props row">
     {% if posts[3] %}
-        <div class="four columns columns-sm value-prop">
-            <img class="value-img" src="{{ static_url }}user-images/{{ posts[3].photo }}">
-            {{ posts[3].header }}
-        </div>
+        {% set post = posts[2] %}
+        {% include "archive_entry.html" %}
     {% endif %}
     {% if posts[4] %}
-        <div class="four columns columns-sm value-prop">
-            <img class="value-img" src="{{ static_url }}user-images/{{ posts[4].photo }}">
-            {{ posts[4].header }}
-        </div>
-    {% endif %}
-    {% if posts[5] %}
-        <div class="four columns columns-sm value-prop">
-            <img class="value-img" src="{{ static_url }}user-images/{{ posts[5].photo }}">
-            {{ posts[5].header }}
-        </div>
+        {% set post = posts[4] %}
+        {% include "archive_entry.html" %}
     {% endif %}
 </div>

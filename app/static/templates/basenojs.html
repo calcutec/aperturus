@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" id="{{ page_mark }}">
     <head>
-    <noscript>
-        {% if not knownnojs %}
-            <meta http-equiv="refresh" content="0; /photos/home/?javascript=false">
-        {% endif %}
-    </noscript>
 
     <!-- Basic Page Needs
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -23,7 +18,7 @@
     <!-- FONT
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ local_static_url }}css/font-awesome.min.css">
 
     <!-- CSS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -52,28 +47,12 @@
                 <div class="navbar-spacer"></div>
                 <nav class="navbar">{% include 'navbar.html' %}</nav>
             </header>
-
             <main>
-{#                <div class="value-props row" id="photo-main"></div>#}
-                <div id="photo-list"></div>
-{#                <script>#}
-{#                    {% if assets %}#}
-{#                        {{ assets.photo_list|safe if assets.photo_list != None }}#}
-{#                        {{ assets.body_form|safe if assets.body_form != None }}#}
-{#                    {% endif %}#}
-{#                </script>#}
+                {% if assets %}
+                    {{ assets.photo_list|safe if assets.photo_list != None }}
+                    {{ assets.body_form|safe if assets.body_form != None }}
+                {% endif %}
             </main>
-            {% block scripts %}
-                <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
-                <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
-                <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
-                <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
-                <script src="{{ local_static_url }}js/data.js"></script>
-                <script src="{{ local_static_url }}js/app.js"></script>
-            {% endblock %}
         </div>
 	</body>
 </html>

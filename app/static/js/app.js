@@ -37,9 +37,9 @@ App.Router.MainRouter = Backbone.Router.extend({
 App.Models.Photo = Backbone.Model.extend( {
     defaults: {
         author: '',
-        title: '',
+        header: '',
         body: '',
-        photoname: '',
+        photo: '',
         subject: '',
         read: false,
         star: false,
@@ -79,13 +79,48 @@ App.Models.Photo = Backbone.Model.extend( {
     }
 });
 
+App.Views.PhotoListView = Backbone.View.extend({
+    events: {
+        "click .photo-subject,.sender" : "markRead",
+        "click .star" : "star",
+        "click .check" : "select"
+    },
+
+    initialize: function() {
+        this.model.bind('change', this.render, this);
+    },
+
+    render: function(template) {
+        this.$el.html(nunjucks.render("main_entry.html", this.model.toJSON()));
+        return this;
+    },
+
+    unrender: function(){
+        $(this.el).remove();
+    },
+
+    markRead: function() {
+        this.model.markRead();
+    },
+
+    star: function() {
+        this.model.starMail();
+    },
+
+    select: function(){
+        this.model.selectMail();
+    }
+});
+
+
 App.Views.MainView = Backbone.View.extend({
     el: $("#photoapp"),
 
     initialize: function(options){
         _.extend(this, _.pick(options, "page_mark"));
-        this.collection.bind('change', this.renderSideMenu, this);
-        this.render(this.collection);
+        //this.collection.bind('change', this.renderSideMenu, this);
+        //this.renderMainPhoto(this.collection.models[0]);
+        this.renderPhotoList(this.collection.toJSON());
         //this.renderSideMenu();
         this.renderTitle();
     },
@@ -140,12 +175,27 @@ App.Views.MainView = Backbone.View.extend({
         this.render(this.collection.inbox());
     },
 
-    render: function(records){
-        $('ul#photo-list', this.el).html('');
-        var self = this;
-        records.each(function(item){
-            self.addOne(item);
-        }, this);
+    renderMainPhoto: function(latestrecord){
+        $('div#photo-main', this.el).html('');
+        this.addMain(latestrecord);
+    },
+
+    renderPhotoList: function(posts){
+        var target = $('div#photo-list', this.el);
+        target.html('');
+        target.html(nunjucks.render("photo_list.html", {'posts':posts}));
+        //posts = collection.models.slice(1,3)
+        //self.addTwoOfList(posts)
+        //$('div#photo-list', this.el).html('');
+        //var self = this;
+        //_.each( collection.models.slice(1,3), function(model) {
+        //    console.log(model.get("id"));
+        //    self.addTwoOfList(model);
+        //}, this);
+        //_.each( collection.models.slice(3,5), function(model) {
+        //    console.log(model.get("id"));
+        //    self.addTwoOfList(model);
+        //}, this);
     },
 
     renderTitle: function(){
@@ -163,9 +213,14 @@ App.Views.MainView = Backbone.View.extend({
     //    );
     //},
 
-    addOne: function (photo) {
-        var itemView = new App.Views.PhotoView({ model: photo});
+    addMain: function (item) {
+        var itemView = new App.Views.MainPhotoView({ model: item});
+        $('div#photo-main', this.el).append(itemView.render().el);
+    },
 
+    addTwoOfList: function (posts) {
+        var itemView1 = new App.Views.ListPhotoView({ model: posts[0]});
+        var itemView2 = new App.Views.ListPhotoView({ model: posts[1]});
         $('div#photo-list', this.el).append(itemView.render().el);
     }
 });
@@ -206,46 +261,31 @@ App.Collections.PhotoList = Backbone.Collection.extend({
         return _(this.filter(function(photo) {
             return pat.test(photo.get('subject')) || pat.test(photo.get('sender')); }));
     },
+
+    byauthor: function (author_id) {
+       var filtered = this.filter(function (post) {
+           return photo.get("author") === author_id;
+       });
+       return new App.Collections.PhotoList(filtered);
+    },
+
     comparator: function(photo){
         return -photo.get('timestamp');
     }
-
 });
 
-App.Views.PhotoView = Backbone.View.extend({
-    tagName: "article",
+//App.Views.PhotoListView = Backbone.View.extend({ // plural to distinguish as the view for the collection
+//    el: $("#photolist"),
+//    tagName: "article",
+//    render: function(){
+//        this.collection.each(function(Post){
+//            var postView = new App.Views.Post({model: Post});
+//            postView.render()
+//        });
+//    }
+//});
 
-    events: {
-        "click .photo-subject,.sender" : "markRead",
-        "click .star" : "star",
-        "click .check" : "select"
-    },
 
-    initialize: function() {
-        this.model.bind('change', this.render, this);
-    },
-
-    render: function() {
-        this.$el.html(nunjucks.render('main_entry.html', this.model.toJSON()));
-        return this;
-    },
-
-    unrender: function(){
-        $(this.el).remove();
-    },
-
-    markRead: function() {
-        this.model.markRead();
-    },
-
-    star: function() {
-        this.model.starMail();
-    },
-
-    select: function(){
-        this.model.selectMail();
-    }
-});
 
 /*
 
@@ -654,7 +694,8 @@ var apiUrl = function(type) {
 */
 
 $(document).ready(function() {
-    nunjucks.configure('/static/templates');
+    var env = nunjucks.configure('/static/templates');
+    env.addGlobal("static_url", 'https://s3.amazonaws.com/aperturus/')
     new App.Router.MainRouter();
     Backbone.history.start(); // start Backbone history
     //window.s3formview = new App.Views.S3FormView();
