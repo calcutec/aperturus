@@ -700,6 +700,31 @@ $(document).ready(function() {
     new App.Router.MainRouter();
     Backbone.history.start(); // start Backbone history
     //window.s3formview = new App.Views.S3FormView();
+    var csrftoken = $('meta[name=csrf-token]').attr('content');
+    $(function(){
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                }
+            }
+        })
+    });
+    //$(function(){
+    //    $(".nojs").remove();
+    //    $.ajax({
+    //        url: '/clearcookie/',
+    //        data: "cookieoff",
+    //        type: 'POST',
+    //        success: function(response) {
+    //            console.log(response);
+    //        },
+    //        error: function(error) {
+    //            console.log(error);
+    //        }
+    //    });
+    //});
+
 
 
     //$( "#s3-form" ).submit(function( e ) {
@@ -729,16 +754,7 @@ $(document).ready(function() {
     //    return false;
     //});
 
-    var csrftoken = $('meta[name=csrf-token]').attr('content');
-    $(function(){
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                }
-            }
-        })
-    });
+
 
     //App.Collections.Post.postCollection = new App.Collections.Post();
     //App.Collections.Post.postCollection.fetch({

@@ -1,5 +1,11 @@
-<div class="docs-section">
-    <h6 class="docs-header">{{ posts[0].header }}</h6>
-    <img class="u-max-full-width" src="{{ static_url }}user-images/{{ posts[0].photo }}">
-    <p>{{ posts[0].body }}</p>
+<div id="main-entry">
+    <img sizes="95vw"
+         srcset="https://assets.imgix.net/unsplash/bridge.jpg?w=400&q=85&auto=format&sharp=10 400w,
+                 https://assets.imgix.net/unsplash/bridge.jpg?w=800&q=85&auto=format&sharp=10 800w,
+                 https://assets.imgix.net/unsplash/bridge.jpg?w=1600&q=85&auto=format&sharp=10 1600w"
+         src="https://assets.imgix.net/unsplash/bridge.jpg?w=400q=85&auto=format&sharp=10"
+         alt="My image"
+    >
 </div>
+{#<h6 class="docs-header">{{ posts[0].header }}</h6>#}
+{#<p>{{ posts[0].body }}</p>#}

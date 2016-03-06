@@ -21,11 +21,15 @@ def index():
     return redirect(url_for('posts', page_mark='home'))
 
 
-@app.route('/postfile/gallery/', methods=['POST', 'GET', 'UPDATE'])
-@crossdomain(origin='*')
-def postfile():
-    response = {'savedsuccess': True}
-    return json.dumps(response)
+@app.route('/clearcookie/', methods=['POST'])
+def clearcookie():
+    if 'knowntohatejs' in session:
+        session.pop('knowntohatejs')
+        response = {'hatejsstatus': "nolongerajshater"}
+        return json.dumps(response)
+    else:
+        response = {'hatejsstatus': "notajshater"}
+        return json.dumps(response)
 
 
 @app.route('/logout/', methods=['GET'])
@@ -292,19 +296,12 @@ class MembersAPI(MethodView):
             context = {'assets': ViewData(page_mark="profile").assets}
             return render_template("base.html", **context)
         elif nickname is None:  # Display all members
-            if request.url_rule.rule == '/phonegap/':
-                view_data = ViewData(page_mark='phonegap')
-                return render_template("base.html", **view_data.context)
-            if request.url_rule.rule == '/piemail/':
-                view_data = ViewData(page_mark='piemail')
-                return render_template("base.html", **view_data.context)
+            if request.is_xhr:
+                employee_dict = User.query.all()
+                return jsonify(employees=[i.json_view() for i in employee_dict])
             else:
-                if request.is_xhr:
-                    employee_dict = User.query.all()
-                    return jsonify(employees=[i.json_view() for i in employee_dict])
-                else:
-                    view_data = ViewData(page_mark='members')
-                    return render_template("base.html", **view_data.context)
+                view_data = ViewData(page_mark='members')
+                return render_template("base.html", **view_data.context)
         else:  # Display a single member
             profile_data = ViewData(page_mark="profile", nickname=nickname)
             return render_template("base.html", **profile_data.context)
@@ -403,6 +400,9 @@ class ActionsAPI(MethodView):
                 post = Post.query.get_or_404(int(post_id))
                 vote_status = post.vote(user_id=user_id)
                 return jsonify(new_votes=post.votes, vote_status=vote_status)
+            if action == 'clearcookie':
+                result = {'iserror': False, 'savedsuccess': True}
+                return json.dumps(result)
 
         def get(self, action=None, post_id=None):
             if action == 'vote':   # Vote on post

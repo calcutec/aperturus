@@ -1,0 +1,82 @@
+<img src="https://assets.imgix.net/unsplash/bridge.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5"
+    srcset="https://assets.imgix.net/unsplash/bridge.jpg?w=1024&h=1024&fit=crop&q=85&auto=format&sharp=10&pad=5 1024w,
+    https://assets.imgix.net/unsplash/bridge.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5 640w,
+    https://assets.imgix.net/unsplash/bridge.jpg?w=480&h=480&fit=crop&q=85&auto=format&sharp=10&pad=5 480w"
+    sizes="(min-width: 36em) 33.3vw, 50vw"
+    class="responsive-img"
+    alt="Bridge">
+
+<img src="https://assets.imgix.net/examples/bluehat.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5"
+    srcset="https://assets.imgix.net/examples/bluehat.jpg?w=1024&h=1024&fit=crop&q=85&auto=format&sharp=10&pad=5 1024w,
+    https://assets.imgix.net/examples/bluehat.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5 640w,
+    https://assets.imgix.net/examples/bluehat.jpg?w=480&h=480&fit=crop&q=85&auto=format&sharp=10&pad=5 480w"
+    sizes="(min-width: 36em) 33.3vw, 50vw"
+    class="responsive-img"
+    alt="Woman With Hat">
+
+<img src="https://assets.imgix.net/unsplash/mountains.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5"
+    srcset="https://assets.imgix.net/unsplash/mountains.jpg?w=1024&h=1024&fit=crop&q=85&auto=format&sharp=10&pad=5 1024w,
+    https://assets.imgix.net/unsplash/mountains.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5 640w,
+    https://assets.imgix.net/unsplash/mountains.jpg?w=480&h=480&fit=crop&q=85&auto=format&sharp=10&pad=5 480w"
+    sizes="(min-width: 36em) 33.333333333333vw, 50vw"
+    class="responsive-img"
+    alt="Mountains">
+
+<img src="https://assets.imgix.net/unsplash/bridge.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5"
+    srcset="https://assets.imgix.net/unsplash/bridge.jpg?w=1024&h=1024&fit=crop&q=85&auto=format&sharp=10&pad=5 1024w,
+    https://assets.imgix.net/unsplash/bridge.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5 640w,
+    https://assets.imgix.net/unsplash/bridge.jpg?w=480&h=480&fit=crop&q=85&auto=format&sharp=10&pad=5 480w"
+    sizes="(min-width: 36em) 33.3vw, 50vw"
+    class="responsive-img"
+    alt="Bridge">
+
+<img src="https://assets.imgix.net/examples/bluehat.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5"
+    srcset="https://assets.imgix.net/examples/bluehat.jpg?w=1024&h=1024&fit=crop&q=85&auto=format&sharp=10&pad=5 1024w,
+    https://assets.imgix.net/examples/bluehat.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5 640w,
+    https://assets.imgix.net/examples/bluehat.jpg?w=480&h=480&fit=crop&q=85&auto=format&sharp=10&pad=5 480w"
+    sizes="(min-width: 36em) 33.3vw, 50vw"
+    class="responsive-img"
+    alt="Woman With Hat">
+
+<img src="https://assets.imgix.net/unsplash/mountains.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5"
+    srcset="https://assets.imgix.net/unsplash/mountains.jpg?w=1024&h=1024&fit=crop&q=85&auto=format&sharp=10&pad=5 1024w,
+    https://assets.imgix.net/unsplash/mountains.jpg?w=640&h=640&fit=crop&q=85&auto=format&sharp=10&pad=5 640w,
+    https://assets.imgix.net/unsplash/mountains.jpg?w=480&h=480&fit=crop&q=85&auto=format&sharp=10&pad=5 480w"
+    sizes="(min-width: 36em) 33.333333333333vw, 50vw"
+    class="responsive-img"
+    alt="Mountains">
+
+
+
+<section class="content">
+  <article>
+    <h1>Srcset &amp; sizes with imgix</h1>
+
+    <p>Using the imgix <code>w</code>, <code>h</code>, and <code>dpr</code> URL parameters, we can simplify the amount of effort it takes to generate the srcset attributes on our images. The numbers on the images are generated using imgix to give visual
+      feedback on which image the browser has chosen to display based on the query.</p>
+    <div class="button-group">
+      <a href="https://blog.imgix.com/2015/08/18/responsive-images-with-srcset-imgix.html" class="button" target="_blank">Srcset & imgix guide</a>
+      <a href="https://imgix.com" target="_blank" class="button">Visit imgix.com</a>
+    </div>
+  </article>
+</section>
+<footer>
+  <hr>
+  <a href="https://imgix.com"><img src="https://assets.imgix.net/presskit/imgix-presskit.pdf?page=3&fm=png&w=320&dpr=2" width="160" height="60"></a>
+</footer>
+
+
+
+.responsive-img {
+  max-width: 100%;
+  display: block;
+  float: left;
+}
+
+/*Safari & iOs fix*/
+
+@media(min-width:36em) {
+  .responsive-img {
+    width: 33.333333333333vw;
+  }
+}

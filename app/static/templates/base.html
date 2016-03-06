@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" id="{{ page_mark }}">
     <head>
-    <noscript>
-        {% if not knowntohatejs %}
-            <meta http-equiv="refresh" content="0; /photos/home/?javascript=false">
-        {% endif %}
-    </noscript>
+{#    <noscript>#}
+{#        {% if not knowntohatejs %}#}
+{#            <meta http-equiv="refresh" content="0; /photos/home/?javascript=false">#}
+{#        {% endif %}#}
+{#    </noscript>#}
 
     <!-- Basic Page Needs
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -28,7 +28,7 @@
     <!-- CSS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="{{ local_static_url }}css/normalize.css">
-    <link rel="stylesheet" href="{{ local_static_url }}css/skeleton.css">
+{#    <link rel="stylesheet" href="{{ local_static_url }}css/skeleton.css">#}
     <link rel="stylesheet" href="{{ local_static_url }}css/custom.css">
 
     <!-- Favicon
@@ -37,31 +37,32 @@
 
     </head>
 	<body>
-        <div class="container" id="photoapp">
+
             <header>
-                <div class="row header">
-                    <div class="12 columns columns-sm center-align">
-                        <img class="u-max-full-width" src="{{ local_static_url }}img/aperturus/fullbanner.svg">
+                <div class="container">
+                    <div class="header">
+                        <img src="{{ local_static_url }}img/aperturus/fullbanner.svg" alt="Banner" style="width: 95%; height: auto;">
                     </div>
-                </div>
-                <div id="sub-header">
-                    <div id="headline" class="feature-headline">
-                        <noscript>{% if assets %}{{ assets.title|safe if assets.title != None }}{% endif %}</noscript>
+                    <div id="sub-header">
+                        <div id="headline" class="feature-headline">
+    {#                        <div class="nojs">#}
+    {#                            {% if assets %}{{ assets.title|safe if assets.title != None }}{% endif %}#}
+    {#                        </div>#}
+                        </div>
                     </div>
+                    <div class="navbar-spacer"></div>
+                    <nav class="navbar">{% include 'navbar.html' %}</nav>
                 </div>
-                <div class="navbar-spacer"></div>
-                <nav class="navbar">{% include 'navbar.html' %}</nav>
             </header>
 
             <main>
-
-                    <div id="photo-list"></div>
-                    <noscript>
-                        {% if assets %}
-                            {{ assets.photo_list|safe if assets.photo_list != None }}
-                            {{ assets.body_form|safe if assets.body_form != None }}
-                        {% endif %}
-                    </noscript>
+                <div id="photo-list"></div>
+{#                <div class="nojs">#}
+{#                    {% if assets %}#}
+{#                        {{ assets.photo_list|safe if assets.photo_list != None }}#}
+{#                        {{ assets.body_form|safe if assets.body_form != None }}#}
+{#                    {% endif %}#}
+{#                </div>#}
             </main>
             {% block scripts %}
                 <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
@@ -75,6 +76,5 @@
                 <script src="{{ local_static_url }}js/data.js"></script>
                 <script src="{{ local_static_url }}js/app.js"></script>
             {% endblock %}
-        </div>
 	</body>
 </html>

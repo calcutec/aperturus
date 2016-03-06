@@ -1,20 +1,9 @@
-<div class="value-props row">
-   {% if posts[1] %}
-       {% set post = posts[1] %}
-       {% include "archive_entry.html" %}
-   {% endif %}
-   {% if posts[2] %}
-       {% set post = posts[2] %}
-       {% include "archive_entry.html" %}
-   {% endif %}
-</div>
-<div class="value-props row">
-    {% if posts[3] %}
-        {% set post = posts[2] %}
+<ul class="img-list">
+    {% for post in posts %}
+    <li>
+        {% set post = posts[1] %}
         {% include "archive_entry.html" %}
-    {% endif %}
-    {% if posts[4] %}
-        {% set post = posts[4] %}
-        {% include "archive_entry.html" %}
-    {% endif %}
-</div>
+        <span class="text-content"><span>Montreal</span></span>
+    </li>
+    {% endfor %}
+</ul>

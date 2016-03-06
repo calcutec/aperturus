@@ -1,27 +1,67 @@
-.progresscontainer {
-    width: 500px;
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
     margin: 0 auto;
-}
-.progress_outer {
-    border: 1px solid #000;
-}
-.progress {
-    width: 20%;
-    background: #DEDEDE;
-    height: 20px;
+    padding: 1rem;
 }
 
-footer {
-    margin-bottom: 10px; }
-.container {
-  max-width: 800px; }
-.header {
-  margin-top: 2rem; }
+div#main-entry {
+    text-align: center;
+}
+
+ol, ul {
+    padding-left: 0;
+    margin-top: 0;
+}
+
+ul.img-list li:hover span.text-content {
+    opacity: 1;
+}
+
+ul.img-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+ul.img-list li {
+    display: inline-block;
+    position: relative;
+}
+
+span.text-content {
+    background: rgba(0,0,0,0.5);
+    color: white;
+    cursor: pointer;
+    display: table;
+    height: 2rem;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    opacity: 0;
+    -webkit-transition: opacity 500ms;
+    -moz-transition: opacity 500ms;
+    -o-transition: opacity 500ms;
+    transition: opacity 500ms;
+}
+
+span.text-content span {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+
 #sub-header {
     clear: both;
     border-bottom: .4rem solid black;
     overflow: hidden;
     margin-top: 1.5rem;
+    width: 94%;
 }
 #headline {
     font-size: 4.5rem;
@@ -38,47 +78,14 @@ table {
 #title section::first-letter {
     text-transform: uppercase
 }
-.value-prop {
-  margin-top: 1rem; }
-.value-props {
-  margin-top: 2rem;
-  margin-bottom: 2rem; }
-.docs-header {
-  text-transform: uppercase;
-  font-size: 1.4rem;
-  letter-spacing: .2rem;
-  font-weight: 600; }
-.docs-section {
-  border-top: 1px solid #eee;
-  padding: 4rem 0;
-  margin-bottom: 0; }
-.value-img {
-  display: block;
-  text-align: center;
-  margin: 2.5rem auto 0;
-  width: 100%; }
-ul#auto-login {
-  list-style: none; }
-ul#auto-login li a.button.button-primary {
-    display: block; }
+
 .well {
   -moz-box-shadow: 0 0 5px #888;
   -webkit-box-shadow: 0 0 5px#888;
   box-shadow: 0 0 5px #888;
   padding: 1rem;
-  border-radius: 5px; }
-
-.docs-example .row,
-.docs-example.row,
-.docs-example form {
-  margin-bottom: 0; }
-.docs-example h1,
-.docs-example h2,
-.docs-example h3,
-.docs-example h4,
-.docs-example h5,
-.docs-example h6 {
-  margin-bottom: 1rem; }
+  border-radius: 5px;
+}
 
 /* Navbar */
 .navbar + .docs-section {
@@ -87,7 +94,7 @@ ul#auto-login li a.button.button-primary {
 .navbar-spacer {
   display: block;
   width: 100%;
-  height: 6.5rem;
+  /*height: 6.5rem;*/
   background: #fff;
   z-index: 99;
   min-width: 320px;}
@@ -109,7 +116,7 @@ ul#auto-login li a.button.button-primary {
   letter-spacing: .2rem;
   margin-right: 12px;
   text-decoration: none;
-  line-height: 6.5rem;
+  line-height: 4.5rem;
   color: #222; }
 .navbar-link img {
   width: 4rem;
@@ -120,8 +127,9 @@ ul#auto-login li a.button.button-primary {
   position: fixed;
   top: 0;
   left: 0;
-  padding-left: 8%;
-  border-bottom: 1px solid #eee; }
+  padding-left: 2%;
+  /*border-bottom: 1px solid #eee*/;
+}
 .has-docked-nav .navbar-spacer {
   display: block; }
 /* Re-overiding the width 100% declaration to match size of % based container */
@@ -195,90 +203,3 @@ ul#auto-login li a.button.button-primary {
 .popover-link:hover,
 .popover-item:first-child .popover-link:hover:after {
   border-bottom-color: #33C3F0; }
-
-
-/*#sub-header {*/
-    /*clear: both;*/
-    /*border-bottom: .5rem solid black;*/
-    /*overflow: hidden;*/
-    /*margin-top: 1.5rem;*/
-/*}*/
-/*#headline {*/
-    /*font-size: 4.5rem;*/
-    /*line-height: 55px;*/
-    /*font-weight: 300;*/
-    /*float: left;*/
-    /*letter-spacing: -3.5px;*/
-    /*position: relative*/
-/*}*/
-
-
-
-
-/* Larger than mobile */
-@media (min-width: 400px) {
-  #sub-header {
-      border-bottom: .6rem solid black;
-      margin-top: 2rem; }
-  #headline {
-      font-size: 5rem;
-      line-height: 60px; }
-}
-
-/* Larger than phone */
-@media (min-width: 550px) {
-  #sub-header {
-      border-bottom: .8rem solid black;
-      margin-top: 2.5rem; }
-  #headline {
-      font-size: 5.5rem;
-      line-height: 65px; }
-  .value-props {
-    margin-top: 5rem;
-    margin-bottom: 5rem; }
-  .value-img {
-    margin-bottom: 1rem; }
-  .docs-section {
-    padding: 6rem 0; }
-  .navbar-link { margin-right: 24px;  }
-  ul#auto-login li a.button.button-primary {
-    width: 50%}
-}
-
-@media (max-width: 400px) {
-    table td {width:50%; word-wrap:break-word;}
-}
-
-
-/* Larger than tablet */
-@media (min-width: 750px) {
-  #sub-header {
-      border-bottom: 1rem solid black;
-      margin-top: 3rem; }
-  #headline {
-      font-size: 6rem;
-      line-height: 70px; }
-}
-
-/* Larger than desktop */
-@media (min-width: 1000px) {
-  #sub-header {
-      border-bottom: 1.5rem solid black;
-      margin-top: 3.5rem; }
-  #headline {
-      font-size: 6.5rem;
-      line-height: 75px; }
-}
-
-/* Larger than Desktop HD */
-@media (min-width: 1200px) {
-  #sub-header {
-      margin-top: 4rem; }
-  #headline {
-      font-size: 7rem;
-      line-height: 80px; }
-}
-
-.hide {
-  display: none !important;
-}
