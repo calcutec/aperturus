@@ -107,14 +107,15 @@ span.text-content span {
 }
 
 #sub-header img {
-    width: 20vw;
+    width: 6rem;
+    height: auto;
     float: right;
-    padding-top: .5rem;
+    padding-top: 1rem;
     margin-right: 1rem;
 }
 
 #headline {
-    font-size: 20vw;
+    font-size: 6rem;
     font-weight: 300;
     float: left;
     letter-spacing: -3.5px;
@@ -135,6 +136,12 @@ table {
   box-shadow: 0 0 5px #888;
   padding: 1rem;
   border-radius: 5px;
+}
+
+/* Larger than mobile */
+@media (min-width: 480px) {
+    #sub-header img { width: 8rem; }
+    #headline { font-size: 8rem; }
 }
 
 /* Navbar */
@@ -187,15 +194,15 @@ table {
 .popover {
   display: none;
   position: absolute;
-  top: 0;
-  left: 0;
+  /*top: 0;*/
+  /*left: 0;*/
   background: #fff;
   border: 1px solid #eee;
   border-radius: 4px;
   top: 92%;
   left: -50%;
-  -webkit-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));
-     -moz-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));
+  /*-webkit-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));*/
+     /*-moz-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));*/
           filter: drop-shadow(0 0 6px rgba(0,0,0,.1)); }
 .popover-item:first-child .popover-link:after,
 .popover-item:first-child .popover-link:before {
@@ -247,3 +254,6 @@ table {
 .popover-link:hover,
 .popover-item:first-child .popover-link:hover:after {
   border-bottom-color: #33C3F0; }
+
+
+
