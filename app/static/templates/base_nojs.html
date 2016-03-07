@@ -37,31 +37,44 @@
 
     </head>
 	<body>
-        <div class="container">
+    <div class="container">
             <header>
-                <div id="sub-header">
-                    <div id="headline"></div>
-                    <img src="{{ local_static_url }}img/aperturus/logo.svg" alt="Site Icon">
-                </div>
-                <div class="navbar-spacer"></div>
-                <nav class="navbar">{% include 'navbar.html' %}</nav>
+{#                    <div class="header">#}
+{#                        <img src="{{ local_static_url }}img/aperturus/fullbanner.svg" alt="Banner" style="width: 95%; height: auto;">#}
+{#                    </div>#}
+                    <div id="sub-header">
+                        <div id="headline" class="feature-headline">
+    {#                        <div class="nojs">#}
+    {#                            {% if assets %}{{ assets.title|safe if assets.title != None }}{% endif %}#}
+    {#                        </div>#}
+                        </div>
+                        <img src="{{ local_static_url }}img/aperturus/camera-lens.svg" alt="Site Icon">
+                    </div>
+                    <div class="navbar-spacer"></div>
+                    <nav class="navbar">{% include 'navbar.html' %}</nav>
             </header>
 
             <main>
                 <div id="photo-list"></div>
+{#                <div class="nojs">#}
+{#                    {% if assets %}#}
+{#                        {{ assets.photo_list|safe if assets.photo_list != None }}#}
+{#                        {{ assets.body_form|safe if assets.body_form != None }}#}
+{#                    {% endif %}#}
+{#                </div>#}
             </main>
-        </div>
-        {% block scripts %}
-            <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
-            <script src="{{ local_static_url }}js/scrollthing.js"></script>
-            <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
-            <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
-            <script src="{{ local_static_url }}js/data.js"></script>
-            <script src="{{ local_static_url }}js/app.js"></script>
-        {% endblock %}
+    </div>
+            {% block scripts %}
+                <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
+                <script src="{{ local_static_url }}js/scrollthing.js"></script>
+                <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
+                <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
+                <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
+                <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
+                <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
+                <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
+                <script src="{{ local_static_url }}js/data.js"></script>
+                <script src="{{ local_static_url }}js/app.js"></script>
+            {% endblock %}
 	</body>
 </html>

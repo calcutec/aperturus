@@ -1,9 +1,1 @@
-<ul class="img-list">
-    {% for post in posts %}
-    <li>
-        {% set post = posts[1] %}
-        {% include "archive_entry.html" %}
-        <span class="text-content"><span>Montreal</span></span>
-    </li>
-    {% endfor %}
-</ul>
+{% for post in posts %}{% include "archive_entry.html" %}{% endfor %}
