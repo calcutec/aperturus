@@ -16,7 +16,7 @@ App.Router.MainRouter = Backbone.Router.extend({
         var page_mark = Backbone.history.location.pathname.split("/")[2];
         if ( page_mark == "home" || page_mark == "gallery") {
             var photolist = new App.Collections.PhotoList(initialdata); // loaded from data.js
-            var PhotoApp = new App.Views.MainView({collection:photolist, page_mark:page_mark}) ;
+            new App.Views.MainView({collection:photolist, page_mark:page_mark}) ;
         }
         //var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
         //$("#nav ul li a").each(function(){
