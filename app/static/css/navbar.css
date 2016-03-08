@@ -28,10 +28,12 @@
 .navbar-link.active {
   color: #33C3F0; }
 .has-docked-nav .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: 3%;
+
 }
 .has-docked-nav .navbar-spacer {
   display: block; }

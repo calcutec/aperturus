@@ -180,7 +180,7 @@ App.Views.MainView = Backbone.View.extend({
 
     renderMainPhoto: function(latestrecord){
         $('div#photo-main', this.el).html('');
-        var photoMainView = new App.Views.PhotoMainView({ model: latestrecord});
+        var photoMainView = new App.Views.PhotoMainView({el:"#photo-main", model: latestrecord});
         $('div#photo-main', this.el).append(photoMainView.render().el);
     },
 
