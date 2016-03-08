@@ -103,10 +103,10 @@ span.text-content span {
 }
 
 #sub-header img {
-    width: 6rem;
+    width: 7rem;
     height: auto;
     float: right;
-    padding-top: 1rem;
+    padding-top: .3rem;
     margin-right: 1rem;
 }
 
@@ -150,8 +150,8 @@ table {
 }
 
 @media(min-width:30em) {
-    #sub-header img { width: 8rem; }
-    #headline { font-size: 8rem; }
+    #sub-header img { width: 9rem; padding-top: 1rem;}
+    #headline { font-size: 9rem; }
     .responsive-img { width: 30.35vw; }
 }
 
