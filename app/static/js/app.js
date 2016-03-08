@@ -16,7 +16,7 @@ App.Router.MainRouter = Backbone.Router.extend({
         var page_mark = Backbone.history.location.pathname.split("/")[2];
         if ( page_mark == "home" || page_mark == "gallery") {
             var photolist = new App.Collections.PhotoList(initialdata); // loaded from data.js
-            new App.Views.MainView({collection:photolist, page_mark:page_mark}) ;
+            new App.Views.MainView({el: "#photoapp", collection: photolist, page_mark:page_mark}) ;
         }
         //var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
         //$("#nav ul li a").each(function(){
@@ -79,49 +79,46 @@ App.Models.Photo = Backbone.Model.extend( {
     }
 });
 
-App.Views.PhotoListView = Backbone.View.extend({
-    events: {
-        "click .photo-subject,.sender" : "markRead",
-        "click .star" : "star",
-        "click .check" : "select"
-    },
-
+App.Views.PhotoMainView = Backbone.View.extend({
     initialize: function() {
         this.model.bind('change', this.render, this);
     },
 
-    render: function(template) {
+    render: function() {
         this.$el.html(nunjucks.render("main_entry.html", this.model.toJSON()));
         return this;
     },
 
     unrender: function(){
         $(this.el).remove();
+    }
+});
+
+App.Views.PhotoListView = Backbone.View.extend({
+
+    initialize: function() {
+        this.model.bind('change', this.render, this);
     },
 
-    markRead: function() {
-        this.model.markRead();
+    render: function() {
+        this.$el.html(nunjucks.render("archive_entry.html", this.model.toJSON()));
+        return this;
     },
 
-    star: function() {
-        this.model.starMail();
-    },
-
-    select: function(){
-        this.model.selectMail();
+    unrender: function(){
+        $(this.el).remove();
     }
 });
 
 
 App.Views.MainView = Backbone.View.extend({
-    el: $("#photoapp"),
 
     initialize: function(options){
         _.extend(this, _.pick(options, "page_mark"));
         //this.collection.bind('change', this.renderSideMenu, this);
-        //this.renderMainPhoto(this.collection.models[0]);
-        this.renderPhotoList(this.collection.toJSON());
         //this.renderSideMenu();
+        this.renderMainPhoto(this.collection.models[0]);
+        this.renderPhotoList(this.collection);
         this.renderTitle();
     },
 
@@ -175,34 +172,33 @@ App.Views.MainView = Backbone.View.extend({
         this.render(this.collection.inbox());
     },
 
-    renderMainPhoto: function(latestrecord){
-        $('div#photo-main', this.el).html('');
-        this.addMain(latestrecord);
-    },
-
-    renderPhotoList: function(posts){
-        var target = $('div#photo-list', this.el);
-        target.html('');
-        target.html(nunjucks.render("photo_list.html", {'posts':posts}));
-        //posts = collection.models.slice(1,3)
-        //self.addTwoOfList(posts)
-        //$('div#photo-list', this.el).html('');
-        //var self = this;
-        //_.each( collection.models.slice(1,3), function(model) {
-        //    console.log(model.get("id"));
-        //    self.addTwoOfList(model);
-        //}, this);
-        //_.each( collection.models.slice(3,5), function(model) {
-        //    console.log(model.get("id"));
-        //    self.addTwoOfList(model);
-        //}, this);
-    },
-
     renderTitle: function(){
         $("#headline").html(
             nunjucks.render('title.html', {'page_mark': this.page_mark})
         );
     },
+
+    renderMainPhoto: function(latestrecord){
+        $('div#photo-main', this.el).html('');
+        var photoMainView = new App.Views.PhotoMainView({ model: latestrecord});
+        $('div#photo-main', this.el).append(photoMainView.render().el);
+    },
+
+    renderPhotoList: function(collection){
+        var target = $('div#photo-list', this.el);
+        target.html('');
+        var self = this;
+        _.each( collection.models.slice(1,7), function(model) {
+            console.log(model.get("id"));
+            self.addOneToList(model);
+        }, this);
+    },
+
+    addOneToList: function (photo) {
+        var photoView = new App.Views.PhotoListView({ model: photo});
+        $('div#photo-list', this.el).append(photoView.render().el);
+    }
+
 
     //renderSideMenu: function(){
     //    $("#summary").html(
@@ -212,17 +208,6 @@ App.Views.MainView = Backbone.View.extend({
     //        })
     //    );
     //},
-
-    addMain: function (item) {
-        var itemView = new App.Views.MainPhotoView({ model: item});
-        $('div#photo-main', this.el).append(itemView.render().el);
-    },
-
-    addTwoOfList: function (posts) {
-        var itemView1 = new App.Views.ListPhotoView({ model: posts[0]});
-        var itemView2 = new App.Views.ListPhotoView({ model: posts[1]});
-        $('div#photo-list', this.el).append(itemView.render().el);
-    }
 });
 
 App.Collections.PhotoList = Backbone.Collection.extend({

@@ -37,17 +37,17 @@
 
     </head>
 	<body>
-        <div class="container">
+        <div class="container" id="photo-app">
             <header>
                 <div id="sub-header">
                     <div id="headline"></div>
                     <img src="{{ local_static_url }}img/aperturus/logo.svg" alt="Site Icon">
                 </div>
-                <div class="navbar-spacer"></div>
                 <nav class="navbar">{% include 'navbar.html' %}</nav>
             </header>
 
             <main>
+                <div id="photo-main"></div>
                 <div id="photo-list"></div>
             </main>
         </div>

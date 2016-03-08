@@ -40,5 +40,12 @@ var initialdata = [
       "header": "My new photo",
       "id": 98,
       "author": "WilliamBurton"
+    },
+    {
+      "body": "Adding more examples",
+      "photo": "stock_864X576-hexgenerator.jpeg",
+      "header": "Yet another example",
+      "id": 97,
+      "author": "WilliamBurton"
     }
 ];

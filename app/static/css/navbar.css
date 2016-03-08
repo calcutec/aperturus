@@ -1,6 +1,6 @@
 .navbar,
 .navbar-spacer {
-  display: block;
+  display: inline-block;
   width: 100%;
   background: #fff;
   z-index: 99;
@@ -28,17 +28,13 @@
 .navbar-link.active {
   color: #33C3F0; }
 .has-docked-nav .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding-left: 2%;
-  /*border-bottom: 1px solid #eee*/;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 .has-docked-nav .navbar-spacer {
   display: block; }
-/* Re-overiding the width 100% declaration to match size of % based container */
-.has-docked-nav .navbar > .container {
-  width: 80%; }
 
 /* Popover */
 .popover.open {
@@ -50,7 +46,7 @@
   /*top: 0;*/
   /*left: 0;*/
   background: #fff;
-  border: 1px solid #eee;
+  /*border: 1px solid #eee;*/
   border-radius: 4px;
   top: 92%;
   left: -50%;
