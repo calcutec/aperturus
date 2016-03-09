@@ -95,7 +95,7 @@ App.Views.PhotoMainView = Backbone.View.extend({
 });
 
 App.Views.PhotoListView = Backbone.View.extend({
-
+    tagName: "li",
     initialize: function() {
         this.model.bind('change', this.render, this);
     },
@@ -185,7 +185,7 @@ App.Views.MainView = Backbone.View.extend({
     },
 
     renderPhotoList: function(collection){
-        var target = $('div#photo-list', this.el);
+        var target = $('ul#img-list', this.el);
         target.html('');
         var self = this;
         _.each( collection.models.slice(1,7), function(model) {
@@ -196,7 +196,7 @@ App.Views.MainView = Backbone.View.extend({
 
     addOneToList: function (photo) {
         var photoView = new App.Views.PhotoListView({ model: photo});
-        $('div#photo-list', this.el).append(photoView.render().el);
+        $('ul#img-list', this.el).append(photoView.render().el);
     }
 
 
