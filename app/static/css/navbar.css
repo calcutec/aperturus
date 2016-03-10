@@ -32,29 +32,21 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding-left: 3%;
-
-}
+  padding-left: 3%; }
 .has-docked-nav .navbar-spacer {
   display: block; }
 
 /* Popover */
 .popover.open {
-  display: block;
-}
+  display: block; }
 .popover {
   display: none;
   position: absolute;
-  /*top: 0;*/
-  /*left: 0;*/
   background: #fff;
-  /*border: 1px solid #eee;*/
   border-radius: 4px;
   top: 92%;
   left: -50%;
-  /*-webkit-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));*/
-     /*-moz-filter: drop-shadow(0 0 6px rgba(0,0,0,.1));*/
-          filter: drop-shadow(0 0 6px rgba(0,0,0,.1)); }
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.1)); }
 .popover-item:first-child .popover-link:after,
 .popover-item:first-child .popover-link:before {
   bottom: 100%;

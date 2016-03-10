@@ -1,19 +1,18 @@
 import os
 from flask import Flask
-from jinja2 import ChoiceLoader, FileSystemLoader
+from jinja2 import FileSystemLoader
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
 from flask.ext.assets import Environment, Bundle
 from config import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, \
     MAIL_PASSWORD, SQLALCHEMY_DATABASE_URI
-from flask.json import JSONEncoder
 from flask_wtf.csrf import CsrfProtect
 
 app = Flask(__name__)
 base_dir = os.path.dirname(os.path.realpath(__file__))
 
-app.jinja_loader = FileSystemLoader(os.path.join(base_dir, 'static', 'templates'));
+app.jinja_loader = FileSystemLoader(os.path.join(base_dir, 'static', 'templates'))
 
 app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
@@ -26,16 +25,20 @@ mail = Mail(app)
 CsrfProtect(app)
 
 assets = Environment(app)
+assets.cache = False
+assets.manifest = "json:{path}"
+
+appcss = Bundle('css/fix.css', 'css/custom.css', 'css/navbar.css', 'css/fonts.css', 'css/font-awesome.min.css',
+                filters='cssmin', output='gen/app.css')
+assets.register('css_app', appcss)
 
 appjs = Bundle('js/data.js', 'js/app.js', 'js/navbar.js', filters='jsmin', output='gen/app.js')
 libsjs = Bundle('js/_libs/jquery/jquery-2.2.0.min.js', 'js/_libs/nunjucks.min.js', 'js/_libs/canvas-to-blob.min.js',
                 'js/_libs/load-image.all.min.js', 'js/_libs/backbone/underscore-min.js',
                 'js/_libs/backbone/backbone-min.js', 'js/_libs/backbone/backbone.localStorage-min.js', filters='jsmin',
                 output='gen/libs.js')
-
 assets.register('js_app', appjs)
 assets.register('js_libs', libsjs)
-
 
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
@@ -48,21 +51,6 @@ app.config['OAUTH_CREDENTIALS'] = {
         'immediate': 'true'
     }
 }
-
-
-class CustomJSONEncoder(JSONEncoder):
-    """This class adds support for lazy translation texts to Flask's
-    JSON encoder. This is necessary when flashing translated texts."""
-    def default(self, obj):
-        from speaklater import is_lazy_string
-        if is_lazy_string(obj):
-            try:
-                return unicode(obj)  # python 2
-            except NameError:
-                return str(obj)  # python 3
-        return super(CustomJSONEncoder, self).default(obj)
-
-app.json_encoder = CustomJSONEncoder
 
 if not app.debug and MAIL_SERVER != '':
     import logging

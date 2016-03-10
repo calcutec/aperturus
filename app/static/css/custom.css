@@ -1,12 +1,8 @@
-/* NOTE
-html is set to 62.5% so that all the REM measurements
-are based on 10px sizing. So basically 1.5rem = 15px :) */
 html {
     font-size: 62.5%;
     min-width: 320px; }
 body {
     font-size: 1.5rem;
-    /*line-height: 1.6;*/
     font-weight: 400;
     font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #222;
@@ -19,9 +15,7 @@ body {
     max-width: 1280px;
     margin: 0 3.5vw 0 3.5vw;
 }
-
-/* Typography
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
+/** Typography **/
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 2rem;
@@ -33,7 +27,7 @@ h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
 h5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }
 h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0;
 }
-/* Larger than phablet */
+/** Larger than phablet **/
 @media (min-width: 550px) {
   h1 { font-size: 5.0rem; }
   h2 { font-size: 4.2rem; }
@@ -79,15 +73,11 @@ table {
     text-transform: uppercase
 }
 .well {
-  -moz-box-shadow: 0 0 5px #888;
-  -webkit-box-shadow: 0 0 5px#888;
   box-shadow: 0 0 5px #888;
   padding: 1rem;
   border-radius: 5px;
 }
-
 /** Archive Images **/
-
 .main-responsive-img {
     width: 92.5vw;
     max-width: 1280px;
@@ -124,9 +114,6 @@ span.text-content {
     top: 0;
     width: 46vw;
     opacity: 0;
-    -webkit-transition: opacity 500ms;
-    -moz-transition: opacity 500ms;
-    -o-transition: opacity 500ms;
     transition: opacity 500ms;
 }
 span.text-content span {
@@ -147,12 +134,8 @@ span.text-content span {
     .responsive-img { width: 22.75vw; max-width: 315px;}
     span.text-content { width: 22.75vw; max-width: 315px;}
 }
-
 /** 1384 pixels or greater -- site container at full-width of 1280px from this point **/
 @media(min-width:86.5em) {
     ul#img-list li:not(:nth-child(4n)) { padding-right: 6px; }
-    .bodycontainer { margin-left: calc((100vw - 1280px)/2); }
+    .bodycontainer { margin-left: calc(100vw - 1280px / 2); }
 }
-
-
-
