@@ -5,6 +5,6 @@ app.db
 test.db
 search.db
 flask
-FlaskHomeporch
+venv
 *.mo
 *.DS_Store
