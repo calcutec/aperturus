@@ -12,7 +12,7 @@ App.Router.MainRouter = Backbone.Router.extend({
         'edit/:id': 'edit' // http://netbard.com/photos/portfolio/#edit/7
     },
     start: function(){
-        console.log('now in view' + Backbone.history.location.href);
+        //console.log('now in view' + Backbone.history.location.href);
         var page_mark = Backbone.history.location.pathname.split("/")[2];
         if ( page_mark == "home" || page_mark == "gallery") {
             var photolist = new App.Collections.PhotoList(initialdata); // loaded from data.js
@@ -189,7 +189,7 @@ App.Views.MainView = Backbone.View.extend({
         target.html('');
         var self = this;
         _.each( collection.models.slice(1,7), function(model) {
-            console.log(model.get("id"));
+            //console.log(model.get("id"));
             self.addOneToList(model);
         }, this);
     },

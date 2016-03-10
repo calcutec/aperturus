@@ -53,16 +53,23 @@
             </main>
         </div>
         {% block scripts %}
-            <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
-            <script src="{{ local_static_url }}js/navbar.js"></script>
-            <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
-            <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
-            <script src="{{ local_static_url }}js/data.js"></script>
-            <script src="{{ local_static_url }}js/app.js"></script>
+            {% assets "js_libs" %}
+                <script type="text/javascript" src="{{ local_static_url }}gen/libs.js"></script>
+            {% endassets %}
+
+            {% assets "js_app" %}
+                <script type="text/javascript" src="{{ local_static_url }}gen/app.js"></script>
+            {% endassets %}
+{#            <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>#}
+{#            <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>#}
+{#            <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>#}
+{#            <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>#}
+{#            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>#}
+{#            <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>#}
+{#            <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>#}
+{#            <script src="{{ local_static_url }}js/data.js"></script>#}
+{#            <script src="{{ local_static_url }}js/navbar.js"></script>#}
+{#            <script src="{{ local_static_url }}js/app.js"></script>#}
         {% endblock %}
 	</body>
 </html>

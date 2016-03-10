@@ -4,6 +4,7 @@ from jinja2 import ChoiceLoader, FileSystemLoader
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
+from flask.ext.assets import Environment, Bundle
 from config import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, \
     MAIL_PASSWORD, SQLALCHEMY_DATABASE_URI
 from flask.json import JSONEncoder
@@ -13,8 +14,6 @@ app = Flask(__name__)
 base_dir = os.path.dirname(os.path.realpath(__file__))
 
 app.jinja_loader = FileSystemLoader(os.path.join(base_dir, 'static', 'templates'));
-# app.jinja_loader = ChoiceLoader([FileSystemLoader(os.path.join(base_dir, 'templates')),
-#                                  FileSystemLoader(os.path.join(base_dir, 'static', 'templates'))]);
 
 app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
@@ -25,6 +24,17 @@ lm.login_view = 'login'
 lm.login_message = 'Please log in to access this page.'
 mail = Mail(app)
 CsrfProtect(app)
+
+assets = Environment(app)
+
+appjs = Bundle('js/data.js', 'js/app.js', 'js/navbar.js', filters='jsmin', output='gen/app.js')
+libsjs = Bundle('js/_libs/jquery/jquery-2.2.0.min.js', 'js/_libs/nunjucks.min.js', 'js/_libs/canvas-to-blob.min.js',
+                'js/_libs/load-image.all.min.js', 'js/_libs/backbone/underscore-min.js',
+                'js/_libs/backbone/backbone-min.js', 'js/_libs/backbone/backbone.localStorage-min.js', filters='jsmin',
+                output='gen/libs.js')
+
+assets.register('js_app', appjs)
+assets.register('js_libs', libsjs)
 
 
 app.config['OAUTH_CREDENTIALS'] = {
