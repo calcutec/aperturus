@@ -18,24 +18,87 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect(url_for('posts', page_mark='home'))
-
-
-@app.route('/clearcookie/', methods=['POST'])
-def clearcookie():
-    if 'knowntohatejs' in session:
-        session.pop('knowntohatejs')
-        response = {'hatejsstatus': "nolongerajshater"}
-        return json.dumps(response)
+    if current_user.is_authenticated():
+        return redirect(url_for('posts', page_mark='gallery'))
     else:
-        response = {'hatejsstatus': "notajshater"}
-        return json.dumps(response)
+        return redirect(url_for('posts', page_mark='login'))
+
+
+@app.route('/nojs/', methods=['GET'])
+def indexnojs():
+    if current_user.is_authenticated():
+        return redirect(url_for('pictures', page_mark='gallery', nickname='current_user.nickname'))
+    else:
+        return redirect(url_for('pictures', page_mark='login'))
 
 
 @app.route('/logout/', methods=['GET'])
 def logout():
         logout_user()
-        return redirect(url_for('posts', page_mark='home'))
+        return redirect(url_for('posts', page_mark='login'))
+
+
+class PictureAPI(MethodView):
+    @login_required
+    def post(self, page_mark=None):
+        form = PostForm()
+        if form.validate_on_submit():
+            photo_name = form.entryPhotoName.data
+            thumbnail_name = "thumbnail" + photo_name
+            slug = slugify(form.header.data)
+            post = Post(body=form.body.data, timestamp=datetime.utcnow(),
+                        author=g.user, photo=photo_name, thumbnail=thumbnail_name, header=form.header.data,
+                        writing_type=form.writing_type.data, slug=slug)
+            db.session.add(post)
+            db.session.commit()
+            return redirect("/pictures/"+page_mark)
+        else:
+            context = {'assets': ViewData(page_mark=page_mark).assets}
+            return render_template("base_nojs.html", **context)
+
+    def get(self, page_mark=None, slug=None, nickname=None):
+        if current_user.is_authenticated() or page_mark == "login":
+                if slug is None:    # Read all posts
+                    context = {'assets': ViewData(page_mark=page_mark).assets}
+                    return render_template("base_nojs.html", **context)
+                else:       # Read a single post
+                    context = {'assets': ViewData(page_mark=page_mark, slug=slug).assets}
+                    return render_template("base_nojs.html", **context)
+        else:
+            return current_app.login_manager.unauthorized()
+
+    # Update Picture
+    @login_required
+    def put(self, post_id):
+        form = PostForm()
+        if form.validate_on_submit():
+            update_post = Post.query.get(post_id)
+            update_post.body = form.data['body']
+            db.session.commit()
+            response = update_post.json_view()
+            response['updatedsuccess'] = True
+            return json.dumps(response)
+        else:
+            result = {'updatedsuccess': False}
+            return json.dumps(result)
+
+    # Delete Picture
+    @login_required
+    def delete(self, post_id):
+        post = Post.query.get(post_id)
+        db.session.delete(post)
+        db.session.commit()
+        return redirect("/pictures/"+"home")
+
+
+# urls for Picture API
+picture_api_view = PictureAPI.as_view('pictures')
+# See all pictures for a given page, Create a new picture
+app.add_url_rule('/pictures/<any("gallery", "members", "profile", "login"):page_mark>/',
+                 view_func=picture_api_view, methods=["GET", "POST"])
+
+# Read, Update, or Delete a single post (Non Restful)
+app.add_url_rule('/pictures/detail/<slug>/', view_func=picture_api_view, methods=["GET", "PUT", "DELETE"])
 
 
 class PostAPI(MethodView):
@@ -65,9 +128,9 @@ class PostAPI(MethodView):
                 context = {'assets': ViewData(page_mark=page_mark).assets}
                 return render_template("base.html", **context)
 
-    def get(self, page_mark=None, slug=None, post_id=None):
-        if page_mark == "home" or current_user.is_authenticated():
-                if slug is None and post_id is None:    # Read all posts
+    def get(self, page_mark=None, post_id=None):
+        if current_user.is_authenticated() or page_mark == "login":
+                if post_id is None:    # Read all posts
                     if request.is_xhr:
                         result = {'iserror': False, 'savedsuccess': True}
                         return json.dumps(result)
@@ -75,20 +138,9 @@ class PostAPI(MethodView):
                         # return jsonify(myPoems=[i.json_view() for i in posts])
                         # formerly rendered client-side; change to return json and render client-side
                     else:
-                        if request.args.get("javascript", None) is not None:  # on subsequent load check nojs param
-                            session['knowntohatejs'] = "true"
-                            app.jinja_env.globals['knowntohatejs'] = "true"
-                            return redirect("/photos/home/")
-                        else:
-                            if 'knowntohatejs' in session:
-                                context = {'assets': ViewData(page_mark=page_mark).assets}
-                                return render_template("base.html", **context)
-                            return render_template("base.html")
-                elif slug is not None:       # Read a single post
-                        context = {'assets': ViewData(page_mark=page_mark).assets}
-                        return render_template("base.html", **context)
-                elif post_id is not None:
-                    pass  # Todo create logic for xhr request for a single poem
+                        return render_template("base.html")
+                else:
+                    pass  # Todo create logic for xhr request for a single post
         else:
             return current_app.login_manager.unauthorized()
 
@@ -120,12 +172,10 @@ class PostAPI(MethodView):
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
 # Read all posts for a given page, Create a new post
-app.add_url_rule('/photos/<any("home", "gallery", "profile", "login"):page_mark>/',
+app.add_url_rule('/photos/<any("gallery", "members", "profile", "login"):page_mark>/',
                  view_func=post_api_view, methods=["GET", "POST"])
 # Update or Delete a single post
-app.add_url_rule('/photos/detail/<int:post_id>/', view_func=post_api_view, methods=["PUT", "DELETE"])
-# Read a single post (Non Restful)
-app.add_url_rule('/photos/detail/<slug>/', view_func=post_api_view, methods=["GET"])
+app.add_url_rule('/photos/detail/<int:post_id>/', view_func=post_api_view, methods=["GET", "PUT", "DELETE"])
 
 
 class SignupAPI(MethodView):
@@ -400,9 +450,6 @@ class ActionsAPI(MethodView):
                 post = Post.query.get_or_404(int(post_id))
                 vote_status = post.vote(user_id=user_id)
                 return jsonify(new_votes=post.votes, vote_status=vote_status)
-            if action == 'clearcookie':
-                result = {'iserror': False, 'savedsuccess': True}
-                return json.dumps(result)
 
         def get(self, action=None, post_id=None):
             if action == 'vote':   # Vote on post

@@ -1,80 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" id="{{ page_mark }}">
     <head>
-{#    <noscript>#}
-{#        {% if not knowntohatejs %}#}
-{#            <meta http-equiv="refresh" content="0; /photos/home/?javascript=false">#}
-{#        {% endif %}#}
-{#    </noscript>#}
 
-    <!-- Basic Page Needs
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <meta charset="utf-8">
-    <title>Aperturus</title>
-    <meta name="description" content="">
-    <meta name="keywords" content="Pending" />
-    <meta name="author" content="">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+        <!-- Basic Page Needs
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta charset="utf-8">
+        <title>Aperturus</title>
+        <meta name="description" content="">
+        <meta name="keywords" content="Pending" />
+        <meta name="author" content="">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Mobile Specific Metas
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Mobile Specific Metas
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- FONT
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- CSS
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        {% assets "css_app" %}
+            <link rel="stylesheet" href="{{ static_url }}gen/app.css">
+        {% endassets %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-    <!-- CSS
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" href="{{ local_static_url }}css/normalize.css">
-{#    <link rel="stylesheet" href="{{ local_static_url }}css/skeleton.css">#}
-    <link rel="stylesheet" href="{{ local_static_url }}css/custom.css">
-
-    <!-- Favicon
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="icon" type="image/png" href="{{ local_static_url }}img/aperturus/favicon.png">
-
+        <!-- Favicon
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="icon" type="image/png" href="{{ static_url }}img/aperturus/favicon.png">
     </head>
 	<body>
-    <div class="container">
+        <div class="bodycontainer" id="photo-app">
             <header>
-{#                    <div class="header">#}
-{#                        <img src="{{ local_static_url }}img/aperturus/fullbanner.svg" alt="Banner" style="width: 95%; height: auto;">#}
-{#                    </div>#}
-                    <div id="sub-header">
-                        <div id="headline" class="feature-headline">
-    {#                        <div class="nojs">#}
-    {#                            {% if assets %}{{ assets.title|safe if assets.title != None }}{% endif %}#}
-    {#                        </div>#}
-                        </div>
-                        <img src="{{ local_static_url }}img/aperturus/camera-lens.svg" alt="Site Icon">
+                <div id="sub-header">
+                    <div id="headline">
+                        {% if assets %}{{ assets.title|safe if assets.title != None }}{% endif %}
                     </div>
-                    <div class="navbar-spacer"></div>
-                    <nav class="navbar">{% include 'navbar.html' %}</nav>
+                    <img src="{{ static_url }}img/aperturus/logo2.svg" alt="Site Icon">
+                </div>
+                <nav class="navbar">{% include 'navbar.html' %}</nav>
             </header>
 
             <main>
-                <div id="photo-list"></div>
-{#                <div class="nojs">#}
-{#                    {% if assets %}#}
-{#                        {{ assets.photo_list|safe if assets.photo_list != None }}#}
-{#                        {{ assets.body_form|safe if assets.body_form != None }}#}
-{#                    {% endif %}#}
-{#                </div>#}
+                {% if assets %}
+                    <div id="photo-main">{{ assets.main_entry|safe if assets.main_entry != None }}</div>
+                    <ul id="img-list">{{ assets.archives|safe if assets.archives != None }}</ul>
+                    {{ assets.body_form|safe if assets.body_form != None }}
+                {% endif %}
             </main>
-    </div>
-            {% block scripts %}
-                <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
-                <script src="{{ local_static_url }}js/scrollthing.js"></script>
-                <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
-                <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
-                <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-                <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
-                <script src="{{ local_static_url }}js/data.js"></script>
-                <script src="{{ local_static_url }}js/app.js"></script>
-            {% endblock %}
+        </div>
 	</body>
 </html>

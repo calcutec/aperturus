@@ -28,17 +28,19 @@ assets = Environment(app)
 assets.cache = False
 assets.manifest = "json:{path}"
 
-appcss = Bundle('css/fix.css', 'css/custom.css', 'css/navbar.css', 'css/fonts.css', 'css/font-awesome.min.css',
-                filters='cssmin', output='gen/app.css')
+appcss = Bundle('css/fix.css', 'css/custom.css', 'css/navbar.css', 'css/fonts.css', filters='cssmin',
+                output='gen/app.css')
 assets.register('css_app', appcss)
 
-appjs = Bundle('js/data.js', 'js/app.js', 'js/navbar.js', filters='jsmin', output='gen/app.js')
+appjs = Bundle('js/data.js', 'js/main.js', 'js/navbar.js', filters='jsmin', output='gen/app.js')
 libsjs = Bundle('js/_libs/jquery/jquery-2.2.0.min.js', 'js/_libs/nunjucks.min.js', 'js/_libs/canvas-to-blob.min.js',
                 'js/_libs/load-image.all.min.js', 'js/_libs/backbone/underscore-min.js',
                 'js/_libs/backbone/backbone-min.js', 'js/_libs/backbone/backbone.localStorage-min.js', filters='jsmin',
                 output='gen/libs.js')
 assets.register('js_app', appjs)
 assets.register('js_libs', libsjs)
+
+# app.config['ASSETS_DEBUG'] = True
 
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {

@@ -26,17 +26,15 @@ class BasePage(object):
         renderedform = self.getrenderedform()
         assets['title'] = render_template("title.html", page_mark=self.page_mark)
         assets['body_form'] = renderedform
-        if self.page_mark is not "login":
-            # assets['main_entry'] = render_template("main_entry.html", posts=posts)
-            # assets['archives'] = render_template("archives.html", posts=posts)
-            assets['photo_list'] = render_template("photo_list.html", posts=posts)
-
-            assets['initial_data'] = json.dumps({'posts': [i.json_view() for i in posts[0:6]]})
+        if self.page_mark != "login":
+            assets['main_entry'] = render_template("main_entry.html", posts=posts)
+            assets['archives'] = render_template("archives.html", posts=posts)
+            # assets['initial_data'] = json.dumps({'posts': [i.json_view() for i in posts[0:6]]})
         return assets
 
     def getposts(self):
         posts = None
-        if self.page_mark == 'home':
+        if self.page_mark == 'intro':
             posts = Post.query.filter_by(writing_type="op-ed").order_by(Post.timestamp.desc())
         elif self.page_mark == 'gallery':
             posts = Post.query.filter_by(writing_type="entry").order_by(Post.timestamp.desc())
