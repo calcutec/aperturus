@@ -13,7 +13,7 @@ SQLALCHEMY_RECORD_QUERIES = True
 # slow database query threshold (in seconds)
 DATABASE_QUERY_TIMEOUT = 0.5
 
-ALLOWED_EXTENSIONS = set(['PNG', 'JPEG'])
+ALLOWED_EXTENSIONS = set(['JPEG'])
 
 # email server
 MAIL_SERVER = 'smtp.googlemail.com'  # your mailserver
@@ -28,4 +28,3 @@ ADMINS = ['burton.wj@gmail.com']
 
 # pagination
 POSTS_PER_PAGE = 3
-MAX_SEARCH_RESULTS = 50

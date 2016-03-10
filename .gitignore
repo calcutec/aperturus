@@ -4,7 +4,6 @@
 app.db
 test.db
 search.db
-app/static/.webassets-cache
 flask
 FlaskHomeporch
 *.mo

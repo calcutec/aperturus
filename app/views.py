@@ -9,7 +9,7 @@ from slugify import slugify
 from .forms import SignupForm, LoginForm, EditForm, PostForm
 from .models import User, Post
 from .emails import follower_notification
-from .utils import OAuthSignIn, allowed_file, BasePage as ViewData, crossdomain
+from .utils import OAuthSignIn, allowed_file, BasePage as ViewData
 import os
 import json
 from flask.views import MethodView
@@ -65,7 +65,7 @@ class PostAPI(MethodView):
                 context = {'assets': ViewData(page_mark=page_mark).assets}
                 return render_template("base.html", **context)
 
-    def get(self, page_mark=None, slug=None, post_id=None, page=None):
+    def get(self, page_mark=None, slug=None, post_id=None):
         if page_mark == "home" or current_user.is_authenticated():
                 if slug is None and post_id is None:    # Read all posts
                     if request.is_xhr:
@@ -75,7 +75,7 @@ class PostAPI(MethodView):
                         # return jsonify(myPoems=[i.json_view() for i in posts])
                         # formerly rendered client-side; change to return json and render client-side
                     else:
-                        if request.args.get("javascript", None) is not None: # on subsequent load check nojs param
+                        if request.args.get("javascript", None) is not None:  # on subsequent load check nojs param
                             session['knowntohatejs'] = "true"
                             app.jinja_env.globals['knowntohatejs'] = "true"
                             return redirect("/photos/home/")

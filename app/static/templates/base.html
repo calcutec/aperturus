@@ -22,14 +22,14 @@
 
         <!-- Favicon
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-        <link rel="icon" type="image/png" href="{{ local_static_url }}img/aperturus/favicon.png">
+        <link rel="icon" type="image/png" href="{{ static_url }}img/aperturus/favicon.png">
     </head>
 	<body>
         <div class="bodycontainer" id="photo-app">
             <header>
                 <div id="sub-header">
                     <div id="headline"></div>
-                    <img src="{{ local_static_url }}img/aperturus/logo2.svg" alt="Site Icon">
+                    <img src="{{ static_url }}img/aperturus/logo2.svg" alt="Site Icon">
                 </div>
                 <nav class="navbar">{% include 'navbar.html' %}</nav>
             </header>
@@ -41,10 +41,10 @@
         </div>
         {% block scripts %}
             {% assets "js_libs" %}
-                <script type="text/javascript" src="{{ local_static_url }}gen/libs.js"></script>
+                <script type="text/javascript" src="{{ static_url }}gen/libs.js"></script>
             {% endassets %}
             {% assets "js_app" %}
-                <script type="text/javascript" src="{{ local_static_url }}gen/app.js"></script>
+                <script type="text/javascript" src="{{ static_url }}gen/app.js"></script>
             {% endassets %}
         {% endblock %}
 	</body>

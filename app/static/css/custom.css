@@ -137,5 +137,5 @@ span.text-content span {
 /** 1384 pixels or greater -- site container at full-width of 1280px from this point **/
 @media(min-width:86.5em) {
     ul#img-list li:not(:nth-child(4n)) { padding-right: 6px; }
-    .bodycontainer { margin-left: calc(100vw - 1280px / 2); }
+    .bodycontainer { margin-left: calc((100vw - 1280px)/2); }
 }
