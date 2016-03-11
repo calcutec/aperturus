@@ -45,23 +45,12 @@ a {
 a:hover {
   color: #0FA0CE;
 }
-#sub-header {
-    clear: both;
-    overflow: hidden;
-    width: 92.5vw;
-    border-bottom: .3rem solid black;
-    max-width: 1280px;
-}
-#sub-header img {
-    width: 6rem;
-    float: right;
-    padding-top: .3rem;
-}
 
 table {
   table-layout: fixed;
   width: 100%
 }
+
 #title section::first-letter {
     text-transform: uppercase
 }
@@ -70,6 +59,127 @@ table {
   padding: 1rem;
   border-radius: 5px;
 }
+
+/* Buttons
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  margin-top: 5px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+
+/* Forms */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .3rem;
+  margin-top: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
 
 /** Slicknav styling **/
 #nav {
@@ -81,6 +191,7 @@ table {
     padding:1em;
     background:#fff;
     z-index:999;
+    margin-bottom:30px;
 }
 
 #nav ul {
@@ -155,10 +266,9 @@ span.text-content span {
     text-align: center;
     vertical-align: middle;
 }
+
 /** 640 pixels or greater (includes most mobiles in landscape) **/
 @media(min-width:40em) {
-    #sub-header img { width: 8.5rem; padding-top: .5rem;}
-    #headline { font-size: 9rem; }
     .responsive-img { width: 30.5vw; }
     span.text-content { width: 30.5vw; }
 }
@@ -175,69 +285,114 @@ span.text-content span {
 }
 
 /* Slicknav Mobile Sizing */
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 40em) {
     .slicknav_menu {
             background: white !important;
             border-bottom: .3rem solid black;
     }
-
-    /*.slicknav_brand {*/
-        /*background: url(../img/aperturus/logo2.svg) no-repeat 0 0;*/
-        /*background-size: auto 100%;*/
-    /*}*/
-
     #branding {
         font-size: 4.5rem;
         font-weight: 300;
         letter-spacing: -3.5px;
     }
-
-
 	.js #main-menu {
 		display:none;
 	}
-
 	.js #mobileMenu {
 		display:block;
 		position:fixed;
 		width:92.5%;
 		z-index:1000;
 	}
-
 	.js #nav{
 		text-align:center;
 	}
-
 	#nav {
         position: relative;
     }
-
 	#nav img {
 		display:block;
 		margin:0 auto;
 	}
-
 	#main {
 		padding:0;
 	}
-
 	#nav ul {
 		text-align: center;
 		font-size:0.6em;
 		line-height: 1.5em;
 	}
-
 	#nav ul li {
 		padding:0.25em;
 	}
-
-	h2 {
-		font-size:2em;
-	}
 }
 
-/* Mobile Landscape Size to Tablet Portrait */
-@media only screen and (min-width: 480px) and (max-width: 767px) {}
 
-/* Mobile Portrait Size to Mobile Landscape Size */
-@media only screen and (max-width: 479px) {}
+
+
+
+#loginforms > section {
+  display: none;
+  padding: 20px 0 0;
+  border-top: 1px solid #ddd;
+}
+
+#loginforms > input {
+  display: none;
+}
+
+#loginforms > label {
+  display: inline-block;
+  margin: 0 0 -1px;
+  padding: 15px 25px;
+  font-weight: 600;
+  text-align: center;
+  color: #bbb;
+  border: 1px solid transparent;
+}
+
+#loginforms > label:before {
+  font-family: fontawesome;
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+#loginforms > label[for*='1']:before { content: '\f1cb'; }
+#loginforms > label[for*='2']:before { content: '\f17d'; }
+#loginforms > label[for*='3']:before { content: '\f16b'; }
+#loginforms > label[for*='4']:before { content: '\f1a9'; }
+
+#loginforms > label:hover {
+  color: #888;
+  cursor: pointer;
+}
+
+#loginforms > input:checked + label {
+  color: #555;
+  border: 1px solid #ddd;
+  border-top: 2px solid orange;
+  border-bottom: 1px solid #fff;
+}
+
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3,
+#tab4:checked ~ #content4 {
+  display: block;
+}
+
+@media screen and (max-width: 650px) {
+  #loginforms > label {
+    font-size: 0;
+  }
+  #loginforms > label:before {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #loginforms > label {
+    padding: 15px;
+  }
+}

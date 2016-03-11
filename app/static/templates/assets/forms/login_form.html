@@ -1,69 +1,69 @@
-<!-- Login Form -->
-<div class="docs-section" id="forms">
-    <h6 class="docs-header">Login/Signup</h6>
-    <div id="parentHorizontalTab">
-        <ul class="resp-tabs-list hor_1">
-            <li>1-Click Login</li>
-            <li>Email Login</li>
-            <li>User Signup</li>
+<div id="loginforms">
+    <input id="tab1" type="radio" name="tabs" checked>
+    <label for="tab1">OneClick</label>
+
+    <input id="tab2" type="radio" name="tabs">
+    <label for="tab2">Email</label>
+
+    <input id="tab3" type="radio" name="tabs">
+    <label for="tab3">Signup</label>
+
+    <section id="content1">
+        <h3>1-Click-Login</h3>
+        <ul id="auto-login">
+            <li><a class="button button-primary" href="/login/facebook"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>
+            <li><a class="button button-primary" href="/login/twitter"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>
+            <li><a class="button button-primary" href="/login/google"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>
         </ul>
-        <div class="resp-tabs-container hor_1 row">
-            <div class="twelve columns">
-                <h3>1-Click-Login</h3>
-                <ul id="auto-login">
-                    <li><a class="button button-primary" href="/login/facebook"><i class="fa fa-facebook fa-lg"></i>&nbsp; Facebook Login</a></li>
-                    <li><a class="button button-primary" href="/login/twitter"><i class="fa fa-twitter fa-lg"></i>&nbsp; Twitter Login</a></li>
-                    <li><a class="button button-primary" href="/login/google"><i class="fa fa-google-plus fa-lg"></i>&nbsp; Google Login</a></li>
-                </ul>
+    </section>
+
+    <section id="content2">
+        <h3>Email Login</h3>
+        <form action="/login/" id="login-form" method="post" accept-charset="utf-8">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" placeholder="Email" type="email" value="">
+
+                <span id="error_email" class="help-inline" style="color:red"></span>
             </div>
-            <div class="twelve columns">
-                <h3>Email Login</h3>
-                <form action="/login/" id="login-form" method="post" accept-charset="utf-8">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input class="u-full-width" id="email" name="email" placeholder="Email" type="text" value="">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" name="password" placeholder="Password" type="password" value="">
 
-                        <span id="error_email" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input class="u-full-width" id="password" name="password" placeholder="Password" type="password" value="">
-
-                        <span id="error_password" class="help-inline" style="color:red"></span>
-                    </div>
-                    <input class="button-primary" id="login-form-submit" type="submit" value="Login">
-                </form>
+                <span id="error_password" class="help-inline" style="color:red"></span>
             </div>
-            <div class="twelve columns">
-                <h3>Signup</h3>
-                <form action="/signup/" id="signup-form" method="post" accept-charset="utf-8">
-                    <div class="form-group">
-                        <label for="firstname">First Name</label>
-                        <input class="u-full-width" id="firstname" name="firstname" placeholder="First Name" type="text" value="">
+            <input class="button-primary" id="login-form-submit" type="submit" value="Login">
+        </form>
+    </section>
 
-                        <span id="error_firstname" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">Last Name</label>
-                        <input class="u-full-width" id="lastname" name="lastname" placeholder="Last Name" type="text" value="">
+    <section id="content3">
+        <h3>Signup</h3>
+        <form action="/signup/" id="signup-form" method="post" accept-charset="utf-8">
+            <div class="form-group">
+                <label for="firstname">First Name</label>
+                <input class="u-full-width" id="firstname" name="firstname" placeholder="First Name" type="text" value="">
 
-                        <span id="error_lastname" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input class="u-full-width" id="email" name="email" placeholder="Email" type="text" value="">
-
-                        <span id="error_email" class="help-inline" style="color:red"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input class="u-full-width" id="password" name="password" placeholder="Password" type="password" value="">
-
-                        <span id="error_password" class="help-inline" style="color:red"></span>
-                    </div>
-                    <input class="button-primary" type="submit" value="Signup">
-                </form>
+                <span id="error_firstname" class="help-inline" style="color:red"></span>
             </div>
-        </div>
-    </div>
+            <div class="form-group">
+                <label for="lastname">Last Name</label>
+                <input id="lastname" name="lastname" placeholder="Last Name" type="text" value="">
+
+                <span id="error_lastname" class="help-inline" style="color:red"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" placeholder="Email" type="text" value="">
+
+                <span id="error_email" class="help-inline" style="color:red"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" name="password" placeholder="Password" type="password" value="">
+
+                <span id="error_password" class="help-inline" style="color:red"></span>
+            </div>
+            <input class="button-primary" type="submit" value="Signup">
+        </form>
+    </section>
 </div>

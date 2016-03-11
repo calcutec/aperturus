@@ -19,8 +19,7 @@ App.Router.MainRouter = Backbone.Router.extend({
             new App.Views.MainView({el: "#photoapp", collection: photolist, page_mark:page_mark});
             window.s3formview = new App.Views.S3FormView();
         } else if (page_mark == "login") {
-            window.loginview = new App.Views.LoginFormView({el:'#body-form'});
-            window.loginview.render()
+            window.loginview = new App.Views.LoginFormView({el:'#body-form'}).render();
         }
         //var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
         //$("#nav ul li a").each(function(){
