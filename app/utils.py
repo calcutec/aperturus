@@ -23,13 +23,13 @@ class BasePage(object):
     def getassets(self):
         assets = {}
         posts = self.getposts()
-        renderedform = self.getrenderedform()
         assets['title'] = render_template("title.html", page_mark=self.page_mark)
+        renderedform = self.getrenderedform()
         assets['body_form'] = renderedform
         if self.page_mark != "login":
             assets['main_entry'] = render_template("main_entry.html", posts=posts)
             assets['archives'] = render_template("archives.html", posts=posts)
-            # assets['initial_data'] = json.dumps({'posts': [i.json_view() for i in posts[0:6]]})
+        # assets['initial_data'] = json.dumps({'posts': [i.json_view() for i in posts[0:6]]})
         return assets
 
     def getposts(self):
@@ -49,15 +49,9 @@ class BasePage(object):
     def getrenderedform(self):
         rendered_form = None
         if g.user.is_authenticated() is False:
-                rendered_form = render_template("assets/forms/login_form.html", loginform=LoginForm(),
-                                                signupform=SignupForm())
+                rendered_form = render_template("assets/forms/login_form.html")
         else:
-            if self.page_mark == 'gallery':
-                s3_form = self.create_s3_form()
-                photo_text_form = render_template("assets/forms/photo_text_form.html", phototextform=PostForm())
-                rendered_form = render_template("assets/forms/photo_form.html", S3form=s3_form,
-                                                PhotoTextForm=photo_text_form)
-            elif self.page_mark == 'profile':
+            if self.page_mark == 'profile':
                 form = EditForm()
                 form.nickname.data = g.user.nickname
                 form.about_me.data = g.user.about_me
@@ -65,6 +59,11 @@ class BasePage(object):
             elif self.page_mark == 'detail':
                 rendered_form = render_template("assets/forms/comment_form.html", form=CommentForm(),
                                                 post=self.getposts)
+            # No file upload for users without javascript since validation not possible
+            # if self.page_mark == 'gallery':
+            #     s3_form = self.create_s3_form()
+            #     photo_text_form = render_template("assets/forms/photo_text_form.html", phototextform=PostForm())
+            #     rendered_form = render_template("assets/forms/photo_form.html", S3form=s3_form)
         return rendered_form
 
     def create_s3_form(self):
@@ -92,7 +91,7 @@ class BasePage(object):
         now = datetime.utcnow()
         form = {
             'acl': 'private',
-            'success_action_status': '200',
+            'success_action_status': '201',
             # 'success_action_status_redirect': "http://www.netbard.com",
             'x-amz-algorithm': 'AWS4-HMAC-SHA256',
             'x-amz-credential': '{}/{}/{}/s3/aws4_request'.format(access_key, now.strftime('%Y%m%d'), region),

@@ -19,8 +19,8 @@ App.Router.MainRouter = Backbone.Router.extend({
             new App.Views.MainView({el: "#photoapp", collection: photolist, page_mark:page_mark});
             window.s3formview = new App.Views.S3FormView();
         } else if (page_mark == "login") {
-            console.log("now in login page")
-            window.loginview = new App.Views.LoginView();
+            window.loginview = new App.Views.LoginFormView({el:'#body-form'});
+            window.loginview.render()
         }
         //var pgurl = "#" + Backbone.history.location.pathname.split("/")[2];
         //$("#nav ul li a").each(function(){
@@ -35,6 +35,17 @@ App.Router.MainRouter = Backbone.Router.extend({
     },
     create: function(){
         console.log('View for creating photos rendered');
+    }
+});
+
+App.Views.LoginFormView = Backbone.View.extend({
+    render: function() {
+        this.$el.html(nunjucks.render("assets/forms/login_form.html"));
+        return this;
+    },
+
+    unrender: function(){
+        $(this.el).remove();
     }
 });
 
@@ -81,21 +92,6 @@ App.Models.Photo = Backbone.Model.extend( {
 
     setLabel: function(label){
         this.save( { label: label } );
-    }
-});
-
-App.Views.LoginFormView = Backbone.View.extend({
-    initialize: function() {
-        this.model.bind('change', this.render, this);
-    },
-
-    render: function() {
-        this.$el.html(nunjucks.render("main_entry.html", this.model.toJSON()));
-        return this;
-    },
-
-    unrender: function(){
-        $(this.el).remove();
     }
 });
 
@@ -569,7 +565,6 @@ $.fn.submitData = function(e){
 };
 
 $(document).ready(function() {
-    scrollinit();
     var env = nunjucks.configure('/static/templates');
     env.addGlobal("static_url", 'https://s3.amazonaws.com/aperturus/');
     new App.Router.MainRouter();

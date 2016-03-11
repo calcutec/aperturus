@@ -42,7 +42,7 @@
                 {% if assets %}
                     <div id="photo-main">{{ assets.main_entry|safe if assets.main_entry != None }}</div>
                     <ul id="img-list">{{ assets.archives|safe if assets.archives != None }}</ul>
-                    {{ assets.body_form|safe if assets.body_form != None }}
+                    <div id="body-form">{{ assets.body_form|safe if assets.body_form != None }}</div>
                 {% endif %}
             </main>
         </div>

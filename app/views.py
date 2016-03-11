@@ -28,6 +28,7 @@ def index():
 def indexnojs():
     if current_user.is_authenticated():
         return redirect(url_for('pictures', page_mark='gallery', nickname='current_user.nickname'))
+        return redirect(url_for('pictures', page_mark='gallery'))
     else:
         return redirect(url_for('pictures', page_mark='login'))
 
@@ -88,7 +89,7 @@ class PictureAPI(MethodView):
         post = Post.query.get(post_id)
         db.session.delete(post)
         db.session.commit()
-        return redirect("/pictures/"+"home")
+        return redirect("/pictures/"+"gallery")
 
 
 # urls for Picture API
@@ -251,17 +252,17 @@ class LoginAPI(MethodView):
     def get(self, get_provider=None, provider=None):
         if get_provider is not None:    # GET OAUTH PROVIDER
             if not current_user.is_anonymous():
-                return redirect(url_for('posts', page_mark='home', page=1))
+                return redirect(url_for('posts', page_mark='gallery'))
             oauth = OAuthSignIn.get_provider(get_provider)
             return oauth.authorize()
         elif provider is not None:  # OAUTH PROVIDER CALLBACK
             if not current_user.is_anonymous():
-                return redirect(url_for('posts', page_mark='home', page=1))
+                return redirect(url_for('posts', page_mark='gallery'))
             oauth = OAuthSignIn.get_provider(provider)
             nickname, email = oauth.callback()
             if email is None:
                 flash('Authentication failed.')
-                return redirect(url_for('posts', page_mark='home', page=1))
+                return redirect(url_for('posts', page_mark='gallery'))
             currentuser = User.query.filter_by(email=email).first()
             if not currentuser:
                 currentuser = User(nickname=nickname, email=email)
@@ -274,7 +275,7 @@ class LoginAPI(MethodView):
                 session.pop('remember_me', None)
             login_user(currentuser, remember=remember_me)
             # return redirect(request.args.get('next') or '/piemail')
-            return redirect(request.args.get('next') or url_for('posts', page_mark='home'))
+            return redirect(request.args.get('next') or url_for('posts', page_mark='gallery'))
         else:   # LOGIN PAGE
             if g.user is not None and g.user.is_authenticated():
                 return redirect(url_for('members'))
@@ -314,7 +315,7 @@ class MembersAPI(MethodView):
             user = User.query.filter_by(nickname=nickname).first()
             if user is None:
                 flash('User %s not found.' % nickname)
-                return redirect(url_for('posts', page_mark='home', page=1))
+                return redirect(url_for('posts', page_mark='gallery'))
             if user == g.user:
                 flash('You can\'t follow yourself!')
                 return redirect(redirect_url())
@@ -468,7 +469,7 @@ app.add_url_rule('/actions/<page_mark>/<action>/<int:post_id>', view_func=action
 # Helper functions #
 
 
-def redirect_url(default='photos/home'):
+def redirect_url(default='photos/gallery'):
     return request.args.get('next') or \
            request.referrer or \
            url_for(default)

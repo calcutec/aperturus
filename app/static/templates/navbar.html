@@ -1,44 +1,10 @@
-{#<div class="navbar-spacer"></div>#}
-{#<div id="nav">#}
-{#    <ul class="navbar-list">#}
-{#        <li class="navbar-item"><a class="navbar-link" href="{{ url_for('posts', page_mark="home") }}">Photos</a></li>#}
-{#        <li class="navbar-item"><a class="navbar-link" href="{{ url_for('posts', page_mark="gallery") }}" data-popover="#codeNavPopover">Gallery</a>#}
-{#         <li class="navbar-item"><a class="navbar-link" href="{{ url_for('posts', page_mark="gallery") }}">Gallery</a>#}
-{#            <div id="codeNavPopover" class="popover">#}
-{#                <ul class="popover-list">#}
-{#                  <li class="popover-item">#}
-{#                    <a class="popover-link" href="#forms">My Photos</a>#}
-{#                  </li>#}
-{#                  <li class="popover-item">#}
-{#                    <a class="popover-link" href="#forms">Public Gallery</a>#}
-{#                  </li>#}
-{#                  <li class="popover-item">#}
-{#                    <a class="popover-link" href="#forms">Favorites</a>#}
-{#                  </li>#}
-{#                  <li class="popover-item">#}
-{#                    <a class="popover-link" href="#forms">Submit Photo</a>#}
-{#                  </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </li>#}
-{#        <li class="navbar-item"><a class="navbar-link" href="{{ url_for('members', nickname=g.user.nickname) }}">Profile</a></li>#}
-{#        {% if not g.user.is_authenticated() %}#}
-{#        <li class="navbar-item"><a class="navbar-link" href="{{ url_for('login') }}">Login</a></li>#}
-{#        {% else %}#}
-{#        <li class="navbar-item"><a class="navbar-link" href="{{ url_for('logout') }}">Logout</a></li>#}
-{#        {% endif %}#}
-{#        <li class="navbar-item hide" id="navbar-logo"><a class="navbar-link" href="#"><img src="{{ local_static_url }}img/aperturus/aperturus.svg"></a></li>#}
-{#    </ul>#}
-{#</div>#}
-
-
     <div class="navbar-spacer"></div>
     <nav class="navbar">
       <div class="container">
         <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="#intro">Gallery</a></li>
+          <li class="navbar-item"><a class="navbar-link" href="#intro">Intro</a></li>
           <li class="navbar-item">
-            <a class="navbar-link" href="#" data-popover="#codeNavPopover">Members</a>
+            <a class="navbar-link" href="#" data-popover="#codeNavPopover">Code</a>
             <div id="codeNavPopover" class="popover">
               <ul class="popover-list">
                 <li class="popover-item">
@@ -71,8 +37,9 @@
               </ul>
             </div>
           </li>
+          <li class="navbar-item"><a class="navbar-link" href="#examples">Examples</a></li>
           <li class="navbar-item">
-            <a class="navbar-link" href="#" data-popover="#moreNavPopover">Profile</a>
+            <a class="navbar-link" href="#" data-popover="#moreNavPopover">More</a>
             <div id="moreNavPopover" class="popover">
               <ul class="popover-list">
                 <li class="popover-item">
@@ -96,11 +63,7 @@
               </ul>
             </div>
           </li>
-        {% if not g.user.is_authenticated() %}
-            <li class="navbar-item"><a class="navbar-link" href="{{ url_for('login') }}">Login</a></li>
-        {% else %}
-            <li class="navbar-item"><a class="navbar-link" href="{{ url_for('logout') }}">Logout</a></li>
-        {% endif %}
         </ul>
       </div>
     </nav>
+
