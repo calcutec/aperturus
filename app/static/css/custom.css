@@ -57,14 +57,7 @@ a:hover {
     float: right;
     padding-top: .3rem;
 }
-#headline {
-    font-size: 6rem;
-    font-weight: 300;
-    float: left;
-    letter-spacing: -3.5px;
-    position: relative;
-    margin-top: .5rem;
-}
+
 table {
   table-layout: fixed;
   width: 100%
@@ -77,6 +70,47 @@ table {
   padding: 1rem;
   border-radius: 5px;
 }
+
+/** Slicknav styling **/
+#nav {
+    position:fixed;
+    width:100%;
+    text-transform:uppercase;
+    font-weight:600;
+    font-size:1.125em;
+    padding:1em;
+    background:#fff;
+    z-index:999;
+}
+
+#nav ul {
+    padding:0;
+    margin:0;
+}
+
+#nav li {
+    display:inline-block;
+    padding:0.5em 0.5em;
+}
+
+.lt-ie8 {
+    display:inline;
+    zoom:1;
+}
+
+#nav a {
+    color:#333333;
+    text-decoration:none;
+}
+
+#nav a:hover {
+    border-bottom:4px solid #ea0b25;
+}
+
+#mobileMenu {
+    display:none;
+}
+
 /** Archive Images **/
 .main-responsive-img {
     width: 92.5vw;
@@ -139,3 +173,71 @@ span.text-content span {
     ul#img-list li:not(:nth-child(4n)) { padding-right: 6px; }
     .bodycontainer { margin-left: calc((100vw - 1280px)/2); }
 }
+
+/* Slicknav Mobile Sizing */
+@media only screen and (max-width: 767px) {
+    .slicknav_menu {
+            background: white !important;
+            border-bottom: .3rem solid black;
+    }
+
+    /*.slicknav_brand {*/
+        /*background: url(../img/aperturus/logo2.svg) no-repeat 0 0;*/
+        /*background-size: auto 100%;*/
+    /*}*/
+
+    #branding {
+        font-size: 4.5rem;
+        font-weight: 300;
+        letter-spacing: -3.5px;
+    }
+
+
+	.js #main-menu {
+		display:none;
+	}
+
+	.js #mobileMenu {
+		display:block;
+		position:fixed;
+		width:92.5%;
+		z-index:1000;
+	}
+
+	.js #nav{
+		text-align:center;
+	}
+
+	#nav {
+        position: relative;
+    }
+
+	#nav img {
+		display:block;
+		margin:0 auto;
+	}
+
+	#main {
+		padding:0;
+	}
+
+	#nav ul {
+		text-align: center;
+		font-size:0.6em;
+		line-height: 1.5em;
+	}
+
+	#nav ul li {
+		padding:0.25em;
+	}
+
+	h2 {
+		font-size:2em;
+	}
+}
+
+/* Mobile Landscape Size to Tablet Portrait */
+@media only screen and (min-width: 480px) and (max-width: 767px) {}
+
+/* Mobile Portrait Size to Mobile Landscape Size */
+@media only screen and (max-width: 479px) {}

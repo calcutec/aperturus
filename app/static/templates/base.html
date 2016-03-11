@@ -24,6 +24,7 @@
         {% assets "css_app" %}
             <link rel="stylesheet" href="{{ local_static_url }}gen/app.css">
         {% endassets %}
+        <link rel="stylesheet" href="{{ local_static_url }}css/slicknav.css">
 
         <!-- Favicon
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -32,10 +33,7 @@
 	<body>
         <div class="bodycontainer" id="photo-app">
             <header>
-                <div id="sub-header">
-                    <div id="headline"></div>
-                    <img src="{{ local_static_url }}img/aperturus/logo2.svg" alt="Site Icon">
-                </div>
+                <nav class="navbar">{% include 'slicknav.html' %}</nav>
             </header>
 
             <main>
@@ -45,9 +43,12 @@
             </main>
         </div>
         {% block scripts %}
+            <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
             {% assets "js_libs" %}
                 <script type="text/javascript" src="{{ local_static_url }}gen/libs.js"></script>
             {% endassets %}
+            <script type="text/javascript" src="{{ local_static_url }}js/_libs/jquery.slicknav.js"></script>
+
             {% assets "js_app" %}
                 <script type="text/javascript" src="{{ local_static_url }}gen/app.js"></script>
             {% endassets %}

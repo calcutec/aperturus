@@ -565,6 +565,27 @@ $.fn.submitData = function(e){
 };
 
 $(document).ready(function() {
+    $(function(){
+        $('#main-menu').slicknav({
+            prependTo:'#mobileMenu',
+            closeOnClick: true,
+            label: '',
+            brand: 'Gallery'
+        });
+
+        $(document).on('click', "#main-menu .scroll, .slicknav_menu .scroll", function(e) {
+            e.preventDefault();
+            var h = $('#nav').outerHeight();
+            if (!$('#main-menu').is(":visible")) {
+                h = $('.slicknav_menu .slicknav_btn').outerHeight();
+            }
+            //var link = this;
+            //$.smoothScroll({
+            //    offset: -h,
+            //    scrollTarget: link.hash
+            //});
+        });
+    });
     var env = nunjucks.configure('/static/templates');
     env.addGlobal("static_url", 'https://s3.amazonaws.com/aperturus/');
     new App.Router.MainRouter();
