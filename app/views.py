@@ -18,7 +18,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect(url_for('posts', page_mark='gallery'))
+    return redirect(url_for('posts', page_mark='members'))
     # if current_user.is_authenticated():
     #     return redirect(url_for('posts', page_mark='gallery'))
     # else:
@@ -140,11 +140,9 @@ class PostAPI(MethodView):
                 # return jsonify(myPoems=[i.json_view() for i in posts])
                 # formerly rendered client-side; change to return json and render client-side
             else:
-                if page_mark == "authenticated":
-                    result = {'iserror': False, 'savedsuccess': True}
-                    return json.dumps(result)
-                else:
-                    return render_template("base.html")
+                result = {'iserror': False, 'savedsuccess': True}
+                return json.dumps(result)
+                # return render_template("base.html")
         else:
             pass  # Todo create logic for xhr request for a single post
         # else:
@@ -178,7 +176,7 @@ class PostAPI(MethodView):
 # urls for Post API
 post_api_view = PostAPI.as_view('posts')
 # Read all posts for a given page, Create a new post
-app.add_url_rule('/photos/<any("gallery", "members", "profile", "login", "authenticated"):page_mark>/',
+app.add_url_rule('/photos/<any("gallery", "members", "profile", "login", "authenticated", "members"):page_mark>/',
                  view_func=post_api_view, methods=["GET", "POST"])
 # Update or Delete a single post
 app.add_url_rule('/photos/detail/<int:post_id>/', view_func=post_api_view, methods=["GET", "PUT", "DELETE"])
@@ -280,7 +278,7 @@ class LoginAPI(MethodView):
                 session.pop('remember_me', None)
             login_user(currentuser, remember=remember_me)
             # return redirect(request.args.get('next') or '/piemail')
-            return redirect(request.args.get('next') or url_for('posts', page_mark='authenticated'))
+            return redirect(request.args.get('next') or url_for('posts', page_mark='members'))
         else:   # LOGIN PAGE
             if g.user is not None and g.user.is_authenticated():
                 return redirect(url_for('members'))
