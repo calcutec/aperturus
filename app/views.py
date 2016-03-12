@@ -18,10 +18,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/', methods=['GET'])
 def index():
-    if current_user.is_authenticated():
-        return redirect(url_for('posts', page_mark='gallery'))
-    else:
-        return redirect(url_for('posts', page_mark='login'))
+    return redirect(url_for('posts', page_mark='gallery'))
+    # if current_user.is_authenticated():
+    #     return redirect(url_for('posts', page_mark='gallery'))
+    # else:
+    #     return redirect(url_for('posts', page_mark='login'))
 
 
 @app.route('/nojs/', methods=['GET'])
@@ -103,7 +104,7 @@ app.add_url_rule('/pictures/detail/<slug>/', view_func=picture_api_view, methods
 
 
 class PostAPI(MethodView):
-    @login_required
+    # @login_required
     def post(self, page_mark=None):
         form = PostForm()
         if form.validate_on_submit():
@@ -130,24 +131,24 @@ class PostAPI(MethodView):
                 return render_template("base.html", **context)
 
     def get(self, page_mark=None, post_id=None):
-        if current_user.is_authenticated() or page_mark == "login":
-                if post_id is None:    # Read all posts
-                    if request.is_xhr:
-                        result = {'iserror': False, 'savedsuccess': True}
-                        return json.dumps(result)
-                        # posts = Post.query.all()
-                        # return jsonify(myPoems=[i.json_view() for i in posts])
-                        # formerly rendered client-side; change to return json and render client-side
-                    else:
-                        if page_mark == "authenticated":
-                            result = {'iserror': False, 'savedsuccess': True}
-                            return json.dumps(result)
-                        else:
-                            return render_template("base.html")
+        # if current_user.is_authenticated() or page_mark == "login":
+        if post_id is None:    # Read all posts
+            if request.is_xhr:
+                result = {'iserror': False, 'savedsuccess': True}
+                return json.dumps(result)
+                # posts = Post.query.all()
+                # return jsonify(myPoems=[i.json_view() for i in posts])
+                # formerly rendered client-side; change to return json and render client-side
+            else:
+                if page_mark == "authenticated":
+                    result = {'iserror': False, 'savedsuccess': True}
+                    return json.dumps(result)
                 else:
-                    pass  # Todo create logic for xhr request for a single post
+                    return render_template("base.html")
         else:
-            return current_app.login_manager.unauthorized()
+            pass  # Todo create logic for xhr request for a single post
+        # else:
+        #     return current_app.login_manager.unauthorized()
 
     # Update Post
     @login_required
