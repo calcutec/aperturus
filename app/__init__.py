@@ -10,6 +10,7 @@ from config import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, \
 from flask_wtf.csrf import CsrfProtect
 
 app = Flask(__name__)
+app.debug = True
 base_dir = os.path.dirname(os.path.realpath(__file__))
 
 app.jinja_loader = FileSystemLoader(os.path.join(base_dir, 'static', 'templates'))
