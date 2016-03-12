@@ -21,17 +21,17 @@
         <!-- CSS
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 {#        {% assets "css_app" %}#}
-{#            <link rel="stylesheet" href="{{ local_static_url }}gen/app.css">#}
+{#            <link rel="stylesheet" href="{{ static_url }}gen/app.css">#}
 {#        {% endassets %}#}
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{{ local_static_url }}css/fix.css">
-        <link rel="stylesheet" href="{{ local_static_url }}css/custom.css">
-        <link rel="stylesheet" href="{{ local_static_url }}css/slicknav.css">
-        <link rel="stylesheet" href="{{ local_static_url }}css/easyResponsiveTabs.css">
+        <link rel="stylesheet" href="{{ static_url }}css/fix.css">
+        <link rel="stylesheet" href="{{ static_url }}css/custom.css">
+        <link rel="stylesheet" href="{{ static_url }}css/slicknav.css">
+        <link rel="stylesheet" href="{{ static_url }}css/easyResponsiveTabs.css">
 
         <!-- Favicon
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-        <link rel="icon" type="image/png" href="{{ local_static_url }}img/aperturus/favicon.png">
+        <link rel="icon" type="image/png" href="{{ static_url }}img/aperturus/favicon.png">
     </head>
 	<body>
         <div class="bodycontainer" id="photo-app">
@@ -47,22 +47,22 @@
         {% block scripts %}
             <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 {#            {% assets "js_libs" %}#}
-{#                <script type="text/javascript" src="{{ local_static_url }}gen/libs.js"></script>#}
+{#                <script type="text/javascript" src="{{ static_url }}gen/libs.js"></script>#}
 {#            {% endassets %}#}
 {#            {% assets "js_app" %}#}
-{#                <script type="text/javascript" src="{{ local_static_url }}gen/app.js"></script>#}
+{#                <script type="text/javascript" src="{{ static_url }}gen/app.js"></script>#}
 {#            {% endassets %}#}
-            <script src="{{ local_static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/nunjucks.js"></script>
-            <script src="{{ local_static_url }}js/_libs/canvas-to-blob.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/load-image.all.min.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/underscore.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.js"></script>
-            <script src="{{ local_static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
-            <script src="{{ local_static_url }}js/data.js"></script>
-            <script type="text/javascript" src="{{ local_static_url }}js/_libs/jquery.slicknav.js"></script>
-            <script type="text/javascript" src="{{ local_static_url }}js/_libs/easyResponsiveTabs.js"></script>
-            <script src="{{ local_static_url }}js/main.js"></script>
+            <script src="{{ static_url }}js/_libs/jquery/jquery-2.2.0.min.js"></script>
+            <script src="{{ static_url }}js/_libs/nunjucks.js"></script>
+            <script src="{{ static_url }}js/_libs/canvas-to-blob.min.js"></script>
+            <script src="{{ static_url }}js/_libs/load-image.all.min.js"></script>
+            <script src="{{ static_url }}js/_libs/backbone/underscore.js"></script>
+            <script src="{{ static_url }}js/_libs/backbone/backbone.js"></script>
+            <script src="{{ static_url }}js/_libs/backbone/backbone.localStorage-min.js"></script>
+            <script src="{{ static_url }}js/data.js"></script>
+            <script type="text/javascript" src="{{ static_url }}js/_libs/jquery.slicknav.js"></script>
+            <script type="text/javascript" src="{{ static_url }}js/_libs/easyResponsiveTabs.js"></script>
+            <script src="{{ static_url }}js/main.js"></script>
 
 
 
