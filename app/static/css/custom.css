@@ -15,6 +15,7 @@ body {
     max-width: 1280px;
     margin: 0 3.5vw 0 3.5vw;
 }
+
 /** Typography **/
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
@@ -181,46 +182,6 @@ label > .label-body {
   margin-left: .5rem;
   font-weight: normal; }
 
-/** Slicknav styling **/
-#nav {
-    position:fixed;
-    width:100%;
-    text-transform:uppercase;
-    font-weight:600;
-    font-size:1.125em;
-    padding:1em;
-    background:#fff;
-    z-index:999;
-    margin-bottom:30px;
-}
-
-#nav ul {
-    padding:0;
-    margin:0;
-}
-
-#nav li {
-    display:inline-block;
-    padding:0.5em 0.5em;
-}
-
-.lt-ie8 {
-    display:inline;
-    zoom:1;
-}
-
-#nav a {
-    color:#333333;
-    text-decoration:none;
-}
-
-#nav a:hover {
-    border-bottom:4px solid #ea0b25;
-}
-
-#mobileMenu {
-    display:none;
-}
 
 /** Archive Images **/
 .main-responsive-img {
@@ -284,11 +245,74 @@ span.text-content span {
     .bodycontainer { margin-left: calc((100vw - 1280px)/2); }
 }
 
+/** Slicknav styling **/
+#photo-main {
+    margin-top: 75px;
+    padding-top: 1rem;
+}
+#nav {
+    position: fixed;
+    top: 0px;
+    width: 92.5vw;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.125em;
+    padding: 1.5em 0 1em 0;
+    background: #fff;
+    z-index: 999;
+    border-bottom: 3px solid black;
+}
+
+#nav ul {
+    padding:0;
+    margin:0;
+}
+
+ul.slicknav_nav {
+    /* padding-top: 0rem; */
+    border-top: 1px dotted black;
+    /* margin-top: 1rem; */
+}
+
+#nav li {
+    display:inline-block;
+    padding:0.5em 0.5em;
+}
+
+.lt-ie8 {
+    display:inline;
+    zoom:1;
+}
+
+#nav a {
+    color:#333333;
+    text-decoration:none;
+}
+
+#nav a:hover {
+    border-bottom:4px solid #ea0b25;
+}
+
+#mobileMenu {
+    display:none;
+}
+
 /* Slicknav Mobile Sizing */
 @media only screen and (max-width: 40em) {
+    #photo-main {
+        margin-top: 1.5rem;
+    }
     .slicknav_menu {
-            background: white !important;
-            border-bottom: .3rem solid black;
+        position: fixed !important;
+        top: 0px !important;
+        width: 92.5vw !important;
+        text-transform: uppercase !important;
+        font-weight: 600 !important;
+        font-size: 1.125em !important;
+        padding: 1em .5em 0 !important;
+        background: #fff !important;
+        z-index: 999 !important;
+        border-bottom: 3px solid black !important;
     }
     #branding {
         font-size: 4.5rem;
@@ -327,10 +351,7 @@ span.text-content span {
 	}
 }
 
-
-
-
-
+/* Login Forms Tab Menu */
 #loginforms > section {
   display: none;
   padding: 20px 0 0;
