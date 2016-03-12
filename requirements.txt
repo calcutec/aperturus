@@ -29,7 +29,6 @@ jsmin==2.2.1
 MarkupSafe==0.23
 oauth2client==2.0.1
 pbr==0.10.0
-PIL==1.1.7
 Pillow==2.8.1
 pillowcase==2.0.0
 psycopg2==2.5.4
